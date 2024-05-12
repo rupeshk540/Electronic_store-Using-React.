@@ -7,7 +7,7 @@ const Dashboard=()=>{
             {/* nested components */}
             <Outlet/>
         </div>
-    )
+    );
 }
 
 export default Dashboard;
