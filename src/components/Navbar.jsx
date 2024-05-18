@@ -1,25 +1,46 @@
+import { NavLink } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const  CustomNavbar=()=>{
     return(
-        <div>
-           <ul>
-            <li>
-                <a href="/">Home</a>
-            </li>
-            <li>
-                <a href="/about">About</a>
-            </li>
-            <li>
-                <a href="/services">Services</a>
-            </li>
-            <li>
-                <a href="/cart">Cart</a>
-            </li>
-            <li>
-                <a href='/users/profile'>User Profile</a>
-            </li>
-           </ul>
-        </div>
+        <Navbar collapseOnSelect data-bs-theme="dark" className="bg-body-tertiary">
+        <Container>
+          <Navbar.Brand as={NavLink} to="/">
+            <img src="/assets/logo.png" alt="logo" height={50} width={50}/>
+            ElectroStore
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="ms-auto">
+              <Nav.Link as={NavLink} to="/services">Features</Nav.Link>
+
+              <NavDropdown title="Categories" id="collapsible-nav-dropdown">
+                <NavDropdown.Item href="#action/3.1">Branded Phones</NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.2">
+                  Smart TVs
+                </NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.3">Laptop</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#action/3.4">
+                  More
+                </NavDropdown.Item>
+              </NavDropdown>
+              <Nav.Link  as={NavLink} to="/about">About</Nav.Link>
+              <Nav.Link  as={NavLink} to="/contact">Contact Us</Nav.Link>
+            </Nav>
+            <Nav>
+            <Nav.Link  as={NavLink} to="/cart">Cart( 20 )</Nav.Link>
+              <Nav.Link  as={NavLink} to="/login">Login</Nav.Link>
+              <Nav.Link  as={NavLink} to="/signup">Sign Up</Nav.Link>
+              
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+       
     )
 }
 

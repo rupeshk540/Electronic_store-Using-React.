@@ -8,6 +8,7 @@ import Dashboard from './pages/users/dashboard';
 import Profile from './pages/users/Profile';
 import AboutUser from './pages/users/AboutUSer';
 import CustomNavbar from './components/Navbar';
+import Contact from './pages/contact';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
     <Route path='/' element={<Index/>}/>
       <Route path='/about' element={<About/>}/>
       <Route path='/services' element={<Services/>}/>
+      <Route path='/contact' element={<Contact/>}/>
       <Route path='/cart' element={<Cart/>}/>
       <Route path='/users' element={<Dashboard/>}>
         <Route path='profile' element={<Profile/>}/>
