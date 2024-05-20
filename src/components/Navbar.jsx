@@ -6,7 +6,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 const  CustomNavbar=()=>{
     return(
-        <Navbar collapseOnSelect data-bs-theme="dark" className="bg-body-tertiary">
+        <Navbar collapseOnSelect data-bs-theme="dark" className="bg-body-tertiary" >
         <Container>
           <Navbar.Brand as={NavLink} to="/">
             <img src="/assets/logo.png" alt="logo" height={50} width={50}/>

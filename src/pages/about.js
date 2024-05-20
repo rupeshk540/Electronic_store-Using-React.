@@ -1,6 +1,13 @@
+import Base from "../components/Base";
 
 function About(){
-    return <div>THis is About page</div>
+    return(
+        <Base
+        title="Electronic Store / About us"
+        description={null}>
+          <div>This is About page</div>
+        </Base>
+    )
 }
 
 export default About;

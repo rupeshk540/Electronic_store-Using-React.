@@ -1,7 +1,13 @@
+import Base from "../components/Base";
 
 const Contact=()=>{
     return(
-        <h1>this is contact page</h1>
+        <Base 
+        title="Electro Store / Contact us"
+        description={null}
+        >
+          <h1>this is contact page</h1>
+        </Base>
     )
 }
 
