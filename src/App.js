@@ -9,6 +9,7 @@ import Profile from './pages/users/Profile';
 import AboutUser from './pages/users/AboutUSer';
 import CustomNavbar from './components/Navbar';
 import Contact from './pages/contact';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -16,6 +17,11 @@ function App() {
     //  setting up routes
 
   <BrowserRouter>
+   <ToastContainer 
+     position='bottom-center'
+     theme='dark'
+     draggable />
+     
   <CustomNavbar/>
     <Routes>
     <Route path='/' element={<Index/>}/>
