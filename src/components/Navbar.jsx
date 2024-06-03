@@ -9,12 +9,12 @@ const  CustomNavbar=()=>{
         <Navbar collapseOnSelect data-bs-theme="dark" className="bg-body-tertiary" >
         <Container>
           <Navbar.Brand as={NavLink} to="/">
-            <img src="/assets/logo.png" alt="logo" height={50} width={50}/>
-            ElectroStore
+            <img src="/assets/logo.png" alt="logo" height={25} width={25}/>
+            <span className='ms-1 mt-1'>ElectroStore</span>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="ms-auto">
+            <Nav className="m-auto">
               <Nav.Link as={NavLink} to="/services">Features</Nav.Link>
 
               <NavDropdown title="Categories" id="collapsible-nav-dropdown">
