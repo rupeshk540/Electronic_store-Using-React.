@@ -1,6 +1,5 @@
-import { Card, Col, Container, Form, Row ,Nav, Button} from "react-bootstrap";
+import { Card, Col, Container, Form, Row , Button, Spinner} from "react-bootstrap";
 import Base from "../components/Base"
-import { NavLink } from "react-router-dom";
 import logo from "../assets/logo.png"
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -16,6 +15,10 @@ const Register =()=>{
            about:'',
            gender:''
     })
+  
+    //sppiner in register button
+     const[loading,setLoading] = useState(false)
+
 
     // handle change
     const handleChange = (event, property)=>{
@@ -24,6 +27,12 @@ const Register =()=>{
         [property]:event.target.value
       })
     }
+     
+    //error handling
+    const [errorData, setErrorData]=useState({
+      isError:false,
+      errorData:null
+    })
 
     // clear data
     const clearData = () =>{
@@ -35,12 +44,16 @@ const Register =()=>{
         about:'',
         gender:''
       })
+
+      setErrorData({
+        errorData:null,
+        isError:false
+      })
     }
 
-    const [errorData, setErrorData]=useState({
-      isError:false,
-      errorData:null
-    })
+   
+
+    //do signup function
 
     const submitForm=(event)=>{
        event.preventDefault();
@@ -68,15 +81,27 @@ const Register =()=>{
         toast.error("password does not matched !")
        }
 
+
+      // calling api if everything is right
+      setLoading(true)
        registerUser(data)
         .then(userData =>{
+          //success handler
           console.log(data)
           toast.success("Registered successfully !!");
           clearData()
         })
         .catch(error=>{
+          //error handler
           console.log(error)
+          setErrorData({
+            isError:true,
+            errorData:error
+          })
           toast.error ("Error in user registration ! Try again")
+        })
+        .finally(()=>{
+           setLoading(false)
         })
     }
 
@@ -104,7 +129,7 @@ const Register =()=>{
              </Container>
             <h3 className="mb-4 text-center text-uppercase">Store Signup Here</h3>
 
-            <Form onSubmit={submitForm}>
+            <Form noValidate onSubmit={submitForm}>
 
                {/* name field */}
 
@@ -114,7 +139,9 @@ const Register =()=>{
                  placeholder="Enter your name"
                  onChange={(event)=>handleChange(event,'name')}
                  value={data.name}
+                 isInValid={errorData.errorData?.response?.data?.name}
                  />
+                 <Form.Control.Feedback type="invalid">{errorData.errorData?.response?.data?.name}</Form.Control.Feedback>
                 </Form.Group>
 
                 {/* email field */}
@@ -125,7 +152,9 @@ const Register =()=>{
                   placeholder="Enter your email"
                   onChange={(event)=>handleChange(event,'email')}
                   value={data.email}
+                  isInvalid={errorData.errorData?.response?.data?.email}
                   />
+                  <Form.Control.Feedback type="invalid">{errorData.errorData?.response?.data?.email}</Form.Control.Feedback>
                 </Form.Group>
 
                 {/* password field */}
@@ -136,7 +165,9 @@ const Register =()=>{
                  placeholder="Enter your Password"
                  onChange={(event)=>handleChange(event,'password')}
                  value={data.password}
+                 isInvalid={errorData.errorData?.response?.data?.password}
                  />
+                 <Form.Control.Feedback type="invalid">{errorData.errorData?.response?.data?.password}</Form.Control.Feedback>
                 </Form.Group>
 
                 {/* confirm password field */}
@@ -188,7 +219,9 @@ const Register =()=>{
                  placeholder="write here"
                  onChange={(event)=>handleChange(event,'about')}
                  value={data.about}
+                 isInvalid={errorData.errorData?.response?.data?.about}
                  />
+                 <Form.Control.Feedback type="invalid">{errorData.errorData?.response?.data?.about}</Form.Control.Feedback>
                 </Form.Group>
             
           
@@ -201,7 +234,25 @@ const Register =()=>{
 
             <Container className="text-center text-uppercase">
 
-              <Button type="submit" className="text-uppercase" variant="success">Register</Button>
+              <Button
+                type="submit"
+                className="text-uppercase"
+                variant="success"
+                disabled={loading}
+              >
+                 
+                <Spinner
+                 animation="border"
+                 size="sm"
+                 className="me-2"
+                 hidden={!loading}
+                
+                />
+
+                 <span hidden={!loading}>Wait...</span>
+                 <span hidden={loading}>Register</span>
+                 
+              </Button>
               <Button className="ms-2 text-uppercase" variant="danger" onClick={clearData}>Reset</Button>
             </Container>
           </Form>
