@@ -1,12 +1,16 @@
 import { Alert, Button, Card, Col, Container, Form, Row } from "react-bootstrap"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import Base from "../components/Base"
 import logo from "../assets/logo.png"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { toast } from "react-toastify"
 import { loginUser } from "../services/user.service"
+import UserContext from "../context/user.context"
 
 const Login =()=>{
+     
+      const  redirect=useNavigate()
+      const userContext=useContext(UserContext);
 
      let [data,setData]=useState({
           email:'',
@@ -33,6 +37,8 @@ const Login =()=>{
 
      console.log(data)
 
+     //client side validation
+
      if(data.email===undefined || data.email.trim()===''){
           toast.error("Email is required")
           return;
@@ -54,6 +60,22 @@ const Login =()=>{
                errorData:null,
                isError:false
           })
+          //redirect to dashboard page
+       // 1.normal user: normal user ke dashboard par le jana hai
+         
+         //home dashboard page
+          // userContext.setIsLogin(true)
+          // userContext.setUserData(data)
+          
+          userContext.login(data)
+
+          
+          redirect("/users/home")
+
+       //2.admin user: admin user ke dashboard par le jana hai
+
+
+     
      })
      .catch((error)=>{
           console.log(error)
@@ -71,12 +93,16 @@ const Login =()=>{
      const loginForm=()=>{
           return(
                <Container>
+
+                   
                     <Row>
                          <Col md={{span:8,offset:2}}>
 
                          <Card className="my-3 border-0 shadow" style={{position:"relative",top:-60}}>
 
                               <Card.Body>
+
+                              {/* {JSON.stringify(userContext)} */}
 
                                   {/* logo */}
                                  <Container className="text-center mb-3">
@@ -85,7 +111,7 @@ const Login =()=>{
 
                                    <h3 className="text-center text-uppercase">Store Login</h3>
 
-                                   <Alert className="mt-2" onClose={()=>setError({
+                                   <Alert className="mt-3" onClose={()=>setError({
                                          isError:false,
                                          errorData:null
                                    })} dismissible variant="danger" show={error.isError}>

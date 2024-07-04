@@ -3,8 +3,17 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import UserContext from '../context/user.context';
+import { useContext } from 'react';
 
 const  CustomNavbar=()=>{
+
+  const userContext = useContext(UserContext)
+
+  const doLogout=()=>{
+    userContext.logout()
+  }
+
     return(
         <Navbar collapseOnSelect data-bs-theme="dark" className="bg-body-tertiary" >
         <Container>
@@ -28,13 +37,31 @@ const  CustomNavbar=()=>{
                   More
                 </NavDropdown.Item>
               </NavDropdown>
+
               <Nav.Link  as={NavLink} to="/about">About</Nav.Link>
               <Nav.Link  as={NavLink} to="/contact">Contact Us</Nav.Link>
+            
             </Nav>
+
             <Nav>
-            <Nav.Link  as={NavLink} to="/cart">Cart( 20 )</Nav.Link>
-              <Nav.Link  as={NavLink} to="/login">Login</Nav.Link>
-              <Nav.Link  as={NavLink} to="/signup">Sign Up</Nav.Link>
+
+              <Nav.Link  as={NavLink} to="/cart">Cart( 20 )</Nav.Link>
+
+              {
+                (userContext.isLogin)?(
+                <>
+                    <Nav.Link  as={NavLink} to="/users/home">{userContext.userData.user.email}</Nav.Link>
+                    <Nav.Link  onClick={doLogout}>Logout</Nav.Link>
+                </>
+                ):(
+                <>
+                  <Nav.Link  as={NavLink} to="/login">Login</Nav.Link>
+                  <Nav.Link  as={NavLink} to="/signup">Sign Up</Nav.Link>
+                </>
+                )
+
+              }
+              
               
             </Nav>
           </Navbar.Collapse>
