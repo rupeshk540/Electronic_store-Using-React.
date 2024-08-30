@@ -8,6 +8,7 @@ import Dashboard from './pages/users/dashboard';
 import Profile from './pages/users/Profile';
 import Home from './pages/users/home';
 import AboutUser from './pages/users/AboutUSer';
+import Order from './pages/users/order';
 import Login from './pages/login';
 import Register from './pages/register';
 import CustomNavbar from './components/Navbar';
@@ -39,6 +40,7 @@ function App() {
         <Route path='home' element={<Home/>}/>
         <Route path='profile' element={<Profile/>}/>
         <Route path='about' element={<AboutUser/>}/>
+        <Route path='order' element={<Order/>}/>
       </Route>
     </Routes>
   </BrowserRouter>
