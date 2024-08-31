@@ -14,7 +14,10 @@ import Register from './pages/register';
 import CustomNavbar from './components/Navbar';
 import Contact from './pages/contact';
 import { ToastContainer } from 'react-toastify';
-import UserProvider from './context/user.provider';
+import UserProvider from './context/user.provider'; 
+import AdminDashboard from './pages/admin/admindashboard';
+import AdminHome from './pages/admin/adminhome';
+import AddProduct from './pages/admin/addproduct';
 
 function App() {
   return (
@@ -36,12 +39,19 @@ function App() {
       <Route path='/cart' element={<Cart/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/signup' element={<Register/>}/>
+
       <Route path='/users' element={<Dashboard/>}>
         <Route path='home' element={<Home/>}/>
         <Route path='profile' element={<Profile/>}/>
         <Route path='about' element={<AboutUser/>}/>
         <Route path='order' element={<Order/>}/>
       </Route>
+
+      <Route path="/admin" element={<AdminDashboard/>}>
+        <Route path="home" element={<AdminHome/>}/>
+        <Route path="add-product" element={<AddProduct/>}/>
+      </Route>
+
     </Routes>
   </BrowserRouter>
 </UserProvider>
