@@ -4,20 +4,20 @@ import Index from './pages';
 import About from './pages/about';
 import Services from './pages/service';
 import Cart from './pages/cart';
-import Dashboard from './pages/users/dashboard';
+import Dashboard from './pages/users/Dashboard';
 import Profile from './pages/users/Profile';
-import Home from './pages/users/home';
-import AboutUser from './pages/users/AboutUSer';
-import Order from './pages/users/order';
+import Home from './pages/users/Home.jsx';
+import AboutUser from './pages/users/AboutUser.jsx';
+import Order from './pages/users/Order.jsx';
 import Login from './pages/login';
 import Register from './pages/register';
 import CustomNavbar from './components/Navbar';
 import Contact from './pages/contact';
 import { ToastContainer } from 'react-toastify';
-import UserProvider from './context/user.provider'; 
-import AdminDashboard from './pages/admin/admindashboard';
-import AdminHome from './pages/admin/adminhome';
-import AddProduct from './pages/admin/addproduct';
+import UserProvider from './context/UserProvider'; 
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import AdminHome from './pages/admin/AdminHome.jsx';
+import AddProduct from './pages/admin/AddProduct.jsx';
 
 function App() {
   return (

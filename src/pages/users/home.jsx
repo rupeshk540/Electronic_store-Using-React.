@@ -1,4 +1,4 @@
-import UserContext from "../../context/user.context";
+import UserContext from "../../context/UserContext";
 import { useContext } from "react";
 const Home = () => {
 

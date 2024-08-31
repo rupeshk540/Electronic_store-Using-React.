@@ -3,7 +3,7 @@ import Base from "../components/Base"
 import logo from "../assets/logo.png"
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { registerUser } from "../services/user.service";
+import { registerUser } from "../services/UserService";
 import {NavLink} from "react-router-dom";
 
 const Register =()=>{

@@ -4,8 +4,8 @@ import Base from "../components/Base"
 import logo from "../assets/logo.png"
 import { useContext, useState } from "react"
 import { toast } from "react-toastify"
-import { loginUser } from "../services/user.service"
-import UserContext from "../context/user.context"
+import { loginUser } from "../services/UserService"
+import UserContext from "../context/UserContext"
 
 const Login =()=>{
      

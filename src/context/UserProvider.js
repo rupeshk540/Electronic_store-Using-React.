@@ -1,5 +1,5 @@
 import {  useContext, useEffect, useState } from "react";
-import UserContext from "./user.context";
+import UserContext from "./UserContext";
 import { doLoginLocalStorage, doLogoutFromLocalStorage,getDataFromLocalStorage, isLoggedIn,isAdminUser as adminUser } from "../auth/HelperAuth";
 
 
