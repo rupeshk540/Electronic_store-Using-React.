@@ -1,18 +1,18 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Index from './pages';
-import About from './pages/about';
-import Services from './pages/service';
-import Cart from './pages/cart';
+import Index from './pages/Index.js';
+import About from './pages/About.js';
+import Services from './pages/Service.js';
+import Cart from './pages/Cart.js';
 import Dashboard from './pages/users/Dashboard';
 import Profile from './pages/users/Profile';
 import Home from './pages/users/Home.jsx';
 import AboutUser from './pages/users/AboutUser.jsx';
 import Order from './pages/users/Order.jsx';
-import Login from './pages/login';
-import Register from './pages/register';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
 import CustomNavbar from './components/Navbar';
-import Contact from './pages/contact';
+import Contact from './pages/Contact.js';
 import { ToastContainer } from 'react-toastify';
 import UserProvider from './context/UserProvider'; 
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
@@ -42,7 +42,7 @@ function App() {
 
       <Route path='/users' element={<Dashboard/>}>
         <Route path='home' element={<Home/>}/>
-        <Route path='profile' element={<Profile/>}/>
+        <Route path='profile/:userId' element={<Profile/>}/>
         <Route path='about' element={<AboutUser/>}/>
         <Route path='order' element={<Order/>}/>
       </Route>
