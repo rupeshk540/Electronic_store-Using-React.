@@ -18,6 +18,11 @@ import UserProvider from './context/UserProvider';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import AdminHome from './pages/admin/AdminHome.jsx';
 import AddProduct from './pages/admin/AddProduct.jsx';
+import AddCategory from './pages/admin/AddCategory.jsx';
+import ViewCategories from './pages/admin/ViewCategories.jsx';
+import ViewProducts from './pages/admin/ViewProducts.jsx';
+import AdminOrders from './pages/admin/AdminOrders.jsx';
+import AdminUsers from './pages/admin/AdminUsers.jsx';
 
 function App() {
   return (
@@ -50,6 +55,12 @@ function App() {
       <Route path="/admin" element={<AdminDashboard/>}>
         <Route path="home" element={<AdminHome/>}/>
         <Route path="add-product" element={<AddProduct/>}/>
+        <Route path="add-category" element={<AddCategory/>}/>
+        <Route path="categories" element={<ViewCategories/>}/>
+        <Route path="products" element={<ViewProducts/>}/>
+        <Route path="orders" element={<AdminOrders/>}/>
+        <Route path="users" element={<AdminUsers/>}/>
+        
       </Route>
 
     </Routes>
