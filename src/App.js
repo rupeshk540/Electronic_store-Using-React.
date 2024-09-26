@@ -23,6 +23,9 @@ import ViewCategories from './pages/admin/ViewCategories.jsx';
 import ViewProducts from './pages/admin/ViewProducts.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
 import AdminUsers from './pages/admin/AdminUsers.jsx';
+import StorePage from './pages/users/StorePage.jsx';
+import ProductView from './pages/users/ProductView.jsx';
+import CategoryStorePage from './pages/users/CategoryStorePage.jsx';
 
 function App() {
   return (
@@ -44,6 +47,10 @@ function App() {
       <Route path='/cart' element={<Cart/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/signup' element={<Register/>}/>
+      <Route path='/store' element={<StorePage/>}/>
+      <Route path='store/products/:productId' element={<ProductView/>}/>
+      <Route path='store/:categoryId/:categoryTitle' element={<CategoryStorePage/>}/>
+      
 
       <Route path='/users' element={<Dashboard/>}>
         <Route path='home' element={<Home/>}/>

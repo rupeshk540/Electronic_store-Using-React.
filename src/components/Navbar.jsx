@@ -45,7 +45,9 @@ const  CustomNavbar=()=>{
 
             <Nav>
 
+              <Nav.Link  as={NavLink} to="/store">Store</Nav.Link>
               <Nav.Link  as={NavLink} to="/cart">Cart( 20 )</Nav.Link>
+              
 
               {
                 (userContext.isLogin)?(
