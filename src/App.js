@@ -26,12 +26,14 @@ import AdminUsers from './pages/admin/AdminUsers.jsx';
 import StorePage from './pages/users/StorePage.jsx';
 import ProductView from './pages/users/ProductView.jsx';
 import CategoryStorePage from './pages/users/CategoryStorePage.jsx';
+import CartProvider from './context/CartProvider.js';
 
 function App() {
   return (
   
     //  setting up routes
 <UserProvider>
+  <CartProvider>
   <BrowserRouter>
    <ToastContainer 
      position='bottom-center'
@@ -72,6 +74,7 @@ function App() {
 
     </Routes>
   </BrowserRouter>
+  </CartProvider>
 </UserProvider>
   );
 }
