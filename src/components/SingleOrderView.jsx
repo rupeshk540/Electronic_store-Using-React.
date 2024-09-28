@@ -75,10 +75,18 @@ const SingleOrderView = ({
                 </Col>
             </Row>
             <Container className="text-center"> 
-                <Button 
+
+                {/* update button  */}
+                { openEditOrderModal && <Button 
                     onClick={(event)=> openEditOrderModal(event,order)}
-                    variant="danger" size="sm" className="me-2"
-                >Update</Button>
+                    variant="danger" size="sm" className="me-2">Update</Button>}
+
+                {/* payment button  */}
+                { (!openEditOrderModal && order.paymentStatus==='NOTPAID') && <Button 
+                    onClick={(event)=> {}}
+                    variant="success" size="sm" className="me-2">Pay to Complete Order</Button>}
+
+                {/* order details button */}
                 <Button onClick={(event)=>{
                     openViewOrderModal(event,order)
                 }}size="sm" variant="info">Order Details</Button>

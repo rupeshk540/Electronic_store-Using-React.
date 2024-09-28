@@ -1,12 +1,29 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import CartContext from "../context/CartContext";
-import { Card, Col, Container, Row, Button, Alert } from "react-bootstrap";
+import UserContext from "../context/UserContext";
+import {createOrder} from "../services/OrderService";
+import { Card, Col, Container, Row, Button, Alert, Form } from "react-bootstrap";
 import SingleCartItemView from "../components/users/SingleCartItemView";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { ORDER_STATUS, PAYMENT_STATUS } from "../services/HelperService";
+
 
 function Cart(){
 
+    const [orderPlacedClicked, setOrderPlacedClicked] = useState(false);
     const {cart, setCart, addItem, removeItem, clearCart} = useContext(CartContext);
+    const {userData, isLogin} = useContext(UserContext)
+
+    const [orderDetails, setOrderDetails]=useState({
+        billingAddress: '',
+        billingName: '',
+        billingPhone: '',
+        cartId: '',
+        orderStatus: '',
+        paymentStatus: '',
+        userId: '',
+    });
 
     const getTotalCartAmount = () => {
         let amount = 0;
@@ -16,6 +33,105 @@ function Cart(){
         return amount;
     }
 
+    const handleOrderCreation = async() => {
+
+        if(orderDetails.billingName.trim() === ""){
+            toast.info("Billing Name required !!",{
+                position: "bottom-right",
+            });
+            return;
+        }
+        if(orderDetails.billingPhone.trim() === ""){
+            toast.info("Billing Phone required !!",{
+                position: "bottom-right",
+            });
+            return;
+        }
+        if(orderDetails.billingAddress.trim() === ""){
+            toast.info("Billing Address required !!",{
+                position: "bottom-right",
+            });
+            return;
+        }
+
+        //set required other details
+        orderDetails.cartId = cart.cartId;
+        orderDetails.orderStatus = ORDER_STATUS;
+        orderDetails.paymentStatus = PAYMENT_STATUS;
+        orderDetails.userId = userData.user.userId;
+
+        try {
+            const result = await createOrder(orderDetails);
+            toast.success("Order created !! proceeding for payment")
+            setCart({
+                ...cart,
+                items: [],
+            })
+        } catch (error) {
+            toast.error("Error in creating order ! Try again")
+        }
+
+    }
+
+    const orderFormView = () =>{
+        return(
+            <Form>
+
+                {/* Billing name */}
+                <Form.Group className="mt-3">
+                    <Form.Label>Billing Name</Form.Label>
+                    <Form.Control 
+                        type="text" 
+                        placeholder="Enter here"
+                        value={orderDetails.billingName}
+                        onChange={(event) => {
+                            setOrderDetails({
+                                ...orderDetails,
+                                billingName: event.target.value,
+                            });
+                        }}
+                    />
+                </Form.Group>
+                
+                {/* Billing Phone */}
+                <Form.Group className="mt-3">
+                    <Form.Label>Billing Phone</Form.Label>
+                    <Form.Control 
+                        type="number" 
+                        placeholder="Enter here"
+                        value={orderDetails.billingPhone}
+                        onChange={(event) => {
+                            setOrderDetails({
+                                ...orderDetails,
+                                billingPhone: event.target.value,
+                            });
+                        }}
+                    />
+                </Form.Group>
+                
+                {/* Billing address */}
+                <Form.Group className="mt-3">
+                    <Form.Label>Billing Address</Form.Label>
+                    <Form.Control 
+                        rows={6} as={'textarea'} 
+                        placeholder="Enter here"
+                        value={orderDetails.billingAddress}
+                        onChange={(event) => {
+                            setOrderDetails({
+                                ...orderDetails,
+                                billingAddress: event.target.value,
+                            });
+                        }}
+                    />
+                </Form.Group>
+                <Container className="mt-3 text-center">
+                    <Button variant="success" size="sm" onClick={event => {handleOrderCreation()}}>
+                        Create Order & Proceed to Pay
+                    </Button>
+                </Container>
+            </Form>
+        )
+    }
 
     const cartView = () => {
         return (
@@ -34,7 +150,7 @@ function Cart(){
                             <Col>
                                 {
                                     cart.items.map(item => (
-                                        <SingleCartItemView item={item}/>
+                                        <SingleCartItemView key={item.cartId} item={item}/>
                                     ))
                                 }
                             </Col>
@@ -43,7 +159,11 @@ function Cart(){
                             <h3 className="text-end px-5">Total Amount : ₹{getTotalCartAmount()}</h3>
                         </Container>
                         <Container className="text-center">
-                            <Button size="lg">Place Order</Button>
+                            {!orderPlacedClicked &&<Button 
+                                size="sm" 
+                                onClick={(event) => setOrderPlacedClicked(true)}
+                            >Place Order
+                            </Button>}
                         </Container>
                     </Card.Body>
                 </Card>
@@ -53,9 +173,9 @@ function Cart(){
 
     return (
         <div>
-            <Container>
+            <Container fluid={orderPlacedClicked} className="px-5">
                 <Row>
-                    <Col>
+                    <Col md={orderPlacedClicked ? 8 : 12} className="animation">
                         {cart && (cart.items.length > 0 ? (cartView()): (
                             <Alert variant="info" className="mt-3 shadow-sm border border-0 text-center">
                                 <h3>NO Items in Cart</h3>
@@ -74,6 +194,16 @@ function Cart(){
                             </Alert>
                         )}
                     </Col>
+                    {orderPlacedClicked && (
+                        <Col md={4}>
+                          <Card className="mt-3 shadow-sm">
+                            <Card.Body>
+                                <h4>Fill the form to complete order</h4>
+                                {orderFormView()}
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                    )}
                 </Row>
             </Container>
         </div>
