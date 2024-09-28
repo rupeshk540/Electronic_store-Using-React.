@@ -3,11 +3,14 @@ import { Outlet,NavLink, Navigate } from "react-router-dom";
 import UserContext from "../../context/UserContext.js";
 import { Col,Container,Card,Row, Button } from "react-bootstrap";
 import { isLoggedIn } from "../../auth/HelperAuth.js";
+import useJwtTokenExpiration from "../../hooks/useJwtTokenExpiration.js";
 
 const Dashboard=()=>{
 
-    const userContext=useContext(UserContext);
+    useJwtTokenExpiration();
 
+    const userContext=useContext(UserContext);
+    
     //private dashboard view 
 
     const dashboardView = () => {

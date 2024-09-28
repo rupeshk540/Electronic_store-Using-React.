@@ -57,7 +57,7 @@ const ProductView = () => {
                                                 <b><span className='h2 ms-2'>₹{product.discountedPrice}</span></b>
                                             </Container>
                                             <Container className='d-grid mt-4'>
-                                                <Button variant='warning' size='sm' onClick={event => handleAddItem(product.productId, 1)}>Add to Cart</Button>
+                                                <Button disabled={!product.stock} variant='warning' size='sm' onClick={event => handleAddItem(product.productId, 1)}>Add to Cart</Button>
                                                 <Button as={Link} to='/store' className='mt-2' variant='info' size='sm'>Go to Store</Button>
                                             </Container>
                                         </Col>
@@ -71,7 +71,7 @@ const ProductView = () => {
                     </Col>
                 </Row>
                 <Container className='d-grid mt-4'>
-                    <Button variant='warning' size='sm'  onClick={event => handleAddItem(product.productId, 1)}>Add to Cart</Button>
+                    <Button disabled={!product.stock} variant='warning' size='sm'  onClick={event => handleAddItem(product.productId, 1)}>Add to Cart</Button>
                     <Button as={Link} to='/store' className='mt-2' variant='info' size='sm'>Go to Store</Button>
                 </Container>
             </Container>
@@ -83,4 +83,4 @@ const ProductView = () => {
   )
 }
 
-export default ProductView
+export default ProductView;

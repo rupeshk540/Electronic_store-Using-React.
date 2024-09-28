@@ -1,4 +1,5 @@
 import Base from "../components/Base";
+import { contactForm } from "./HomePageComponents";
 
 const Contact=()=>{
     return(
@@ -6,7 +7,7 @@ const Contact=()=>{
         title="Electro Store / Contact us"
         description={null}
         >
-          <h1>this is contact page</h1>
+         <div className="my-5"> {contactForm()}</div>
         </Base>
     )
 }

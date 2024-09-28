@@ -7,9 +7,12 @@ import SingleCartItemView from "../components/users/SingleCartItemView";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ORDER_STATUS, PAYMENT_STATUS } from "../services/HelperService";
+import useJwtTokenExpiration from "../hooks/useJwtTokenExpiration";
 
 
 function Cart(){
+
+   const flag = useJwtTokenExpiration();
 
     const [orderPlacedClicked, setOrderPlacedClicked] = useState(false);
     const {cart, setCart, addItem, removeItem, clearCart} = useContext(CartContext);
