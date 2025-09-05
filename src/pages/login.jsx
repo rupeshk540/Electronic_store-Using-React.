@@ -2,10 +2,12 @@ import { Alert, Button, Card, Col, Container, Form, Row, Spinner } from "react-b
 import { NavLink, useNavigate } from "react-router-dom"
 import Base from "../components/Base"
 import logo from "../assets/logo.png"
-import { useContext, useState } from "react"
+import { createContext, useContext, useState } from "react"
 import { toast } from "react-toastify"
 import { loginUser } from "../services/UserService"
 import UserContext from "../context/UserContext"
+import { getTokenFromLocalStorage } from "../auth/HelperAuth"
+
 
 const Login =()=>{
      
@@ -78,13 +80,18 @@ const Login =()=>{
        // 1.normal user: normal user ke dashboard par le jana hai
          
          //home dashboard page
-          // userContext.setIsLogin(true)
-          // userContext.setUserData(data)
-          
-          userContext.login(data)
-
-          
-          redirect("/users/home")
+           userContext.setIsLogin(true)
+           userContext.setUserData(data)
+           userContext.doLogin(data)
+     
+           
+          if (data.user.roles.includes("ROLE_ADMIN")) {
+               redirect("/admin/home");
+           } else {
+               redirect("/users/home");
+           }
+           
+        //  redirect("/users/home")
 
        //2.admin user: admin user ke dashboard par le jana hai
 
@@ -115,8 +122,8 @@ const Login =()=>{
                          <Card className="my-3 border-0 shadow" style={{position:"relative",top:-60}}>
 
                               <Card.Body>
-
-                              {/* {JSON.stringify(userContext)} */}
+ 
+                              {/* {JSON.stringify(userContext)}  */}
 
                                   {/* logo */}
                                  <Container className="text-center mb-3">
@@ -173,7 +180,7 @@ const Login =()=>{
                                                   className={"me-2"}
                                              /> 
                                              <span hidden={!loading}>Please wait...</span>    
-                                             <span hidden={loading}> Login </span>
+                                             <span hidden={loading} > Login </span>
 
                                          </Button>
 

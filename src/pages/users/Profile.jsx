@@ -1,7 +1,8 @@
 import { Alert, Button, Col, Container, Modal, Row, Card, Table, Form, Spinner, InputGroup } from "react-bootstrap"
 import { toast } from "react-toastify"
 import UserProfileView from "../../components/users/UserProfileView"
-import { useContext, useEffect, useState,useParams } from "react"
+import { useContext, useEffect, useState } from "react"
+import { useParams } from 'react-router-dom'; 
 import UserContext from "../../context/UserContext"
 import { getUser, updateUser, updateUserProfilePicture } from "../../services/UserService"
 import defaultImage from "../../assets/default_profilepic.jpg"
@@ -237,7 +238,7 @@ const Profile=()=>{
                                     // about:"I am a react developer",
                                     // roles:[{roleId:1, rolename:"Admin"}, {roleId:2, roleName:'NORMAL'}]
                                     
-                                    user
+                                   user
                                 
                                 }
                             }

@@ -38,7 +38,7 @@ const SideMenu = () => {
 
                 <ListGroup.Item as={NavLink} to="/admin/products" action>
                     <MdViewDay size={20}/>
-                    <span className="ms-2"> Add Product</span>
+                    <span className="ms-2"> View Products</span>
                 </ListGroup.Item>
 
                 <ListGroup.Item as={NavLink} to="/admin/orders" action>

@@ -13,14 +13,14 @@ export const registerUser = (userData)=>{
 //login user
 export const loginUser=(loginData)=>{
     return publicAxios
-    .post(`/auth/login`,loginData)
+    .post(`/auth/generate-token`,loginData)
     .then((response)=>response.data)
 };
 
 //api call for user info 
 
 export const getUser=(userId)=>{
-    publicAxios.get(`/users/${userId}`).then((response)=>response.data);
+   return publicAxios.get(`/users/${userId}`).then((response)=>response.data);
 };
 
 //update user section

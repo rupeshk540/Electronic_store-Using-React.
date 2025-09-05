@@ -4,7 +4,7 @@ import UserContext from "../context/UserContext";
 import {createOrder} from "../services/OrderService";
 import { Card, Col, Container, Row, Button, Alert, Form } from "react-bootstrap";
 import SingleCartItemView from "../components/users/SingleCartItemView";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ORDER_STATUS, PAYMENT_STATUS } from "../services/HelperService";
 import useJwtTokenExpiration from "../hooks/useJwtTokenExpiration";
@@ -71,9 +71,9 @@ function Cart(){
                 items: [],
             })
         } catch (error) {
-            toast.error("Error in creating order ! Try again")
+            toast.error("Error in creating order ! Try again..")
         }
-
+    
     }
 
     const orderFormView = () =>{

@@ -18,7 +18,7 @@ export const getUserFromLocalStorage=()=>{
 export const getTokenFromLocalStorage=()=>{
     const data=getDataFromLocalStorage();
     if(data!=null){
-        return data.jwtToken;
+        return data.token;
     }
     return null;
 };
@@ -44,7 +44,7 @@ export const isAdminUser = () => {
     if(isLoggedIn()){
         const user = getUserFromLocalStorage();
         const roles = user.roles;
-        if (roles.find((role)=> role.roleId == "wetrsdfwetwfasfwdf")){
+        if (roles.find((role)=> role.roleId == "309ee6b1-4062-4aa6-a281-aae93e6f1dfa")){
             return true;
         }else{
             return false;

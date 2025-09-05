@@ -30,15 +30,15 @@ const AdminOrders = () => {
 
    //function for edit order by admin
    const openEditOrderModal=(event,order)=>{
-        setSelectedOrder(...order)
+        setSelectedOrder({...order})
         handleUpdateShow(true)
    }
 
 
-    useState(()=>{
-        //single time on load
-        getOrdersLocally();
-    },[])
+    // useState(()=>{
+    //     //single time on load
+    //     getOrdersLocally();
+    // },[])
 
     useEffect(()=>{
         if(currentPage>0){
@@ -68,6 +68,11 @@ const AdminOrders = () => {
         }
 
     }
+
+    useEffect(()=>{
+        //single time on load
+        getOrdersLocally();
+    },[])
 
     //load data of the next page
     const loadNextPage=()=>{

@@ -29,6 +29,7 @@ import CategoryStorePage from './pages/users/CategoryStorePage.jsx';
 import CartProvider from './context/CartProvider.js';
 import Loading from './components/Loading.jsx';
 import useLoader from './hooks/useLoader.js';
+import PaymentPage from './pages/Payment.jsx';
 
 function App() {
 
@@ -61,6 +62,7 @@ function App() {
                 <Route path='profile/:userId' element={<Profile/>}/>
                 <Route path='about' element={<AboutUser/>}/>
                 <Route path='order' element={<Order/>}/>
+                <Route path='payment/:orderId' element={<PaymentPage/>}/>
               </Route>
 
               <Route path="/admin" element={<AdminDashboard/>}>

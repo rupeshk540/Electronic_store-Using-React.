@@ -60,7 +60,7 @@ const UserProfileView = ({user=null, handleShowModal})=>{
                                     </tr>
                                     <tr>
                                         <td>Roles</td>
-                                        <td>{user.roles.map(role=><div key={role.roleId}>{role.roleName}</div>)}</td>
+                                        <td>{user?.roles?.map(role=><div key={role.roleId}>{role.roleName}</div>)}</td>
                                     </tr>
                                 </tbody>
                             </Table>

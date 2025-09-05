@@ -24,7 +24,7 @@ const SingleUserView = ({user}) =>{
                             />
                         </Col>
                         <Col md={11} className="ps-5">
-                            <Link to={`/users/profile`+ user.userId}><h5>{user.name}</h5></Link>
+                            <Link to={`/users/profile/${user.userId}`}><h5>{user.email}</h5></Link>
                             <p className="text-muted">{user.about}</p>
                             <p className="text-muted">{user.email}</p>
                             {user.roles.map(role =>  {

@@ -47,7 +47,7 @@ const UserProvider = ({children})=>{
                 isLogin:isLogin,
                  isAdminUser:isAdminUser,   
                  setIsLogin:setIsLogin,
-                 login:doLogin,
+                 doLogin:doLogin,
                  logout:doLogout
              }}
         >

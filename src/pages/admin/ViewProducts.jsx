@@ -33,7 +33,7 @@ const ViewProducts = () => {
             .catch(error => {
                 toast.error("Error in loading categories !!")
             })
-    })
+    },[])
 
     //view product state variables
     const [show, setShow] = useState(false);
@@ -99,7 +99,7 @@ const ViewProducts = () => {
 
                  //call api for updating image
                 if(imageUpdate.image && imageUpdate.imagePreview){
-                    addProductImage(imageUpdate.image, currentProduct.produ)
+                    addProductImage(imageUpdate.image, currentProduct.productId)
                     .then(ImageData => {
                         setCurrentProduct({
                             ...currentProduct,
@@ -143,7 +143,7 @@ const ViewProducts = () => {
             
                             setProducts({
                                 ...products,
-                                conntent: newArray
+                                content: newArray
                             })
 
                         }).catch(error => {
@@ -174,7 +174,7 @@ const ViewProducts = () => {
 
                 setImageUpdate({
                     imagePreview: r.target.result,
-                    image: event.target.file[0]
+                    image: event.target.files[0]
                 })
                 
             }

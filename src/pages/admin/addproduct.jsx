@@ -46,7 +46,7 @@ const AddProduct = () => {
                 setProduct({
                     ...product,
                     imagePreview:r.target.result,
-                    image:event.target.file[0]
+                    image:event.target.files[0]
                 })
                 
             }
