@@ -1,5 +1,5 @@
 import React from 'react'
-import Store from '../../components/users/Store';
+import Store from '../components/users/Store';
 
 const StorePage = () => {
   return (

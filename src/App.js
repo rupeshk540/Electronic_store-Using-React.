@@ -23,13 +23,16 @@ import ViewCategories from './pages/admin/ViewCategories.jsx';
 import ViewProducts from './pages/admin/ViewProducts.jsx';
 import AdminOrders from './pages/admin/AdminOrders.jsx';
 import AdminUsers from './pages/admin/AdminUsers.jsx';
-import StorePage from './pages/users/StorePage.jsx';
+import StorePage from './pages/StorePage.jsx';
 import ProductView from './pages/users/ProductView.jsx';
 import CategoryStorePage from './pages/users/CategoryStorePage.jsx';
 import CartProvider from './context/CartProvider.js';
 import Loading from './components/Loading.jsx';
 import useLoader from './hooks/useLoader.js';
 import PaymentPage from './pages/Payment.jsx';
+import Footer from './components/Footer.jsx';
+import CategoryPage from './pages/CategoriesPage.jsx';
+import HotDealsPage from './pages/HotDealsPage.jsx';
 
 function App() {
 
@@ -46,13 +49,15 @@ function App() {
           <Loading show={loading}/>
           <Routes>
               <Route path='/' element={<Index/>}/>
+              <Route path='/hotdeals' element={<HotDealsPage/>}/>
               <Route path='/about' element={<About/>}/>
               <Route path='/services' element={<Services/>}/>
               <Route path='/contact' element={<Contact/>}/>
               <Route path='/cart' element={<Cart/>}/>
               <Route path='/login' element={<Login/>}/>
               <Route path='/signup' element={<Register/>}/>
-              <Route path='/store' element={<StorePage/>}/>
+              <Route path='/store' element={<StorePage/>}/> 
+              <Route path='/categories' element={<CategoryPage/>}/>
               <Route path='store/products/:productId' element={<ProductView/>}/>
               <Route path='store/:categoryId/:categoryTitle' element={<CategoryStorePage/>}/>
               
@@ -77,6 +82,7 @@ function App() {
               </Route>
 
            </Routes>
+           <Footer/>
         </BrowserRouter>
       </CartProvider>
     </UserProvider>

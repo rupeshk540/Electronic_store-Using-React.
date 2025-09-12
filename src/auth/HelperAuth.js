@@ -2,7 +2,9 @@
 // data: save localStorage
 
 export const doLoginLocalStorage = (data) => {
-    localStorage.setItem("userData", JSON.stringify(data));
+    if(data){
+        localStorage.setItem("userData", JSON.stringify(data));
+    }
 };
 
 // data : fetch
@@ -44,7 +46,7 @@ export const isAdminUser = () => {
     if(isLoggedIn()){
         const user = getUserFromLocalStorage();
         const roles = user.roles;
-        if (roles.find((role)=> role.roleId == "309ee6b1-4062-4aa6-a281-aae93e6f1dfa")){
+        if (roles.find((role)=> role.roleId == "55df3d7b-871a-4037-a41b-10273674c901")){
             return true;
         }else{
             return false;

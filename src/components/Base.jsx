@@ -11,7 +11,7 @@ buttonLink="/",
 children})=>{
    
    let styleContainer={
-     height:"200px"
+     height:"2px"
    }
     return(
       <div>
@@ -25,7 +25,7 @@ children})=>{
 
         {children}
 
-        <Footer/>
+        
       </div>
     )
 }
