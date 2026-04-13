@@ -39,30 +39,30 @@
 
    
 
-//     const handleFileChange = (event) => {
-//         if(event.target.files[0].type==='image/png' || event.target.files[0].type=='image/jpeg'){
-//             //preview show
-//             const reader=new FileReader()
-//             reader.onload=(r)=>{
+    // const handleFileChange = (event) => {
+    //     if(event.target.files[0].type==='image/png' || event.target.files[0].type=='image/jpeg'){
+    //         //preview show
+    //         const reader=new FileReader()
+    //         reader.onload=(r)=>{
 
-//                 setProduct({
-//                     ...product,
-//                     imagePreview:r.target.result,
-//                     image:event.target.files[0]
-//                 })
+    //             setProduct({
+    //                 ...product,
+    //                 imagePreview:r.target.result,
+    //                 image:event.target.files[0]
+    //             })
                 
-//             }
+    //         }
 
-//             reader.readAsDataURL(event.target.files[0])
-//         }else{
-//             toast.error("Invalid file !!")
-//             setProduct({
-//                 ...product,
-//                 image:undefined,
-//                 imagePreview:undefined
-//             })
-//         }
-//     }
+    //         reader.readAsDataURL(event.target.files[0])
+    //     }else{
+    //         toast.error("Invalid file !!")
+    //         setProduct({
+    //             ...product,
+    //             image:undefined,
+    //             imagePreview:undefined
+    //         })
+    //     }
+    // }
 
 //      //function for clear form
 //     const clearForm = () => {
@@ -117,16 +117,16 @@
 //                     return
 //                 }
 
-//                 //image upload
-//                 addProductImage(product.image,data.productId)
-//                     .then(data=>{
+                // //image upload
+                // addProductImage(product.image,data.productId)
+                //     .then(data=>{
 
-//                         toast.success("Image uploaded")
-//                        clearForm()
-//                     })
-//                     .catch(error=>{
-//                         toast.error("Error in uploading image")
-//                     })
+                //         toast.success("Image uploaded")
+                //        clearForm()
+                //     })
+                //     .catch(error=>{
+                //         toast.error("Error in uploading image")
+                //     })
 
 //                 toast.success("Product is created !!")
                 
@@ -382,9 +382,13 @@
 
 
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Upload, X, Plus } from 'lucide-react';
 import { Editor } from '@tinymce/tinymce-react';
+import { getAllCategories } from "../../services/CategoryService";
+import { getAllCollections } from "../../services/CollectionService"; 
+import {createProductInCategoryAndCollection} from "../../services/ProductService";
+import { toast } from 'react-toastify';
 
 const AddProduct = () => {
   const [productData, setProductData] = useState({
@@ -393,29 +397,37 @@ const AddProduct = () => {
     price: '',
     discountedPrice: '',
     rentalPrice: '',
-    rentalUnit: 'perDay', // NEW FIELD
+    rentalUnit: 'perDay',
     stock: '',
     rating: 5,
-    productImageName: '',
+    productImageUrls: [],
     categoryId: '',
-    collectionId: '',
+    collectionIds: [],  // multiple collections instead of single
     live: true
   });
 
-  const [categories] = useState([
-    { id: '1', name: 'Furniture' },
-    { id: '2', name: 'Electronics' },
-    { id: '3', name: 'Clothing' },
-    { id: '4', name: 'Books' },
-    { id: '5', name: 'Sports' }
-  ]);
 
-  const [collections] = useState([
-    { id: '1', name: 'Premium Collection' },
-    { id: '2', name: 'Budget Series' },
-    { id: '3', name: 'Limited Edition' },
-    { id: '4', name: 'Seasonal' }
-  ]);
+  const [categories, setCategories] = useState([]);
+  const [collections, setCollections] = useState([]);
+
+ useEffect(() => {
+  getAllCategories()
+    .then(res => {
+      console.log('Categories API response:', res);
+      setCategories(res.content || [])
+    })
+    .catch(err => console.error(err));
+
+  getAllCollections()
+    .then(res => {
+      console.log('Collections API response:', res);
+      setCollections(res.content || [])
+    })
+    .catch(err => console.error(err));
+}, []);
+
+
+
 
   const [selectedImages, setSelectedImages] = useState([]);
   const [errors, setErrors] = useState({});
@@ -473,28 +485,38 @@ const AddProduct = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  
+const handleSubmit = async() => {
+  if (!validateForm()) return;
 
-    const productId = 'PROD_' + Date.now();
+ const formData = new FormData();
 
-    const finalProductData = {
-      ...productData,
-      productId,
-      addedDate: new Date().toISOString(),
-      productImageName: selectedImages[0]?.file?.name || '',
-      price: Number(productData.price),
-      discountedPrice: productData.discountedPrice ? Number(productData.discountedPrice) : 0,
-      rentalPrice: productData.rentalPrice ? Number(productData.rentalPrice) : 0,
-      stock: Number(productData.stock),
-      rating: Number(productData.rating)
-    };
+const productJson = JSON.stringify({
+  ...productData, 
+  collectionIds: Array.isArray(productData.collectionIds) ? productData.collectionIds : [],
+  addedDate: new Date().toISOString(),
+  price: Number(productData.price),
+  discountedPrice: productData.discountedPrice ? Number(productData.discountedPrice) : 0,
+  rentalPrice: productData.rentalPrice ? Number(productData.rentalPrice) : 0,
+  stock: Number(productData.stock),
+  rating: Number(productData.rating)
+});
+formData.append("product", new Blob([productJson], { type: "application/json" }));
 
-    console.log('Product Data to be saved:', finalProductData);
-    console.log('Product Images:', selectedImages.map(img => img.file));
-    alert('Product added successfully!');
-    handleReset();
-  };
+
+// Append images
+selectedImages.forEach(img => formData.append("images", img.file));
+  try {
+      // Create product
+      await createProductInCategoryAndCollection(formData, productData.categoryId);
+      toast.success("Product created successfully with images!");
+      handleReset(); // clear form
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to save product");
+  }
+
+};
 
   const handleReset = () => {
     selectedImages.forEach(img => URL.revokeObjectURL(img.preview));
@@ -507,9 +529,8 @@ const AddProduct = () => {
       rentalUnit: 'perDay',
       stock: '',
       rating: 5,
-      productImageName: '',
       categoryId: '',
-      collectionId: '',
+      collectionIds: [],
       live: true
     });
     setSelectedImages([]);
@@ -520,8 +541,8 @@ const AddProduct = () => {
     return () => selectedImages.forEach(img => img.preview && URL.revokeObjectURL(img.preview));
   }, [selectedImages]);
 
-  const getCategoryName = (id) => categories.find(cat => cat.id === id)?.name || 'Not selected';
-  const getCollectionName = (id) => collections.find(col => col.id === id)?.name || 'Not selected';
+  const getCategoryName = (id) => categories.find(cat => cat.categoryId === id)?.title|| 'Not selected';
+  const getCollectionName = (id) => collections.find(col => col.collectionId === id)?.title || 'Not selected';
 
   const getStatus = () => {
     if (!productData.live) return '⚫ Draft';
@@ -599,9 +620,9 @@ const AddProduct = () => {
                             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                             }}
                             onEditorChange={()=>setProductData({
-                                ...productData,
-                                description: editorRef.current.getContent()
-                                
+                              ...productData,
+                              description: editorRef.current.getContent(),
+      
                             })}
                               
                         />
@@ -617,21 +638,35 @@ const AddProduct = () => {
                             className={`form-select ${errors.categoryId ? 'is-invalid' : ''}`}
                           >
                             <option value="">Choose a category</option>
-                            {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                            {categories.map(cat => <option key={cat.categoryId} value={cat.categoryId}>{cat.title}</option>)}
                           </select>
                           {errors.categoryId && <div className="invalid-feedback">{errors.categoryId}</div>}
                         </div>
                         <div className="col-md-6 mb-3">
-                          <label className="form-label">Collection (Optional)</label>
-                          <select
-                            name="collectionId"
-                            value={productData.collectionId}
-                            onChange={handleInputChange}
-                            className="form-select"
-                          >
-                            <option value="">Choose a collection</option>
-                            {collections.map(col => <option key={col.id} value={col.id}>{col.name}</option>)}
-                          </select>
+                          <label className="form-label">Collections (Optional)</label>
+                          <div className="d-flex flex-wrap gap-2">
+                            {collections.map((col) => {
+                              const isSelected = productData.collectionIds.includes(col.collectionId);
+                              return (
+                                <button
+                                  key={col.collectionId}
+                                  type="button"
+                                  onClick={() => {
+                                    setProductData(prev => {
+                                      const updated = isSelected
+                                        ? prev.collectionIds.filter(id => id !== col.collectionId) // deselect
+                                        : [...prev.collectionIds, col.collectionId]; // select
+                                      return { ...prev, collectionIds: updated };
+                                    });
+                                  }}
+                                  className={`btn btn-sm ${isSelected ? 'btn-primary' : 'btn-outline-secondary'}`}
+                                >
+                                  {col.title}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <small className="text-muted d-block mt-1">Click to select/deselect collections</small>
                         </div>
                       </div>
                     </div>
@@ -781,7 +816,15 @@ const AddProduct = () => {
                     <div className="card-body">
                       <p><strong>Title:</strong> {productData.title || 'Not set'}</p>
                       <p><strong>Category:</strong> {getCategoryName(productData.categoryId)}</p>
-                      <p><strong>Collection:</strong> {getCollectionName(productData.collectionId)}</p>
+                      <p>
+                        <strong>Collections:</strong>{' '}
+                        {productData.collectionIds && productData.collectionIds.length > 0
+                          ? productData.collectionIds
+                              .map(id => getCollectionName(id))
+                              .join(', ')
+                          : 'None selected'}
+                      </p>
+
                        {/* Price with discount display */}
                         <p>
                         <strong>Price:</strong>{' '}

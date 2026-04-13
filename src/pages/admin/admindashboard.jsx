@@ -26,7 +26,6 @@ const AdminDashboard = () => {
                 <Col md={10} className="ps-3 pt-2">
                 
                   <Outlet/>
-                  content area
                 
                 </Col>
                 

@@ -1,250 +1,90 @@
 import { Heart, Search } from "lucide-react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { getAllCollections } from "../services/CollectionService";
+import { getAllLiveProducts, getProductsByCollection, searchProduct } from "../services/ProductService";
+import { useNavigate } from "react-router-dom";
+import WishlistContext from "../context/WishlistContext";
 
 const HomePageComponent = () => {
   
-    const [activeCategory, setActiveCategory] = useState('all');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [wishlist, setWishlist] = useState([]);
-    
+  const [collections, setCollections] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [activeCollection, setActiveCollection] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(12);  // adjust per your needs
+  const [hasMore, setHasMore] = useState(true);
+  const navigate = useNavigate();
+  const { wishlist, addItemWishlist, removeItemWishlist } = useContext(WishlistContext)
 
-  
 
-  // Sample hot deals data with more products
-  const hotDeals = [
-    {
-      id: 1,
-      title: "Wireless Bluetooth Headphones",
-      originalPrice: 199.99,
-      discountPrice: 79.99,
-      discount: 60,
-      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
-      category: "hot-deals",
-      rating: 4.5,
-      reviews: 1250,
-      tag: "Limited Time",
-      stock: 15
-    },
-    {
-      id: 2,
-      title: "Designer Leather Jacket",
-      originalPrice: 299.99,
-      discountPrice: 149.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop",
-      category: "50-off",
-      rating: 4.8,
-      reviews: 890,
-      tag: "Flash Sale",
-      stock: 8
-    },
-    {
-      id: 3,
-      title: "4K Smart TV 55 inch",
-      originalPrice: 899.99,
-      discountPrice: 549.99,
-      discount: 39,
-      image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop",
-      category: "bestseller",
-      rating: 4.3,
-      reviews: 567,
-      tag: "Best Seller",
-      stock: 5
-    },
-    {
-      id: 4,
-      title: "Gaming Mechanical Keyboard",
-      originalPrice: 129.99,
-      discountPrice: 69.99,
-      discount: 46,
-      image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=300&fit=crop",
-      category: "trending",
-      rating: 4.7,
-      reviews: 2100,
-      tag: "Hot Deal",
-      stock: 22
-    },
-    {
-      id: 5,
-      title: "Luxury Watch Collection",
-      originalPrice: 599.99,
-      discountPrice: 299.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=400&h=300&fit=crop",
-      category: "best-buy",
-      rating: 4.6,
-      reviews: 445,
-      tag: "Exclusive",
-      stock: 12
-    },
-    {
-      id: 6,
-      title: "Fitness Tracker Pro",
-      originalPrice: 249.99,
-      discountPrice: 129.99,
-      discount: 48,
-      image: "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400&h=300&fit=crop",
-      category: "new-arrival",
-      rating: 4.4,
-      reviews: 1567,
-      tag: "New Arrival",
-      stock: 18
-    },
-    {
-      id: 7,
-      title: "Professional Camera Kit",
-      originalPrice: 1299.99,
-      discountPrice: 899.99,
-      discount: 31,
-      image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop",
-      category: "best-rental",
-      rating: 4.9,
-      reviews: 234,
-      tag: "Rental Pro",
-      stock: 6
-    },
-    {
-      id: 8,
-      title: "Electric Scooter",
-      originalPrice: 799.99,
-      discountPrice: 399.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-      category: "50-off",
-      rating: 4.2,
-      reviews: 678,
-      tag: "Half Price",
-      stock: 11
-    },
-    {
-      id: 9,
-      title: "Wireless Gaming Mouse",
-      originalPrice: 89.99,
-      discountPrice: 45.99,
-      discount: 49,
-      image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=300&fit=crop",
-      category: "hot-deals",
-      rating: 4.5,
-      reviews: 892,
-      tag: "Gaming Pro",
-      stock: 28
-    },
-    {
-      id: 10,
-      title: "Bluetooth Speaker",
-      originalPrice: 159.99,
-      discountPrice: 79.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop",
-      category: "trending",
-      rating: 4.3,
-      reviews: 1456,
-      tag: "Trending",
-      stock: 35
-    },
-    {
-      id: 11,
-      title: "Smartphone 128GB",
-      originalPrice: 699.99,
-      discountPrice: 449.99,
-      discount: 36,
-      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
-      category: "bestseller",
-      rating: 4.6,
-      reviews: 3200,
-      tag: "Top Rated",
-      stock: 19
-    },
-    {
-      id: 12,
-      title: "Laptop Stand Adjustable",
-      originalPrice: 79.99,
-      discountPrice: 39.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1527209634-de3f5e2b70b3?w=400&h=300&fit=crop",
-      category: "50-off",
-      rating: 4.4,
-      reviews: 567,
-      tag: "Office Pro",
-      stock: 42
-    },
-    {
-      id: 13,
-      title: "Air Purifier Smart",
-      originalPrice: 299.99,
-      discountPrice: 199.99,
-      discount: 33,
-      image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=300&fit=crop",
-      category: "new-arrival",
-      rating: 4.7,
-      reviews: 445,
-      tag: "Health Tech",
-      stock: 14
-    },
-    {
-      id: 14,
-      title: "Drone with 4K Camera",
-      originalPrice: 899.99,
-      discountPrice: 649.99,
-      discount: 28,
-      image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&h=300&fit=crop",
-      category: "best-rental",
-      rating: 4.8,
-      reviews: 278,
-      tag: "Rental Fav",
-      stock: 9
-    },
-    {
-      id: 15,
-      title: "Coffee Maker Premium",
-      originalPrice: 189.99,
-      discountPrice: 129.99,
-      discount: 32,
-      image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop",
-      category: "best-buy",
-      rating: 4.5,
-      reviews: 1123,
-      tag: "Kitchen Pro",
-      stock: 26
-    }
-  ];
+  // Fetch all collections on mount
+  useEffect(() => {
+    getAllCollections().then(data => setCollections(data.content));
+  }, []);
 
-  const categories = [
-    { id: 'all', name: 'All Deals', icon: '🔥' },
-    { id: 'hot-deals', name: 'Hot Deals', icon: '⚡' },
-    { id: 'trending', name: 'Trending', icon: '📈' },
-    { id: '50-off', name: '50% Off', icon: '💥' },
-    { id: 'bestseller', name: 'Best Seller', icon: '⭐' },
-    { id: 'new-arrival', name: 'New Arrival', icon: '🆕' },
-    { id: 'best-buy', name: 'Best Buy', icon: '💎' },
-    { id: 'best-rental', name: 'Best Rental', icon: '🏆' }
-  ];
+// reset products when collection/search changes
+  useEffect(() => {
+  fetchProducts(true); 
+}, [activeCollection, searchQuery]);
 
-  const filteredDeals = activeCategory === 'all' 
-    ? hotDeals 
-    : hotDeals.filter(deal => deal.category === activeCategory);
 
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
+  // Fetch products depending on category or search
+ const fetchProducts = (reset = false) => {
+  if (loading || (!hasMore && !reset)) return;
 
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<span key={i} className="text-warning">★</span>);
-    }
-    if (hasHalfStar) {
-      stars.push(<span key="half" className="text-warning">☆</span>);
-    }
-    return stars;
-  };
+  setLoading(true);
+
+  let fetchPromise;
+  const currentPage = reset ? 0 : page;
+
+  if (searchQuery) {
+    fetchPromise = searchProduct(searchQuery, currentPage, pageSize);
+  } else if (activeCollection && activeCollection !== 'all') {
+    fetchPromise = getProductsByCollection(activeCollection, currentPage, pageSize);
+  } else {
+    fetchPromise = getAllLiveProducts(currentPage, pageSize);
+  }
+
+  fetchPromise
+    .then(data => {
+      const newProducts = data.content || data;
+      if (reset) {
+        setProducts(newProducts);
+      } else {
+        setProducts(prev => [...prev, ...newProducts]);
+      }
+      setPage(currentPage + 1);
+      setHasMore(newProducts.length >= pageSize);
+    })
+    .catch(err => console.error("Error fetching products:", err))
+    .finally(() => setLoading(false));
+};
+
+
+const renderStars = (rating) => {
+  const stars = [];
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+
+  for (let i = 0; i < fullStars; i++) {
+    stars.push(<span key={i} className="text-warning">★</span>);
+  }
+  if (hasHalfStar) {
+    stars.push(<span key="half" className="text-warning">☆</span>);
+  }
+  return stars;
+};
  
-  const toggleWishlist = (e,productId) => {
-    e.stopPropagation();
-    setWishlist((prev) =>
-    prev.includes(productId)
-      ? prev.filter((id) => id !== productId) // remove from wishlist
-      : [...prev, productId] // add to wishlist
-  );
+const toggleWishlist = (e, productId) => {
+    e.stopPropagation(); // prevent parent click events
+    const inWishlist = (wishlist || []).some((item) => item.productId === productId);
+    if (inWishlist) {
+      removeItemWishlist(productId);
+    } else {
+      addItemWishlist(productId);
+    }
   };
 
   return (
@@ -383,11 +223,14 @@ const HomePageComponent = () => {
         }
                     
         .deal-card {
+          display:flex;
+          flex-direction: column;
+          cursor: pointer;
           background: white;
-          border-radius: 15px;
+          border-radius: 3px;
           overflow: hidden;
           transition: all 0.3s ease;
-          height: 100%;
+          height: 330px;
           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
@@ -397,45 +240,30 @@ const HomePageComponent = () => {
         }
         
         .deal-image {
-          height: 180px;
-          background-size: cover;
+          flex:7;
+          background-size: contain;
           background-position: center;
           position: relative;
+          background-repeat: no-repeat;
         }
          
-        .wishlist-btn{
+        .wishlist-btn {
+          position: absolute;      /* so it stays on top of image */
           top: 8px;
           right: 8px;
           border: none;
           background: rgba(255, 255, 255, 0.9);
-          borderRadius: 50%;
-          width: 30px;
-          height: 30px;
+          border-radius: 50%;
+          width: 28px;
+          height: 28px;
           display: flex;
-          alignItems: center;
-          justifyContent: center;
+          align-items: center;      /* 👈 CSS syntax */
+          justify-content: center;  /* 👈 CSS syntax */
           cursor: pointer;
           transition: all 0.3s ease;
-          backdropFilter: blur(10px);
-          zIndex: 2;
+          backdrop-filter: blur(10px); /* 👈 CSS syntax */
+          z-index: 2;
         }
-          .wishlist-btn {
-            position: absolute;      /* so it stays on top of image */
-            top: 8px;
-            right: 8px;
-            border: none;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;      /* 👈 CSS syntax */
-            justify-content: center;  /* 👈 CSS syntax */
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px); /* 👈 CSS syntax */
-            z-index: 2;
-          }
         
          .wishlist-btn:hover {
           transform: scale(1.1);
@@ -479,15 +307,19 @@ const HomePageComponent = () => {
         }
         
         .deal-content {
-          padding: 15px;
+          flex: 3; 
+          padding: 6px 8px;  
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
         }
         
         .deal-title {
           font-size: 1rem;
           font-weight: 600;
-          margin-bottom: 8px;
+          margin-bottom: 1.5px;
           color: #2c3e50;
-          height: 2.4em;
+          height: 1.7rem;
           overflow: hidden;
           display: -webkit-box;
           -webkit-line-clamp: 2;
@@ -501,21 +333,21 @@ const HomePageComponent = () => {
         .discount-price {
           font-size: 1.3rem;
           font-weight: bold;
-          color: #27ae60;
+          color: #18663bff;
           margin-right: 8px;
         }
         
         .original-price {
           font-size: 0.9rem;
-          color: #7f8c8d;
+          color: #34595dff;
           text-decoration: line-through;
         }
         
         .rating-section {
           display: flex;
           align-items: center;
-          margin: 8px 0;
-          font-size: 0.85rem;
+          margin: 2px 0;
+          font-size: 0.8rem;
         }
         
         .stock-info {
@@ -636,14 +468,22 @@ const HomePageComponent = () => {
         <div className="container">
           <div className="text-center">
             <div className="d-flex flex-wrap justify-content-center">
-              {categories.map(category => (
+               {/* Default collection tab */}
+              <button
+                key="all"
+                className={`category-btn ${activeCollection === 'all' ? 'active' : ''}`}
+                onClick={() => setActiveCollection('all')}
+              >
+                🌟 All Deals
+              </button>
+              {collections.map(collection => (
                 <button
-                  key={category.id}
-                  className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
-                  onClick={() => setActiveCategory(category.id)}
+                  key={collection.collectionId}
+                  className={`category-btn ${activeCollection === collection.collectionId ? 'active' : ''}`}
+                  onClick={() => setActiveCollection(collection.collectionId)}
                 >
-                  <span className="me-2">{category.icon}</span>
-                  {category.name}
+                  <span className="me-2">{collection.icon}</span>
+                  {collection.title}
                 </button>
               ))}
             </div>
@@ -663,91 +503,102 @@ const HomePageComponent = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   <div className="search-actions">
-                    <button className="search-btn">Search</button>
+                    <button className="search-btn" onClick={(e) => {
+                      e.preventDefault(); 
+                      setSearchQuery(searchQuery.trim());
+                      }}
+                    >Search</button>
                   </div>
                 </div>
               </div>
 
       {/* Deals Grid */}
       <div className="deals-grid bg-light">
-        <div className="container-fluid deals-container">
-          {/* <div className="section-title">
-            <h2>Today's Hottest Deals</h2>
-            <p className="section-subtitle">Grab these amazing offers before they're gone!</p>
-          </div> */}
-          
+        <div className="container-fluid deals-container"> 
           <div className="row g-3">
-            {filteredDeals.map(deal => (
-              <div key={deal.id} className="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
-                <div className="deal-card">
+            {products.map(product => (
+              <div key={product.productId} className="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+                <div className="deal-card" onClick={() => navigate(`/products/${product.productId}`)}>
                   <div 
                     className="deal-image"
-                    style={{ backgroundImage: `url(${deal.image})` }}
+                    style={{ backgroundImage: `url(${Array.isArray(product.productImageUrls) ? product.productImageUrls[0] : product.productImageUrls})` }}
+
                   >
-                    {/* <div className="deal-tag">{deal.tag}</div> */}
-                    {deal.discount > 40 && (
-                      <div  className="discount-badge">-{deal.discount}%</div>
-                    )} 
+                    {/* {(() => {
+                      const discountPercent = ((product.price - product.discountedPrice) / product.price) * 100;
+                      return discountPercent > 5 && (
+                        <div className="discount-badge">-{Math.round(discountPercent)}%</div>
+                      );
+                    })()} */}
+                    
                     <button
                       className=" wishlist-section wishlist-btn position-absolute"
-                      onClick={(e) =>toggleWishlist(e,deal.id)}
+                      onClick={(e) =>toggleWishlist(e,product.productId)}
                     >
                       <Heart 
-                        size={14} 
-                        className={wishlist.includes(deal.id) ? 'text-danger' : 'text-muted'}
-                        fill={wishlist.includes(deal.id) ? 'currentColor' : 'none'}
+                        size={16} 
+                        className={(wishlist || []).some((item) => item.productId === product.productId) ? 'text-danger' : 'text-muted'}
+                        fill={(wishlist || []).some((item) => item.productId === product.productId)? 'currentColor' : 'none'}
                       />
                     </button>
                   </div>
                   
                   <div className="deal-content">
-                    <h5 className="deal-title">{deal.title}</h5>
+                    <h5 className="deal-title">{product.title}</h5>
                     
                     <div className="rating-section">
                       <div className="me-1">
-                        {renderStars(deal.rating)}
+                        {renderStars(product.rating)}
                       </div>
-                      <span className="text-muted">({deal.reviews})</span>
+                      {/* <span className="text-muted">({product.reviews})</span> */}
                     </div>
                     
                     <div className="price-section">
-                      {deal.type === 'rental' ? (
-                        <div className="rental-price">📅 ${deal.rentalPrice}/day</div>
-                      ) : (
+                      {/* {product.rentalPrice != null ? (
+                        <div className="rental-price">📅 ${product.rentalPrice}/day</div>
+                      ) : ( */}
                         <>
-                          <span className="discount-price">${deal.discountPrice}</span>
-                          <span className="original-price">${deal.originalPrice}</span>
+                          <span className="discount-price">${product.discountedPrice}</span>
+                          <span className="original-price">${product.price}</span>
                         </>
-                      )}
+                      {/* )}
                       
-                      {deal.type === 'both' && (
-                        <div className="rental-price">📅 ${deal.rentalPrice}/day</div>
-                      )}
+                      {product.rentalPrice != null && (
+                        <div className="rental-price">📅 ${product.rentalPrice}/day</div>
+                      )} */}
                     </div>
                     
-                    <div className="action-buttons">
-                      {deal.type === 'sale' && (
+                    {/* <div className="action-buttons">
+                      {product.type === 'sale' && (
                         <button className="btn-primary-custom">🛒 Add to Cart</button>
                       )}
                       
-                      {deal.type === 'rental' && (
+                      {product.type === 'rental' && (
                         <button className="btn-secondary-custom">📅 Rent Now</button>
                       )}
                       
-                      {deal.type === 'both' && (
+                    
                         <>
                           <button className="btn-primary-custom">🛒 Buy</button>
                           <button className="btn-secondary-custom">📅 Rent</button>
                         </>
-                      )}
-                    </div>
+                    
+                    </div> */}
                   </div>
                 </div>
               </div>
             ))}
           </div>
+          {hasMore && (
+          <div className="text-center mt-4">
+            <button className="btn btn-primary" onClick={() => fetchProducts()}>
+              {loading ? "Loading..." : "Load More"}
+            </button>
+          </div>
+        )}
+
           
-          {filteredDeals.length === 0 && (
+          {products.length === 0 && (
             <div className="text-center py-5">
               <h4 className="text-muted">No deals found in this category</h4>
               <p className="text-muted">Try selecting a different category or check back later!</p>

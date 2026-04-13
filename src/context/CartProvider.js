@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import CartContext from './CartContext';
 import UserContext from "./UserContext";
-import { addItemToCart, clearCart, getCart, removeItemFromCart } from '../services/CartService';
+import { addItemToCart, clearTheCart, getCart, removeItemFromCart } from '../services/CartService';
 import { toast } from 'react-toastify';
 import { Alert } from 'react-bootstrap';
 import Swal from 'sweetalert2';
@@ -11,7 +11,7 @@ const MySwal = withReactContent(Swal);
 
 const CartProvider = ({children}) => {
     const {isLogin, userData} = useContext(UserContext);
-    const [cart, setCart] = useState(null);
+    const [cart, setCart] = useState({items: []});
     
 
 
@@ -34,7 +34,7 @@ const CartProvider = ({children}) => {
     },[isLogin]);
 
     //add item to cart
-    const addItem = async(quantity, productId, next) => {
+    const addItemCart = async(quantity, productId, next) => {
         try {
             if(!isLogin){
                 MySwal.fire({
@@ -61,34 +61,30 @@ const CartProvider = ({children}) => {
     };
 
     //remove item from cart
-    const removeItem = async (itemId) => {
+    const removeItemCart = async (itemId) => {
+        setCart(prev => ({
+            ...prev,
+            items: prev.items.filter(item => item.cartItemId !== itemId)
+        }));
         try {
-            const result = await removeItemFromCart(userData.user.userId, itemId);
-            const newCartItems = cart.items.filter((item) => item.cartItemId !== itemId);
-            setCart({
-                ...cart,
-                items: newCartItems,
-            })
+            await removeItemFromCart(userData.user.userId, itemId);
         } catch (error) {
             toast.error("Error in removing item from cart !!")
         }
     };
 
     //clear cart
-    const clear = async() => {
+    const clearCart = async() => {
         try {
-            const result = await clearCart(userData.user.userId);
-            setCart({
-                ...cart,
-                items: []
-            })
+            const result = await clearTheCart(userData.user.userId);
+            setCart({ ...result });
         } catch (error) {
             toast.error("Error in clearing cart !!");
         }
     };
 
   return (
-    <CartContext.Provider value={{cart, setCart, addItem, removeItem, clearCart: clear}}>
+    <CartContext.Provider value={{cart, setCart, addItemCart, removeItemCart, clearCart}}>
         {children}
     </CartContext.Provider>
   )

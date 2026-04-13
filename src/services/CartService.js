@@ -16,7 +16,7 @@ export const addItemToCart = async(userId, productId, quantity) => {
 };
 
 //clear cart
-export const clearCart = async (userId) => {
+export const clearTheCart = async (userId) => {
     const res = await privateAxios.delete(`/carts/${userId}`);
     return res.data;
 };

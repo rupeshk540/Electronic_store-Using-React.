@@ -11,7 +11,7 @@ const SingleProductCard = ({product}) => {
         <Card.Body>
             <Container className='text-center'>
                 <img
-                    src={getProductImageUrl(product.productId)} 
+                    src={product.getProductImageUrls?.[0]} 
                     alt="" 
                     className='product-image'
                     onError={event => {

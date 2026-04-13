@@ -1,6 +1,23 @@
-import {privateAxios} from "./AxiosService";
+import {privateAxios, publicAxios} from "./AxiosService";
 
 //product related api calls
+
+// //create product Incollection & InCategory
+// export const createProductInCategoryAndCollection = (product,categoryId) => {
+//     return privateAxios
+//         .post(`/products/categories/${categoryId}/collections`,product)
+//         .then((response) => response.data)
+// };
+
+// create product in category and collection (with images)
+export const createProductInCategoryAndCollection = (formData, categoryId) => {
+    return privateAxios
+        .post(`/products/categories/${categoryId}/collections`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
+        .then((response) => response.data);
+};
+
 
 //create product without category
 export const createProductWithOutCategory = (product) => {
@@ -16,13 +33,32 @@ export const createProductInCategory = (product, categoryId) => {
         .then((response)=> response.data)
 };
 
-//add product image
-export const addProductImage=(file,productId)=>{
-    const formData = new FormData();
-    formData.append("productImage", file);
+//create product without collection
+export const createProductWithOutCollection = (product) => {
     return privateAxios
-        .post(`/products/image/${productId}`,formData)
+        .post(`/products`, product)
         .then((response)=> response.data)
+};
+
+//create product with collection
+export const createProductInCollection = (product, collectionId) => {
+    return privateAxios
+        .post(`/collections/${collectionId}/products`,product)
+        .then((response)=> response.data)
+};
+
+// add multiple product images
+export const addProductImages = (files, productId) => {
+    const formData = new FormData();
+    
+    // append each file with the same key as backend expects
+    files.forEach(file => {
+        formData.append("productImages", file);
+    });
+
+    return privateAxios
+        .post(`/products/image/${productId}`, formData)
+        .then(response => response.data);
 };
 
 //get products
@@ -32,7 +68,7 @@ export const getAllProducts = (
     sortBy = "addedDate",
     sortDir = "asc"
 ) => {
-    return privateAxios
+    return publicAxios
         .get(`/products?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`)
         .then((response)=>response.data);
 };
@@ -44,7 +80,7 @@ export const getAllLiveProducts = (
     sortBy = "addedDate",
     sortDir = "asc"
 ) => {
-    return privateAxios
+    return publicAxios
         .get(`/products/live?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`)
         .then((response)=>response.data);
 };
@@ -56,12 +92,35 @@ export const deleteProduct = (productId) => {
     .then((response)=> response.data)
 };
 
-//update product service
-export const updateProduct=(product,productId)=>{
+//partially update - stock/live
+export const patchProduct = (updates, productId) => {
     return privateAxios
-        .put(`/products/${productId}`,product)
-        .then(response =>response.data)
+        .patch(`/products/${productId}`, updates)
+        .then(response => response.data);
 };
+
+
+//update product with/without images
+export const updateProduct = (product, images, productId) => {
+    const formData = new FormData();
+    
+    // Add product JSON as a Blob
+    formData.append("product", new Blob([JSON.stringify(product)], { type: "application/json" }));
+
+    // Add images if any
+    if (images && images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+            formData.append("images", images[i]);
+        }
+    }
+
+    return privateAxios
+        .put(`/products/${productId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
+        .then(response => response.data);
+};
+
 
 //update the category of the product
 export const updateProductCategory = (categoryId, productId) => {
@@ -72,12 +131,12 @@ export const updateProductCategory = (categoryId, productId) => {
 
 //search product service
 export const searchProduct =(query) => {
-    return privateAxios.get(`/products/search/${query}`).then((res)=> res.data);
+    return publicAxios.get(`/products/search/${query}`).then((res)=> res.data);
 };
 
-//get single product detail
+//get single product detail 
 export const getProduct = (productId) => {
-    return privateAxios.get(`/products/${productId}`).then((res) => res.data);
+    return publicAxios.get(`/products/${productId}`).then((res) => res.data);
 };
 
 //get products of categories
@@ -88,7 +147,27 @@ export const getProductsOfCategories = (
     sortBy='addedDate',
     sortDir='asc'
 )=>{
-    return privateAxios
+    return publicAxios
     .get(`/categories/${categoryId}/products?pageNumber=${pageNumber}&pageSize=${pageSize}/sortBy=${sortBy}&sortDir=${sortDir}`)
     .then((res) => res.data);
+};
+
+// get products of specific collection
+export const getProductsByCollection = (
+  collectionId,
+  pageNumber = 0,
+  pageSize = 10,
+  sortBy = "addedDate",
+  sortDir = "asc"
+) => {
+  return publicAxios
+    .get(`/products/collections/${collectionId}`, {
+      params: {
+        pageNumber,
+        pageSize,
+        sortBy,
+        sortDir,
+      },
+    })
+    .then((response) => response.data);
 };

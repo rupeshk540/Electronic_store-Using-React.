@@ -11,8 +11,16 @@ export const getUserImageUrl=(userId)=>{
     return `${BASE_URL}/users/image/${userId}`
 };
 
-export const getProductImageUrl = (productId) => {
-    return `${BASE_URL}/products/image/${productId}`;
+export const getProductImageUrl = (imageUrlOrId) => {
+  if (!imageUrlOrId) return null;
+
+  // If backend saves secure_url  just return it
+  if (imageUrlOrId.startsWith("http")) {
+    return imageUrlOrId;
+  }
+
+  // Otherwise, assume it's a Cloudinary public_id
+  return `https://res.cloudinary.com/dmvg3s0m8/image/upload/${imageUrlOrId}`;
 };
 
 export const formatDate = (timeInLongs) => {

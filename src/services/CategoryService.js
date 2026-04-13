@@ -1,4 +1,4 @@
-import {privateAxios} from "./AxiosService";
+import {privateAxios, publicAxios} from "./AxiosService";
 
 //add category
 
@@ -10,8 +10,8 @@ export const addCategory=(category)=>{
 
 
 //get all categories
-export const getCategories = (currentPage=0, pageSize=10) => {
-    return privateAxios
+export const getAllCategories = (currentPage=0, pageSize=10) => {
+    return publicAxios
     .get(`/categories?pageNumber=${currentPage}&& pageSize=${pageSize}`)
     .then((response)=>response.data);
 };

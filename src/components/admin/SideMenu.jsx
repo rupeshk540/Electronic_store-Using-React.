@@ -2,6 +2,8 @@ import { Badge, ListGroup } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import {GrHome} from 'react-icons/gr';
 import { BiCategory } from "react-icons/bi";
+import { AiOutlineAppstoreAdd } from 'react-icons/ai';
+import { FcViewDetails } from 'react-icons/fc';
 import { MdDashboard, MdOutlineCategory, MdViewDay } from "react-icons/md";
 import { MdAddBox } from "react-icons/md";
 import { FaOpencart, FaUserSecret } from "react-icons/fa";
@@ -15,7 +17,7 @@ const SideMenu = () => {
 
     return(
         <>
-            <ListGroup variant="flush" className="sticky-top">
+            <ListGroup variant="flush">
                 <ListGroup.Item as={NavLink} to="/admin/home" action>
                     <GrHome size={20}/>
                     <span className="ms-2">Home</span>
@@ -29,6 +31,16 @@ const SideMenu = () => {
                 <ListGroup.Item as={NavLink} to="/admin/categories" action>
                     <MdOutlineCategory size={20}/>
                     <span className="ms-2">View Category</span>
+                </ListGroup.Item>
+
+                 <ListGroup.Item as={NavLink} to="/admin/add-collection" action>
+                    <AiOutlineAppstoreAdd size={20}/>
+                    <span className="ms-2">Add Collection</span>
+                </ListGroup.Item>
+
+                <ListGroup.Item as={NavLink} to="/admin/collections" action>
+                    <FcViewDetails size={20}/>
+                    <span className="ms-2">View Collections</span>
                 </ListGroup.Item>
 
                 <ListGroup.Item as={NavLink} to="/admin/add-product" action>

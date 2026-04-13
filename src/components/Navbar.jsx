@@ -243,12 +243,12 @@ const CustomNavbar = () => {
               {/* Customer - Show Cart and Orders */}
               {isCustomer && (
                 <>
-                  <Nav.Link as={NavLink} to="/wishlist" className="nav-link-custom icon-link">
+                  <Nav.Link as={NavLink} to="/user/wishlist" className="nav-link-custom icon-link">
                     <span className="nav-icon">❤️</span>
                     <span className="d-none d-lg-inline">Wishlist</span>
                   </Nav.Link>
                   
-                  <Nav.Link as={NavLink} to="/cart" className="nav-link-custom cart-link">
+                  <Nav.Link as={NavLink} to="/user/cart" className="nav-link-custom cart-link">
                     <span className="nav-icon">🛒</span>
                     <span className="d-none d-lg-inline">Cart</span>
                     {cart && cart.items && cart.items.length > 0 && (
@@ -325,7 +325,7 @@ const CustomNavbar = () => {
                     <>
                       <NavDropdown.Item 
                         as={NavLink} 
-                        to="/users/order"
+                        to="/user/order"
                         className="dropdown-item-custom"
                       >
                         <span className="dropdown-icon">📦</span>
@@ -333,7 +333,7 @@ const CustomNavbar = () => {
                       </NavDropdown.Item>
                       <NavDropdown.Item 
                         as={NavLink} 
-                        to="/users/addresses"
+                        to="/user/addresses"
                         className="dropdown-item-custom"
                       >
                         <span className="dropdown-icon">📍</span>

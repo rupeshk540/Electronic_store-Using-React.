@@ -1,9 +1,9 @@
-import CategoriesSection from '../components/users/Category';
+import Category from '../components/users/Category';
 
 
 const CategoryPage = () => {
   return (
-     <CategoriesSection/>
+     <Category/>
   )
 }
 

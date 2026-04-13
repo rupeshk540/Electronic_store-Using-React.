@@ -3,6 +3,7 @@ import parse from 'html-react-parser';
 const ShowHtml = ({htmlText}) => {
     
     const changeHtmlData=()=>{
+        if (!htmlText) return null; 
         return parse(htmlText,{
             replace: node => {
                 //change
@@ -18,7 +19,7 @@ const ShowHtml = ({htmlText}) => {
 
     return (
         <div>
-            {changeHtmlData(htmlText)}
+            {changeHtmlData()}
         </div>
     )
 }

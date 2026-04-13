@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {ListGroup} from "react-bootstrap";
 import { toast } from "react-toastify";
-import { getCategories } from "../../services/CategoryService";
+import { getAllCategories} from "../../services/CategoryService";
 import defaultCategoryImage from "../../assets/default_profilepic.jpg";
 import { Link } from "react-router-dom";
 
@@ -16,7 +16,7 @@ const CategoryView = () => {
 
     const loadCategories=(pageNumber, pageSize)=>{
         
-        getCategories(pageNumber, pageSize)
+        getAllCategories(pageNumber, pageSize)
             .then(data => {
                 setCategories({...data})
             })

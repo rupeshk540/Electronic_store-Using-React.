@@ -1,76 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Mic, Camera, Filter, Zap, DollarSign, Package, Shirt, Home, Dumbbell, Heart, Car, Baby, Book, Music, Gamepad2 } from 'lucide-react';
+import {getAllCategories} from "../../services/CategoryService";
 
 const CategoriesPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('ALL PRODUCTS');
+  const[categories, setCategories] = useState({});
+  
+  // Fetch all collections on mount
+  useEffect(() => {
+    getAllCategories().then(data => setCategories(data.content));
 
-  // Extended product data with more categories
-  const categoryData = {
-    'Trending Products': [
-      { id: 1, name: 'MacBook Pro M3', price: 2499, rentPrice: 149, image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&h=200&fit=crop' },
-      { id: 2, name: 'Designer Sofa Set', price: 3299, rentPrice: 199, image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=200&fit=crop' },
-      { id: 3, name: 'Canon EOS R5', price: 4299, rentPrice: 249, image: 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=300&h=200&fit=crop' },
-      { id: 4, name: 'Ergonomic Office Chair', price: 899, rentPrice: 59, image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop' },
-      { id: 5, name: 'iPhone 15 Pro', price: 1599, rentPrice: 99, image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=300&h=200&fit=crop' }
-    ],
-    'Best Deals': [
-      { id: 6, name: 'Premium Leather Bag', price: 599, rentPrice: 49, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop' },
-      { id: 7, name: 'Gaming Laptop RTX', price: 2499, rentPrice: 149, image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=300&h=200&fit=crop' },
-      { id: 8, name: 'Modern Coffee Table', price: 1299, rentPrice: 89, image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop' },
-      { id: 9, name: 'Professional Monitor', price: 899, rentPrice: 59, image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=300&h=200&fit=crop' },
-      { id: 10, name: 'Executive Desk Chair', price: 699, rentPrice: 49, image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop' }
-    ],
-    'Electronics': [
-      { id: 11, name: '4K Smart TV 65"', price: 1299, rentPrice: 89, image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&h=200&fit=crop' },
-      { id: 12, name: 'Wireless Headphones', price: 349, rentPrice: 29, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop' },
-      { id: 13, name: 'Gaming Console', price: 499, rentPrice: 39, image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=300&h=200&fit=crop' },
-      { id: 14, name: 'Smart Watch Ultra', price: 799, rentPrice: 59, image: 'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=300&h=200&fit=crop' },
-      { id: 15, name: 'Drone with Camera', price: 1199, rentPrice: 79, image: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=300&h=200&fit=crop' }
-    ],
-    'Fashion': [
-      { id: 16, name: 'Designer Watch', price: 2499, rentPrice: 149, image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=300&h=200&fit=crop' },
-      { id: 17, name: 'Luxury Handbag', price: 1899, rentPrice: 119, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=200&fit=crop' },
-      { id: 18, name: 'Premium Sneakers', price: 299, rentPrice: null, image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=200&fit=crop' },
-      { id: 19, name: 'Silk Evening Dress', price: 199, rentPrice: null, image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=200&fit=crop' },
-      { id: 20, name: 'Leather Jacket', price: 899, rentPrice: 59, image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&h=200&fit=crop' }
-    ],
-    'Home & Garden': [
-      { id: 21, name: 'Modular Sofa', price: 2999, rentPrice: 189, image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=200&fit=crop' },
-      { id: 22, name: 'Dining Table Set', price: 1799, rentPrice: 119, image: 'https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=300&h=200&fit=crop' },
-      { id: 23, name: 'Smart Refrigerator', price: 2499, rentPrice: 149, image: 'https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=300&h=200&fit=crop' },
-      { id: 24, name: 'Garden Tool Set', price: 299, rentPrice: 29, image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&h=200&fit=crop' },
-      { id: 25, name: 'Outdoor Fire Pit', price: 799, rentPrice: 59, image: 'https://images.unsplash.com/photo-1441448770220-76743f9e6af6?w=300&h=200&fit=crop' }
-    ],
-    'Sports & Outdoor': [
-      { id: 26, name: 'Electric Bike', price: 1999, rentPrice: 129, image: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=300&h=200&fit=crop' },
-      { id: 27, name: 'Kayak Pro', price: 899, rentPrice: 69, image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop' },
-      { id: 28, name: 'Camping Tent 4P', price: 399, rentPrice: 39, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=300&h=200&fit=crop' },
-      { id: 29, name: 'Home Gym Set', price: 1299, rentPrice: 89, image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=300&h=200&fit=crop' },
-      { id: 30, name: 'Surfboard Pro', price: 699, rentPrice: 49, image: 'https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=300&h=200&fit=crop' }
-    ],
-    'Automotive': [
-      { id: 31, name: 'Tesla Model Y', price: 54999, rentPrice: 899, image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=300&h=200&fit=crop' },
-      { id: 32, name: 'Motorcycle Helmet', price: 299, rentPrice: 29, image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop' },
-      { id: 33, name: 'Car Dash Cam', price: 199, rentPrice: null, image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=300&h=200&fit=crop' },
-      { id: 34, name: 'Electric Scooter', price: 799, rentPrice: 59, image: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=300&h=200&fit=crop' },
-      { id: 35, name: 'Car Audio System', price: 599, rentPrice: 49, image: 'https://images.unsplash.com/photo-1493238792000-8113da705763?w=300&h=200&fit=crop' }
-    ],
-    'Baby & Kids': [
-      { id: 36, name: 'Baby Stroller Pro', price: 899, rentPrice: 69, image: 'https://images.unsplash.com/photo-1544376664-80b17f09d399?w=300&h=200&fit=crop' },
-      { id: 37, name: 'Kids Electric Car', price: 499, rentPrice: 39, image: 'https://images.unsplash.com/photo-1558877076-8b2c0acb26ee?w=300&h=200&fit=crop' },
-      { id: 38, name: 'Baby Monitor', price: 199, rentPrice: null, image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=300&h=200&fit=crop' },
-      { id: 39, name: 'High Chair', price: 299, rentPrice: 29, image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=300&h=200&fit=crop' },
-      { id: 40, name: 'Educational Tablet', price: 149, rentPrice: null, image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop' }
-    ],
-    'Books & Media': [
-      { id: 41, name: 'E-Reader Premium', price: 299, rentPrice: 29, image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=200&fit=crop' },
-      { id: 42, name: 'Vinyl Record Player', price: 399, rentPrice: 39, image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=200&fit=crop' },
-      { id: 43, name: 'Audiobook Collection', price: 99, rentPrice: null, image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop' },
-      { id: 44, name: 'Art Book Set', price: 149, rentPrice: null, image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=200&fit=crop' },
-      { id: 45, name: 'Digital Magazine Sub', price: 59, rentPrice: null, image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop' }
-    ]
-  };
+  }, []);
 
   const getCategoryIcon = (category) => {
     const icons = {
@@ -110,11 +51,11 @@ const CategoriesPage = () => {
           {/* Product Image */}
           <div className="position-relative overflow-hidden" style={{ borderRadius: '12px 12px 0 0' }}>
             <img 
-              src={product.image} 
+              src={product.productImageUrls[0]} 
               alt={product.name}
               className="card-img-top"
               style={{ 
-                height: '175px',
+                height: '220px',
                 objectFit: 'cover',
                 transition: 'transform 0.3s ease'
               }}
@@ -165,17 +106,17 @@ const CategoriesPage = () => {
           </div>
 
           {/* Card Body */}
-          <div className="card-body text-center p-3">
-            <h6 className="card-title fw-semibold mb-2 text-dark" style={{ fontSize: '0.8rem' }}>
-              {product.name}
+          <div className="card-body text-center p-2" style={{minHeight:"85px"}}>
+            <h6 className="card-title fw-bold mb-2 text-dark text-truncate" style={{ fontSize: '0.9rem', lineHeight:"1rem",maxWidth: "100%" }}>
+              {product.title}
             </h6>
             
             <p className="fw-bold text-success mb-0" style={{ fontSize: '0.9rem' }}>
               ${product.price.toLocaleString()}
             </p>
             
-            {product.rentPrice && (
-              <small className="text-muted">or ${product.rentPrice}/mo</small>
+            {product.rentalPrice > 0 && (
+              <small className="text-muted">or ${product.rentalPrice}/mo</small>
             )}
           </div>
         </div>
@@ -194,8 +135,8 @@ const CategoriesPage = () => {
       </div>
       
       <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-1 mb-2 px-3">
-        {products.map(product => (
-          <ProductCard key={product.id} product={product} />
+        {products.slice(0,5).map(product => (
+          <ProductCard key={product.productId} product={product} />
         ))}
       </div>
     </div>
@@ -501,8 +442,12 @@ const CategoriesPage = () => {
       
       {/* Categories Content */}
       <div className="container-fluid px-4">
-        {Object.entries(categoryData).map(([categoryName, products]) => (
-          <CategorySection key={categoryName} categoryName={categoryName} products={products} />
+        {Array.isArray(categories) && categories.map(category => (
+          <CategorySection 
+            key={category.categoryId} 
+            categoryName={category.title} 
+            products={category.products || []} 
+          />
         ))}
       </div>
     </div>
