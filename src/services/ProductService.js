@@ -148,7 +148,7 @@ export const getProductsOfCategories = (
     sortDir='asc'
 )=>{
     return publicAxios
-    .get(`/categories/${categoryId}/products?pageNumber=${pageNumber}&pageSize=${pageSize}/sortBy=${sortBy}&sortDir=${sortDir}`)
+    .get(`/categories/${categoryId}/products?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`)
     .then((res) => res.data);
 };
 

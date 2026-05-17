@@ -66,10 +66,6 @@ const StorePage = () => {
     navigate(`/products/${productId}`);
   };
 
-  const isWishlisted = (wishlist || []).some(
-    (item) => item.productId === products.productId
-  );
-
   // Toggle wishlist status
   const toggleWishlist = (productId, isWishlisted) => {
     if (isWishlisted) {
@@ -78,7 +74,6 @@ const StorePage = () => {
       addItemWishlist(productId);
     }
   };
-
 
   
   return (
@@ -190,7 +185,11 @@ const StorePage = () => {
             gridTemplateColumns: "repeat(5, 1fr)", 
             gap: "16px"
           }}>
-          {products.map(product =>(
+          {products.map(product =>{
+            const isWishlisted = (wishlist || []).some(
+              (item) => item.productId === product.productId
+            );
+            return(
               <div 
                 key={product.productId} 
                 className="card h-100  border position-relative "
@@ -291,7 +290,7 @@ const StorePage = () => {
               </div>
               
             
-            ))}
+            );})}
             
         </div>
           {hasMore && (

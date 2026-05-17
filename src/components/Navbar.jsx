@@ -314,7 +314,7 @@ const CustomNavbar = () => {
                   
                   <NavDropdown.Item 
                     as={NavLink} 
-                    to={`/users/profile/${userContext?.userData?.user?.userId}`}
+                    to={`/user/profile/${userContext?.userData?.user?.userId}`}
                     className="dropdown-item-custom"
                   >
                     <span className="dropdown-icon">👤</span>
