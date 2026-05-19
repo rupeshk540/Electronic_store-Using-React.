@@ -173,9 +173,8 @@ const handleBuyNow = (product,quantity=1) => {
       <nav aria-label="breadcrumb" className="sticky-top"
             style={{ top: "80px", zIndex: 1 }}>
         <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="#" className="text-decoration-none">Home</a></li>
-          <li className="breadcrumb-item"><a href="#" className="text-decoration-none">Electronics</a></li>
-          <li className="breadcrumb-item"><a href="#" className="text-decoration-none">Audio</a></li>
+          <li className="breadcrumb-item"><a href="/" className="text-decoration-none">Home</a></li>
+          <li className="breadcrumb-item"><a href="#" className="text-decoration-none">{product.category?.title}</a></li>
           <li className="breadcrumb-item active" aria-current="page">{product.title}</li>
         </ol>
       </nav>
@@ -205,7 +204,7 @@ const handleBuyNow = (product,quantity=1) => {
                 <img
                   key={idx}
                   src={img}
-                  alt={`${product.name} ${idx + 1}`}
+                  alt={`${product.title} ${idx + 1}`}
                   className={`rounded cursor-pointer border ${selectedImage === idx ? 'border-primary border-3' : 'border-secondary'}`}
                   style={{width: '80px', height: '80px', objectFit: 'contain', cursor: 'pointer'}}
                   onClick={() => setSelectedImage(idx)}

@@ -42,6 +42,15 @@ export const updateOrder = async(order, orderId) => {
     return result.data;
 };
 
+//cancel order
+export const cancelOrder = async (orderId) => {
+   const response = await privateAxios.put(
+      `/orders/cancel/${orderId}`
+    );
+  return response.data;
+};
+
+
 // //create order
 // export const createOrder = async (orderDetail) => {
 //     const result = await privateAxios.post(`/orders`, orderDetail);
