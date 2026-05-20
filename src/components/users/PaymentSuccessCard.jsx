@@ -43,7 +43,7 @@ const PaymentSuccessCard = ({ orderId }) => {
 
         <h3 className="fw-bold text-success mb-2">Order Placed Successfully 🎉</h3>
         <p className="text-muted mb-3">
-          Your payment was successful. We’re preparing your order now.
+           We’re preparing your order now.
         </p>
         <p className="small text-secondary">
           <b>Order ID:</b> {orderId}

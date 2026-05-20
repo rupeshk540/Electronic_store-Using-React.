@@ -43,6 +43,17 @@ export const updateOrder = async(order, orderId) => {
     return result.data;
 };
 
+//update order status
+export const updateOrderStatusApi = async (orderId, status) => {
+
+    const response = await privateAxios.put(
+        `/orders/${orderId}/status`,
+        { orderStatus: status }
+    );
+
+    return response.data;
+};
+
 //cancel order
 export const cancelOrder = async (orderId) => {
    const response = await privateAxios.put(
