@@ -328,7 +328,7 @@
 
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { cancelOrder, getOrdersOfUser } from '../../services/OrderService';
+import { cancelOrder, getOrdersOfUser, requestReturn } from '../../services/OrderService';
 import { toast } from 'react-toastify';
 import { createReview } from '../../services/ReviewService';
 
@@ -379,13 +379,22 @@ const OrdersPage = () => {
     case "DELIVERED":
       return "delivered";
 
-    case "PENDING":
-      return "pending";
-
     case "CANCELLED":
       return "cancelled";
 
-    default:
+    case "RETURN_REQUESTED":
+      return "return_requested";
+
+    case "RETURNED":
+      return "returned";
+
+  case "RETURN_REJECTED":
+    return "return_rejected";
+  
+  case "RETURN_APPROVED":
+    return "return_approved";
+  
+  default:
       return "pending";
   }
 };
@@ -402,6 +411,18 @@ const handleCancelOrder = async (orderId) => {
     );
   }
 };
+
+const handleReturn = async(orderId) => {
+
+   try{
+      await requestReturn(orderId);
+      toast.success("Return request submitted");
+      loadOrders();
+
+   }catch(error){
+      toast.error("Error in Returning Order");
+   }
+}
 
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
@@ -451,30 +472,59 @@ const handleCancelOrder = async (orderId) => {
   };
 
  const filters = [
-    { key: 'all', label: 'All Orders' },
-    { key: 'placed', label: 'Order Placed' },
-    { key: 'dispatched', label: 'Dispatched' },
-    { key: 'shipped', label: 'Shipped' },
-    { key: 'delivered', label: 'Delivered' },
-    { key: 'pending', label: 'Pending' },
-    { key: 'cancelled', label: 'Cancelled' },
-  ];
+  { key: "all", label: "All Orders" },
+
+  { key: "active", label: "Active" }, 
+  // placed + dispatched + shipped + pending
+
+  { key: "delivered", label: "Delivered" },
+
+  { key: "returns", label: "Returns" }, 
+  // return_requested + return_approved + returned + return_rejected
+
+  { key: "cancelled", label: "Cancelled" }
+];
+
   const statusConfig = {
     placed: { label: 'Order Placed', color: '#7b1fa2', bgColor: '#f3e5f5', icon: '📦' },
     dispatched: { label: 'Dispatched', color: '#ef6c00', bgColor: '#fff3e0', icon: '🚛' },
     shipped: { label: 'Shipped', color: '#1976d2', bgColor: '#e3f2fd', icon: '🚚' },
     delivered: { label: 'Delivered', color: '#388e3c', bgColor: '#e8f5e9', icon: '✓' },
     pending: { label: 'Pending', color: '#f57c00', bgColor: '#fff8e1', icon: '⏳' },
-    cancelled: { label: 'Cancelled', color: '#d32f2f', bgColor: '#ffebee', icon: '✕' }
+    cancelled: { label: 'Cancelled', color: '#d32f2f', bgColor: '#ffebee', icon: '✕' },
+    return_requested: { label: 'Return Requested', color: '#ef6c00', bgColor: '#fff3e0', icon: '↩️' },
+    return_approved: { label: 'Return Approved', color: '#2e7d32', bgColor: '#e8f5e9', icon: '✔️' },
+    returned: { label: 'Returned', color: '#455a64', bgColor: '#eceff1', icon: '📦' },
+    return_rejected: { label: 'Return Rejected', color: '#c62828', bgColor: '#ffebee', icon: '❌' }
   };
 
   const filteredOrders =
   activeFilter === "all"
     ? orders
-    : orders.filter(
-        order =>
-          mapOrderStatus(order.orderStatus) === activeFilter
-      );
+    : orders.filter(order => {
+
+        const status = mapOrderStatus(order.orderStatus);
+
+        if (activeFilter === "active") {
+          return [
+            "placed",
+            "dispatched",
+            "shipped",
+            "pending"
+          ].includes(status);
+        }
+
+        if (activeFilter === "returns") {
+          return [
+            "return_requested",
+            "return_approved",
+            "returned",
+            "return_rejected"
+          ].includes(status);
+        }
+
+        return status === activeFilter;
+      });
 
   return (
     
@@ -684,12 +734,16 @@ const handleCancelOrder = async (orderId) => {
                                 openReviewModal(item, order.orderId)
                               }
                             >
-                              ⭐ Rate & Review
+                              Rate & Review
                             </button>
                            ))}
-                          <button className="btn btn-outline-secondary btn-sm btn-custom">
-                            📦 Return
-                          </button>
+                          {order.orderStatus === "DELIVERED" && (
+                            <button 
+                              className="btn btn-outline-warning btn-sm mt-2"
+                              onClick={() => handleReturn(order.orderId)}>
+                              Return Order
+                            </button>
+                          )}
                         </>
                       )}
                       {status === 'shipped' && (

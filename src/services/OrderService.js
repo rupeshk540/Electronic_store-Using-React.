@@ -63,8 +63,12 @@ export const cancelOrder = async (orderId) => {
 };
 
 
-// //create order
-// export const createOrder = async (orderDetail) => {
-//     const result = await privateAxios.post(`/orders`, orderDetail);
-//     return result.data;
-// };
+//request return service 
+export const requestReturn = async(orderId) => {
+
+   const response = await privateAxios.put(
+      `/orders/return/${orderId}`
+   );
+
+   return response.data;
+}
