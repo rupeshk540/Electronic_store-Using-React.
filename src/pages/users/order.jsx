@@ -330,6 +330,7 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { cancelOrder, getOrdersOfUser } from '../../services/OrderService';
 import { toast } from 'react-toastify';
+import { createReview } from '../../services/ReviewService';
 
 const OrdersPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -337,6 +338,10 @@ const OrdersPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
   loadOrders();
@@ -349,7 +354,7 @@ const OrdersPage = () => {
       const userData = JSON.parse(localStorage.getItem("userData"));
 
       const data = await getOrdersOfUser(userData.user.userId);
-
+      console.log(orders)
       setOrders(data);
 
     } catch (error) {
@@ -401,6 +406,48 @@ const handleCancelOrder = async (orderId) => {
   const handleViewDetails = (order) => {
     setSelectedOrder(order);
     setShowDetails(true);
+  };
+
+  
+  const openReviewModal = (item, orderId) => {
+
+    setSelectedItem({
+        ...item,
+        orderId
+    });
+
+    setRating(5);
+
+    setComment("");
+
+    setShowReviewModal(true);
+  };
+
+  const handleSubmitReview = async () => {
+
+    if (!selectedItem) {
+      toast.error("No product selected");
+      return;
+    }
+
+    try {
+      const reviewData = {
+
+        productId: selectedItem?.productId,
+        orderId: selectedItem?.orderId,
+        rating,
+        comment
+      };
+      console.log(reviewData);
+     
+      await createReview(reviewData);
+      toast.success("Review added successfully");
+      setShowReviewModal(false);
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add review");
+    }
   };
 
  const filters = [
@@ -630,9 +677,16 @@ const handleCancelOrder = async (orderId) => {
                     <div className="d-flex flex-wrap gap-2 mt-3 pt-3 border-top">
                       {status === 'delivered' && (
                         <>
-                          <button className="btn btn-outline-primary btn-sm btn-custom">
-                            ⭐ Rate & Review
-                          </button>
+                          {order.orderItems.map((item, idx) => (
+                            <button
+                              className="btn btn-outline-primary btn-sm mt-2"
+                              onClick={() =>
+                                openReviewModal(item, order.orderId)
+                              }
+                            >
+                              ⭐ Rate & Review
+                            </button>
+                           ))}
                           <button className="btn btn-outline-secondary btn-sm btn-custom">
                             📦 Return
                           </button>
@@ -674,251 +728,343 @@ const handleCancelOrder = async (orderId) => {
       </div>
 
       {/* ORDER DETAILS MODAL */}
-{showDetails && selectedOrder && (
-  <div
-    className="modal fade show d-block"
-    tabIndex="-1"
-    style={{
-      backgroundColor: "rgba(0,0,0,0.5)"
-    }}
-  >
-    <div className="modal-dialog modal-xl modal-dialog-scrollable">
-      <div className="modal-content border-0 shadow-lg">
-
-        {/* Header */}
+      {showDetails && selectedOrder && (
         <div
-          className="modal-header text-white"
+          className="modal fade show d-block"
+          tabIndex="-1"
           style={{
-            background:
-              "linear-gradient(135deg, #2874f0 0%, #1557b0 100%)"
+            backgroundColor: "rgba(0,0,0,0.5)"
           }}
         >
-          <div>
-            <h4 className="modal-title fw-bold mb-1">
-              Tax Invoice
-            </h4>
+          <div className="modal-dialog modal-xl modal-dialog-scrollable">
+            <div className="modal-content border-0 shadow-lg">
 
-            <small>
-              Order Details & Payment Receipt
-            </small>
-          </div>
+              {/* Header */}
+              <div
+                className="modal-header text-white"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #2874f0 0%, #1557b0 100%)"
+                }}
+              >
+                <div>
+                  <h4 className="modal-title fw-bold mb-1">
+                    Tax Invoice
+                  </h4>
 
-          <button
-            className="btn-close btn-close-white"
-            onClick={() => setShowDetails(false)}
-          ></button>
-        </div>
-
-        {/* Body */}
-        <div className="modal-body p-4">
-
-          {/* Top Details */}
-          <div className="row mb-4">
-            <div className="col-md-6">
-              <h5 className="fw-bold">
-                Electronic Store
-              </h5>
-
-              <p className="mb-1 text-muted">
-                Bangalore, Karnataka
-              </p>
-
-              <p className="mb-1 text-muted">
-                GSTIN : 29ABCDE1234F1Z5
-              </p>
-
-              <p className="mb-0 text-muted">
-                support@electronicstore.com
-              </p>
-            </div>
-
-            <div className="col-md-6 text-md-end mt-3 mt-md-0">
-              <h6 className="fw-bold">
-                Order ID
-              </h6>
-
-              <p>{selectedOrder.orderId}</p>
-
-              <h6 className="fw-bold">
-                Order Date
-              </h6>
-
-              <p>
-                {new Date(
-                  selectedOrder.orderDate
-                ).toLocaleDateString("en-IN")}
-              </p>
-            </div>
-          </div>
-
-          <hr />
-
-          {/* Payment + Shipping */}
-          <div className="row mb-4">
-
-            <div className="col-md-6">
-              <h6 className="fw-bold mb-2">
-                Shipping Details
-              </h6>
-
-              <p className="mb-1">
-                Address ID : {selectedOrder.addressId}
-              </p>
-
-              <p className="mb-1">
-                Shipping Method :{" "}
-                {selectedOrder.shippingMethod}
-              </p>
-
-              <p className="mb-0">
-                Order Status :{" "}
-                {selectedOrder.orderStatus}
-              </p>
-            </div>
-
-            <div className="col-md-6 mt-3 mt-md-0">
-              <h6 className="fw-bold mb-2">
-                Payment Details
-              </h6>
-
-              <p className="mb-1">
-                Payment Method :{" "}
-                {selectedOrder.paymentMethod}
-              </p>
-
-              <p className="mb-0">
-                Payment Status :{" "}
-                {selectedOrder.paymentStatus}
-              </p>
-            </div>
-
-          </div>
-
-          {/* Product Table */}
-          <div className="table-responsive mb-4">
-            <table className="table table-bordered align-middle">
-
-              <thead className="table-light">
-                <tr>
-                  <th>Product</th>
-                  <th>Qty</th>
-                  <th>Price</th>
-                  <th>Subtotal</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {selectedOrder.orderItems?.map(
-                  (item, index) => (
-                    <tr key={index}>
-                      <td>
-                        {item.productTitle}
-                      </td>
-
-                      <td>
-                        {item.quantity}
-                      </td>
-
-                      <td>
-                        ₹{item.price}
-                      </td>
-
-                      <td>
-                        ₹{item.subtotal}
-                      </td>
-                    </tr>
-                  )
-                )}
-              </tbody>
-
-            </table>
-          </div>
-
-          {/* Price Summary */}
-          <div className="row justify-content-end">
-
-            <div className="col-md-5">
-              <div className="border rounded p-3 bg-light">
-
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Subtotal</span>
-
-                  <span>
-                    ₹{selectedOrder.subtotal?.toLocaleString("en-IN")}
-                  </span>
+                  <small>
+                    Order Details & Payment Receipt
+                  </small>
                 </div>
 
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Shipping Fee</span>
+                <button
+                  className="btn-close btn-close-white"
+                  onClick={() => setShowDetails(false)}
+                ></button>
+              </div>
 
-                  <span>
-                    ₹{selectedOrder.shippingFee?.toLocaleString("en-IN")}
-                  </span>
-                </div>
+              {/* Body */}
+              <div className="modal-body p-4">
 
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Discount</span>
+                {/* Top Details */}
+                <div className="row mb-4">
+                  <div className="col-md-6">
+                    <h5 className="fw-bold">
+                      Electronic Store
+                    </h5>
 
-                  <span className="text-success">
-                    - ₹{selectedOrder.discount?.toLocaleString("en-IN")}
-                  </span>
+                    <p className="mb-1 text-muted">
+                      Bangalore, Karnataka
+                    </p>
+
+                    <p className="mb-1 text-muted">
+                      GSTIN : 29ABCDE1234F1Z5
+                    </p>
+
+                    <p className="mb-0 text-muted">
+                      support@electronicstore.com
+                    </p>
+                  </div>
+
+                  <div className="col-md-6 text-md-end mt-3 mt-md-0">
+                    <h6 className="fw-bold">
+                      Order ID
+                    </h6>
+
+                    <p>{selectedOrder.orderId}</p>
+
+                    <h6 className="fw-bold">
+                      Order Date
+                    </h6>
+
+                    <p>
+                      {new Date(
+                        selectedOrder.orderDate
+                      ).toLocaleDateString("en-IN")}
+                    </p>
+                  </div>
                 </div>
 
                 <hr />
 
-                <div className="d-flex justify-content-between fw-bold fs-5">
+                {/* Payment + Shipping */}
+                <div className="row mb-4">
 
-                  <span>Total Amount</span>
+                  <div className="col-md-6">
+                    <h6 className="fw-bold mb-2">
+                      Shipping Details
+                    </h6>
 
-                  <span style={{ color: "#2874f0" }}>
-                    ₹{selectedOrder.totalAmount?.toLocaleString("en-IN")}
-                  </span>
+                    <p className="mb-1">
+                      Address ID : {selectedOrder.addressId}
+                    </p>
+
+                    <p className="mb-1">
+                      Shipping Method :{" "}
+                      {selectedOrder.shippingMethod}
+                    </p>
+
+                    <p className="mb-0">
+                      Order Status :{" "}
+                      {selectedOrder.orderStatus}
+                    </p>
+                  </div>
+
+                  <div className="col-md-6 mt-3 mt-md-0">
+                    <h6 className="fw-bold mb-2">
+                      Payment Details
+                    </h6>
+
+                    <p className="mb-1">
+                      Payment Method :{" "}
+                      {selectedOrder.paymentMethod}
+                    </p>
+
+                    <p className="mb-0">
+                      Payment Status :{" "}
+                      {selectedOrder.paymentStatus}
+                    </p>
+                  </div>
 
                 </div>
 
+                {/* Product Table */}
+                <div className="table-responsive mb-4">
+                  <table className="table table-bordered align-middle">
+
+                    <thead className="table-light">
+                      <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {selectedOrder.orderItems?.map(
+                        (item, index) => (
+                          <tr key={index}>
+                            <td>
+                              {item.productTitle}
+                            </td>
+
+                            <td>
+                              {item.quantity}
+                            </td>
+
+                            <td>
+                              ₹{item.price}
+                            </td>
+
+                            <td>
+                              ₹{item.subtotal}
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+
+                  </table>
+                </div>
+
+                {/* Price Summary */}
+                <div className="row justify-content-end">
+
+                  <div className="col-md-5">
+                    <div className="border rounded p-3 bg-light">
+
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+
+                        <span>
+                          ₹{selectedOrder.subtotal?.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Shipping Fee</span>
+
+                        <span>
+                          ₹{selectedOrder.shippingFee?.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+
+                      <div className="d-flex justify-content-between mb-2">
+                        <span>Discount</span>
+
+                        <span className="text-success">
+                          - ₹{selectedOrder.discount?.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+
+                      <hr />
+
+                      <div className="d-flex justify-content-between fw-bold fs-5">
+
+                        <span>Total Amount</span>
+
+                        <span style={{ color: "#2874f0" }}>
+                          ₹{selectedOrder.totalAmount?.toLocaleString("en-IN")}
+                        </span>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Notes */}
+                {selectedOrder.notes && (
+                  <div className="mt-4">
+                    <h6 className="fw-bold">
+                      Notes
+                    </h6>
+
+                    <p className="text-muted mb-0">
+                      {selectedOrder.notes}
+                    </p>
+                  </div>
+                )}
+
               </div>
-            </div>
 
+              {/* Footer */}
+              <div className="modal-footer">
+
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowDetails(false)}
+                >
+                  Close
+                </button>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={() => window.print()}
+                >
+                  🖨 Print Invoice
+                </button>
+
+              </div>
+
+            </div>
           </div>
+        </div>
+      )}
 
-          {/* Notes */}
-          {selectedOrder.notes && (
-            <div className="mt-4">
-              <h6 className="fw-bold">
-                Notes
-              </h6>
+      {/* Review Model */}
+      {showReviewModal && (
+        <div
+          className="modal d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
 
-              <p className="text-muted mb-0">
-                {selectedOrder.notes}
-              </p>
+              <div className="modal-header">
+                <h5 className="modal-title">
+                  Rate & Review
+                </h5>
+
+                <button
+                  className="btn-close"
+                  onClick={() => setShowReviewModal(false)}
+                ></button>
+              </div>
+
+              <div className="modal-body">
+
+                <h6>
+                  {selectedItem?.productTitle}
+                </h6>
+
+                {/* Rating */}
+                <div className="mb-3 mt-3">
+
+                  <label className="form-label">
+                    Rating
+                  </label>
+
+                  <select
+                    className="form-select"
+                    value={rating}
+                    onChange={(e) =>
+                      setRating(Number(e.target.value))
+                    }
+                  >
+                    <option value={5}>5 ⭐</option>
+                    <option value={4}>4 ⭐</option>
+                    <option value={3}>3 ⭐</option>
+                    <option value={2}>2 ⭐</option>
+                    <option value={1}>1 ⭐</option>
+                  </select>
+                </div>
+
+                {/* Comment */}
+                <div className="mb-3">
+
+                  <label className="form-label">
+                    Review
+                  </label>
+
+                  <textarea
+                    className="form-control"
+                    rows="4"
+                    placeholder="Write your review..."
+                    value={comment}
+                    onChange={(e) =>
+                      setComment(e.target.value)
+                    }
+                  />
+                </div>
+
+              </div>
+
+              <div className="modal-footer">
+
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowReviewModal(false)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSubmitReview}
+                >
+                  Submit Review
+                </button>
+
+              </div>
+
             </div>
-          )}
-
+          </div>
         </div>
-
-        {/* Footer */}
-        <div className="modal-footer">
-
-          <button
-            className="btn btn-secondary"
-            onClick={() => setShowDetails(false)}
-          >
-            Close
-          </button>
-
-          <button
-            className="btn btn-primary"
-            onClick={() => window.print()}
-          >
-            🖨 Print Invoice
-          </button>
-
-        </div>
-
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };

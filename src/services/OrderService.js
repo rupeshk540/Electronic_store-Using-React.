@@ -6,6 +6,7 @@ import { privateAxios} from "./AxiosService";
 export const createOrderAndInitPayment = async (orderData) => {
   try {
     const { data } = await privateAxios.post(`/orders`, orderData);
+    console.log(orderData)
     return data; // PaymentInitResponse from backend
   } catch (error) {
     console.error("Error creating order:", error);
