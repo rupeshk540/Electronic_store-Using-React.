@@ -1,336 +1,10 @@
 
-// import React, { useContext, useEffect, useState } from 'react';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import { ListOrdered } from 'lucide-react';
-// import { getOrdersOfUser } from '../../services/OrderService';
-// import UserContext from '../../context/UserContext';
-
-// export default function OrdersPage() {
-  
-//   const [orders, setOrders] = useState([]);
-//   const [activeFilter, setActiveFilter] = useState('all');
-//   const{userData} = useContext(UserContext);
-
-//   useEffect(() => {
-//      if (!userData?.user?.userId) return;
-//     const getOrders = async () => {
-//       const data = await getOrdersOfUser(userData?.user?.userId);
-//       console.log(data)
-//       setOrders(data);
-//     };
-//     getOrders();
-//   }, [userData]);
-
-//   const getEstimatedDelivery = (orderDate, shippingMethod) => {
-//   const daysToAdd = shippingMethod === "STANDARD" ? 6
-//                  : shippingMethod === "EXPRESS" ? 3
-//                  : shippingMethod === "OVERNIGHT" ? 1 : 6;
-//   const date = new Date(orderDate);
-//   date.setDate(date.getDate() + daysToAdd);
-//   return date.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
-// };
-
-//   const getStatusBadge = (status) => {
-//   const map = { PLACED: "primary", SHIPPED: "info", DELIVERED: "success", CANCELLED: "danger" };
-//   return map[status] || "secondary";
-// };
-
-//   const handleProductClick = (productId) => {
-//     window.location.href = `/products/${productId}`;
-//   };
-
-//   const filteredOrders = orders.filter(order => {
-//     if (activeFilter === 'all') return true;
-//     return order.status.toLowerCase() === activeFilter.toLowerCase();
-//   });
-
-//   return (
-//     <div style={{ backgroundColor: '#f5f9fd', minHeight: '100vh' }}>
-//       {/* Header */}
-//       <div style={{ 
-//         background: '#aaaaaaff', 
-//         color: '#1a3a52', 
-//         padding: '1.5rem 0',
-//         border:'5px'
-//       }}>
-//         <div className="container">
-//           <h3 className="mb-0 fw-bold"><ListOrdered size={30}/> My Orders</h3>
-//         </div>
-//       </div>
-
-//       <div className="container py-4">
-//         {/* Filter Tabs */}
-//         <div className="card shadow-sm mb-4" style={{ 
-//           border: 'none', 
-//           borderRadius: '12px',
-//           overflow: 'hidden'
-//         }}>
-//           <div className="card-body p-3">
-//             <div className="d-flex gap-2 flex-wrap">
-//               {['all', 'delivered', 'shipped', 'cancelled'].map(filter => (
-//                 <button 
-//                   key={filter}
-//                   className={`btn ${activeFilter === filter ? 'btn-primary' : 'btn-outline-secondary'}`}
-//                   onClick={() => setActiveFilter(filter)}
-//                   style={{ 
-//                     borderRadius: '20px',
-//                     padding: '0.5rem 1.5rem',
-//                     textTransform: 'capitalize',
-//                     fontWeight: '500',
-//                     transition: 'all 0.3s',
-//                     backgroundColor: activeFilter === filter ? '#87ceeb' : 'transparent',
-//                     borderColor: activeFilter === filter ? '#87ceeb' : '#dee2e6',
-//                     color: activeFilter === filter ? '#fff' : '#6c757d'
-//                   }}
-//                 >
-//                   {filter === 'all' ? 'All Orders' : filter}
-//                 </button>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Orders List */}
-//         {filteredOrders.length === 0 ? (
-//           <div className="card shadow-sm text-center py-5" style={{ 
-//             border: 'none', 
-//             borderRadius: '12px',
-//             backgroundColor: '#fff'
-//           }}>
-//             <div className="card-body">
-//               <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#87ceeb" strokeWidth="1.5" style={{ margin: '0 auto 1rem' }}>
-//                 <path d="M9 11l3 3L22 4"></path>
-//                 <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
-//               </svg>
-//               <h5 className="text-muted">No orders found</h5>
-//               <p className="text-muted mb-0">Try adjusting your filters</p>
-//             </div>
-//           </div>
-//         ) : (
-//           filteredOrders.map(order => (
-//             <div key={order.orderId} className="card shadow-sm mb-3" style={{ 
-//               border: 'none', 
-//               borderRadius: '12px',
-//               transition: 'transform 0.2s, box-shadow 0.2s'
-//             }}>
-//               <div className="card-body p-4">
-//                 {/* Order Header */}
-//                 <div className="d-flex justify-content-between align-items-start mb-3 pb-3" style={{ borderBottom: '2px solid #f0f4f8' }}>
-//                   <div>
-//                     <h6 className="mb-1 fw-bold" style={{ color: '#1a3a52' }}>Order #{order.orderId}</h6>
-//                     <small className="text-muted">
-//                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '4px', verticalAlign: 'middle' }}>
-//                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-//                         <line x1="16" y1="2" x2="16" y2="6"></line>
-//                         <line x1="8" y1="2" x2="8" y2="6"></line>
-//                         <line x1="3" y1="10" x2="21" y2="10"></line>
-//                       </svg>
-//                       {new Date(order.orderDate)?.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
-//                     </small>
-//                   </div>
-//                   <span className={`badge bg-${getStatusBadge(order.orderStatus)}`} style={{ 
-//                     fontSize: '0.85rem',
-//                     padding: '0.5rem 1rem',
-//                     borderRadius: '20px',
-//                     fontWeight: '500'
-//                   }}>
-//                     {order?.orderStatus}
-//                   </span>
-//                 </div>
-
-//                 {/* Order Items */}
-//                 {order.orderItems.map((item, idx) => (
-//                   <div key={idx} className="mb-3">
-//                     <div className="row g-3">
-//                       {/* Product Card - Clickable */}
-//                       <div className="col-md-8">
-//                         <div 
-//                           onClick={() => handleProductClick(item?.productId)}
-//                           style={{ 
-//                             padding: '1rem',
-//                             backgroundColor: '#fff',
-//                             borderRadius: '12px',
-//                             border: '2px solid #e8f0f7',
-//                             cursor: 'pointer',
-//                             transition: 'all 0.3s',
-//                             height: '100%'
-//                           }}
-//                           onMouseEnter={(e) => {
-//                             e.currentTarget.style.border = '2px solid #87ceeb';
-//                             e.currentTarget.style.transform = 'translateY(-2px)';
-//                             e.currentTarget.style.boxShadow = '0 4px 12px rgba(135, 206, 235, 0.2)';
-//                           }}
-//                           onMouseLeave={(e) => {
-//                             e.currentTarget.style.border = '2px solid #e8f0f7';
-//                             e.currentTarget.style.transform = 'translateY(0)';
-//                             e.currentTarget.style.boxShadow = 'none';
-//                           }}
-//                         >
-//                           <div className="d-flex align-items-center">
-//                             <img 
-//                               src={item?.productImageUrls?.[0] || 'default'} 
-//                               alt={item?.productTitle} 
-//                               className="rounded"
-//                               style={{ 
-//                                 width: '100px', 
-//                                 height: '100px', 
-//                                 objectFit: 'cover',
-//                                 border: '1px solid #e8f0f7'
-//                               }}
-//                             />
-//                             <div className="ms-3 flex-grow-1">
-//                               <h6 className="mb-2" style={{ 
-//                                 color: '#1a3a52',
-//                                 fontWeight: '600',
-//                                 fontSize: '1rem'
-//                               }}>
-//                                 {item?.productTitle}
-//                               </h6>
-//                               <p className="mb-2 text-muted" style={{ fontSize: '0.9rem' }}>
-//                                 Quantity: {item?.quantity}
-//                               </p>
-//                               <div className="d-flex align-items-center gap-2">
-//                                 <span className="fw-bold" style={{ 
-//                                   color: '#1a3a52', 
-//                                   fontSize: '1.2rem' 
-//                                 }}>
-//                                   ₹{item?.price?.toLocaleString()}
-//                                 </span>
-//                               </div>
-//                             </div>
-//                           </div>
-//                         </div>
-//                       </div>
-
-//                       {/* Action Card */}
-//                       <div className="col-md-4">
-//                         <div style={{ 
-//                           padding: '1rem',
-//                           backgroundColor: '#fafbfc',
-//                           borderRadius: '12px',
-//                           border: '2px solid #e8f0f7',
-//                           height: '100%',
-//                           display: 'flex',
-//                           flexDirection: 'column',
-//                           justifyContent: 'center'
-//                         }}>
-//                           {(item.deliveredDate || order.orderStatus=="DELIVERED" )&& (
-//                             <div className="mb-3 text-center">
-//                               <small className="text-success d-block" style={{ fontWeight: '500', fontSize: '0.85rem' }}>
-//                                 ✓ Delivered on
-//                               </small>
-//                               <small className="text-success d-block fw-bold">
-//                                 {new Date(order.updatedAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-//                               </small>
-//                             </div>
-//                           )}
-//                           {order.orderStatus!=="DELIVERED"  && (
-//                             <div className="mb-3 text-center">
-//                               <small className="text-info d-block" style={{ fontWeight: '500', fontSize: '0.85rem' }}>
-//                                 🚚 Expected by
-//                               </small>
-//                               <small className="text-info d-block fw-bold">
-//                                 {getEstimatedDelivery(order.orderDate, order.shippingMethod)}
-//                               </small>
-//                             </div>
-//                           )}
-//                           <div className="d-flex flex-column gap-2">
-//                             {order.orderStatus === 'DELIVERED' && (
-//                               <>
-//                                 <button className="btn btn-sm w-100" style={{ 
-//                                   backgroundColor: '#87ceeb',
-//                                   color: '#fff',
-//                                   border: 'none',
-//                                   borderRadius: '8px',
-//                                   padding: '0.5rem',
-//                                   fontWeight: '500',
-//                                   transition: 'all 0.2s'
-//                                 }}
-//                                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#386e88ff'}
-//                                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#309ac4ff'}
-//                                 >
-//                                   Rate Product
-//                                 </button>
-//                                 <button className="btn btn-sm btn-outline-secondary w-100" style={{ 
-//                                   borderRadius: '8px',
-//                                   padding: '0.5rem',
-//                                   fontWeight: '500'
-//                                 }}>
-//                                   Return
-//                                 </button>
-//                               </>
-//                             )}
-//                             {(order.orderStatus !=="DELIVERED")&& (
-//                               <>
-//                               <button className="btn btn-sm w-100" style={{ 
-//                                 backgroundColor: '#309ac4ff',
-//                                 color: '#fff',
-//                                 border: 'none',
-//                                 borderRadius: '8px',
-//                                 padding: '0.5rem',
-//                                 fontWeight: '500'
-//                               }}>
-//                                 Track Order
-//                               </button>
-//                                <button className="btn btn-sm w-100" style={{ 
-//                                 backgroundColor: '#6f7071ff',
-//                                 color: '#fff',
-//                                 border: 'none',
-//                                 borderRadius: '8px',
-//                                 padding: '0.5rem',
-//                                 fontWeight: '500'
-//                               }}>
-//                                 Cancel Order
-//                               </button>
-//                               </>
-//                             )}
-//                              {order.orderStatus === 'PENDING' && (
-//                               <button className="btn btn-sm w-100" style={{ 
-//                                 backgroundColor: '#643b3bff',
-//                                 color: '#fff',
-//                                 border: 'none',
-//                                 borderRadius: '8px',
-//                                 padding: '0.5rem',
-//                                 fontWeight: '500'
-//                               }}>
-//                                 Complete Order
-//                               </button>
-//                             )}
-//                             {order.status === 'CANCELED' && (
-//                               <button className="btn btn-sm btn-outline-secondary w-100" style={{ 
-//                                 borderRadius: '8px',
-//                                 padding: '0.5rem',
-//                                 fontWeight: '500'
-//                               }}>
-//                                 Buy Again
-//                               </button>
-//                             )}
-//                           </div>
-//                         </div>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 ))}
-
-//                 {/* Order Footer */}
-//                 <div className="d-flex justify-content-between align-items-center pt-3 mt-2" style={{ borderTop: '2px solid #f0f4f8' }}>
-//                   <span className="text-muted fw-500">Order Total</span>
-//                   <h5 className="mb-0 fw-bold" style={{ color: '#1a3a52' }}>₹{order?.totalAmount?.toLocaleString()}</h5>
-//                 </div>
-//               </div>
-//             </div>
-//           ))
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { cancelOrder, getOrdersOfUser, requestReturn } from '../../services/OrderService';
 import { toast } from 'react-toastify';
 import { createReview } from '../../services/ReviewService';
+import { useNavigate } from 'react-router-dom';
 
 const OrdersPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -342,6 +16,7 @@ const OrdersPage = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
   loadOrders();
@@ -354,7 +29,6 @@ const OrdersPage = () => {
       const userData = JSON.parse(localStorage.getItem("userData"));
 
       const data = await getOrdersOfUser(userData.user.userId);
-      console.log(orders)
       setOrders(data);
 
     } catch (error) {
@@ -473,12 +147,10 @@ const handleReturn = async(orderId) => {
 
  const filters = [
   { key: "all", label: "All Orders" },
-
   { key: "active", label: "Active" }, 
   // placed + dispatched + shipped + pending
 
   { key: "delivered", label: "Delivered" },
-
   { key: "returns", label: "Returns" }, 
   // return_requested + return_approved + returned + return_rejected
 
@@ -496,6 +168,13 @@ const handleReturn = async(orderId) => {
     return_approved: { label: 'Return Approved', color: '#2e7d32', bgColor: '#e8f5e9', icon: '✔️' },
     returned: { label: 'Returned', color: '#455a64', bgColor: '#eceff1', icon: '📦' },
     return_rejected: { label: 'Return Rejected', color: '#c62828', bgColor: '#ffebee', icon: '❌' }
+  };
+
+  const paymentConfig = {
+    SUCCESS: { label: "Paid", color: "#2e7d32", bgColor: "#e8f5e9", icon: "💳" },
+    PENDING: { label: "Pending", color: "#ef6c00", bgColor: "#fff3e0", icon: "⏳" },
+    FAILED: { label: "Failed", color: "#c62828", bgColor: "#ffebee", icon: "❌" },
+    REFUNDED: { label: "Refunded", color: "#6a1b9a", bgColor: "#f3e5f5", icon: "💸" }
   };
 
   const filteredOrders =
@@ -632,16 +311,36 @@ const handleReturn = async(orderId) => {
               >
                 {filter.label}
                 <span className="ms-2 badge bg-light text-dark">
-                  {filter.key === 'all'
-                    ? orders.length
-                    : orders.filter(
-                        o => mapOrderStatus(o.orderStatus)=== filter.key
-                      ).length}
+                  {filter.key === "all" && orders.length}
+                  {filter.key === "active" &&
+                    orders.filter(o =>
+                      ["placed", "dispatched", "shipped", "pending"]
+                        .includes(mapOrderStatus(o.orderStatus))
+                    ).length
+                  }
+
+                  {filter.key === "returns" &&
+                    orders.filter(o =>
+                      [
+                        "return_requested",
+                        "return_approved",
+                        "returned",
+                        "return_rejected"
+                      ].includes(mapOrderStatus(o.orderStatus))
+                    ).length
+                  }
+
+                  {!["all", "active", "returns"].includes(filter.key) &&
+                    orders.filter(
+                      o => mapOrderStatus(o.orderStatus) === filter.key
+                    ).length
+                  }
+
                 </span>
               </button>
-            ))}
+             ))}
+            </div>
           </div>
-        </div>
 
         {/* Orders List */}
         {filteredOrders.length === 0 ? (
@@ -663,17 +362,18 @@ const handleReturn = async(orderId) => {
                     {/* Order Header */}
                     <div className="row mb-3">
                       <div className="col-md-8">
-                        <div className="d-flex align-items-center gap-3 mb-2">
+                       <div className="d-flex align-items-center gap-2 flex-wrap mb-2">
                           <h5 className="mb-0 order-id">{order.orderId}</h5>
                           <span 
                             className="status-badge px-3 py-1 rounded-pill"
                             style={{
-                              backgroundColor: statusConfig[status].bgColor,
-                              color: statusConfig[status].color,
+                              backgroundColor: statusConfig[status]?.bgColor || "#f5f5f5",
+                              color: statusConfig[status]?.color || "#333",
                               fontSize: '0.85rem'
                             }}
                           >
-                            {statusConfig[status].icon} {statusConfig[status].label}
+                            {statusConfig[status]?.icon}
+                            {statusConfig[status]?.label || status}
                           </span>
                         </div>
                         <div className="text-muted small">
@@ -703,11 +403,24 @@ const handleReturn = async(orderId) => {
 
                     {/* Order Items */}
                     {order.orderItems.map((item, idx) => (
-                      <div key={idx} className="row mb-3">
+                      <div key={idx} 
+                        className="row mb-3 rounded"
+                        style={{
+                          cursor: "pointer",
+                          transition: "0.2s ease"
+                        }}
+                        onClick={() => navigate(`/products/${item.productId}`)}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "#e1e2e3";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "transparent";
+                        }}
+                      >
                         <div className="col-auto">
                           <img 
                             src={item.image} 
-                            alt={item.name}
+                            alt={item.productTitle}
                             className="item-image"
                             width="80"
                             height="80"
@@ -724,54 +437,95 @@ const handleReturn = async(orderId) => {
                     ))}
 
                     {/* Action Buttons */}
-                    <div className="d-flex flex-wrap gap-2 mt-3 pt-3 border-top">
-                      {status === 'delivered' && (
-                        <>
-                          {order.orderItems.map((item, idx) => (
-                            <button
-                              className="btn btn-outline-primary btn-sm mt-2"
-                              onClick={() =>
-                                openReviewModal(item, order.orderId)
+                    <div className="d-flex flex-wrap  align-items-center gap-2 mt-3 pt-3 border-top">
+                      {/* LEFT SIDE ACTION BUTTONS */}
+                      <div className="d-flex flex-wrap gap-2">
+                    
+                        {status === 'delivered' && (
+                          <>
+                            {order.orderItems.map((item, idx) => (
+                              <button
+                                className="btn btn-outline-primary btn-sm mt-2"
+                                onClick={() =>
+                                  openReviewModal(item, order.orderId)
+                                }
+                              >
+                                Rate & Review
+                              </button>
+                            ))}
+                            {order.orderStatus === "DELIVERED" && (
+                              <button 
+                                className="btn btn-outline-warning btn-sm mt-2"
+                                onClick={() => handleReturn(order.orderId)}>
+                                Return Order
+                              </button>
+                            )}
+                          </>
+                        )}
+                        {status === 'shipped' && (
+                          <button className="btn btn-outline-primary btn-sm btn-custom">
+                            📍 Track Order
+                          </button>
+                        )}
+                        {status === 'placed' && (
+                          <button 
+                            className="btn btn-outline-danger btn-sm btn-custom"
+                            onClick={() => {
+                                const confirmCancel = window.confirm(
+                                "Are you sure you want to cancel this order?"
+                              );
+                              if(confirmCancel){
+                                handleCancelOrder(order.orderId);
                               }
-                            >
-                              Rate & Review
-                            </button>
-                           ))}
-                          {order.orderStatus === "DELIVERED" && (
-                            <button 
-                              className="btn btn-outline-warning btn-sm mt-2"
-                              onClick={() => handleReturn(order.orderId)}>
-                              Return Order
-                            </button>
-                          )}
-                        </>
-                      )}
-                      {status === 'shipped' && (
-                        <button className="btn btn-outline-primary btn-sm btn-custom">
-                          📍 Track Order
-                        </button>
-                      )}
-                      {status === 'placed' && (
-                        <button 
-                          className="btn btn-outline-danger btn-sm btn-custom"
-                          onClick={() => {
-                              const confirmCancel = window.confirm(
-                              "Are you sure you want to cancel this order?"
-                            );
-                            if(confirmCancel){
-                              handleCancelOrder(order.orderId);
-                            }
+                            }}
+                          >
+                            ✕ Cancel Order
+                          </button>
+                        )}
+                      </div>
+
+                      {/* RIGHT SIDE */}
+                      <div className="ms-auto d-flex align-items-center gap-2">
+                        <span
+                          className="px-3 py-2 rounded d-inline-flex align-items-center gap-2"
+                          style={{
+                            backgroundColor:
+                              order.paymentStatus === "SUCCESS"
+                                ? "#e8f5e9"
+                                : order.paymentStatus === "PENDING"
+                                ? "#f6f6f6"
+                                : order.paymentStatus === "FAILED"
+                                ? "#ffebee"
+                                : "#ebe6ec",
+
+                            color:
+                              order.paymentStatus === "SUCCESS"
+                                ? "#2e7d32"
+                                : order.paymentStatus === "PENDING"
+                                ? "#ef6c00"
+                                : order.paymentStatus === "FAILED"
+                                ? "#c62828"
+                                : "#6a1b9a",
+
+                            fontSize: "13px",
+                            fontWeight: "600"
                           }}
+                        >Payment Status :
+                        {order.paymentStatus === "SUCCESS" && "💳 Paid"}
+
+                        {order.paymentStatus === "PENDING" && "⏳ Pending"}
+
+                        {order.paymentStatus === "FAILED" && "❌ Failed"}
+
+                        {order.paymentStatus === "REFUNDED" && "💸 Refunded"}
+                        </span>
+                        <button
+                          className="btn btn-outline-secondary btn-sm btn-custom ms-auto"
+                          onClick={() => handleViewDetails(order)}
                         >
-                          ✕ Cancel Order
+                          📄 View Details
                         </button>
-                      )}
-                      <button
-                        className="btn btn-outline-secondary btn-sm btn-custom ms-auto"
-                        onClick={() => handleViewDetails(order)}
-                      >
-                        📄 View Details
-                      </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1120,6 +874,8 @@ const handleReturn = async(orderId) => {
         </div>
       )}
     </div>
+
+   
   );
 };
 
