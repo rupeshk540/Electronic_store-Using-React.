@@ -4,11 +4,14 @@ import WishlistContext from '../../context/WishlistContext';
 import CartContext from "../../context/CartContext";
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
+import { isLoggedIn } from '../../auth/HelperAuth';
+import UserContext from '../../context/UserContext';
 
 const WishlistPage = () => {
  
   const { wishlist, addItemWishlist, removeItemWishlist } = useContext(WishlistContext);
   const {cart, addItemCart,removeItemCart } = useContext(CartContext);
+  const { isLogin} = useContext(UserContext);
   const [showAddedToCart, setShowAddedToCart] = useState(false);
   const [showRemovedFromCart, setShowRemovedFromCart] = useState(false);
   const navigate = useNavigate();
@@ -45,9 +48,20 @@ const WishlistPage = () => {
   };
 
   // Handle buy now
-  const handleBuyNow = (productId) => {
-    console.log(`Buy now clicked for product ${productId}`);
-  };
+ const handleBuyNow = (product,quantity=1) => {
+  if (!isLogin) {
+    // redirect to login
+    navigate("/login");
+    return;
+  }
+
+  navigate("/user/checkout", {
+  state: {
+    productId: product.productId,
+    quantity
+  }
+});
+};
 
    if (!wishlist || wishlist.length === 0) {
     return (
@@ -200,7 +214,7 @@ const WishlistPage = () => {
                   >
                     <img 
                       src={product?.productImageUrls?.[0]} 
-                      alt={product.title}
+                      alt={product?.title}
                       className="w-100 h-100"
                       style={{ 
                         objectFit: 'contain'
@@ -211,7 +225,7 @@ const WishlistPage = () => {
                   {/* Product Info */}
                   <div className="card-body  px-2 pb-2" style={{ padding: '8px 0' }}>
                     <h6 className="card-title mb-1  fw-bold" style={{ fontSize: '0.8rem', color: '#333' }}>
-                      {product.title}
+                      {product?.title}
                     </h6>
                     <p className="card-text text-muted mb-1" style={{ fontSize: '0.7rem', lineHeight: '1.2' }}>
                       {/* {product.description} */}
@@ -262,7 +276,7 @@ const WishlistPage = () => {
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleBuyNow(product.id);
+                          handleBuyNow(product);
                         }}
                         onMouseOver={(e) => {
                           e.target.style.backgroundColor = '#171313ff';
@@ -286,9 +300,3 @@ const WishlistPage = () => {
 };
 
 export default WishlistPage;
-
-// .wishlist-grid {
-//   display: grid;
-//   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-//   gap: 16px;
-// }

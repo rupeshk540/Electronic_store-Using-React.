@@ -9,6 +9,7 @@ import CartContext from '../../context/CartContext';
 import { useLocation } from 'react-router-dom';
 import UserContext from '../../context/UserContext';
 import PaymentSuccessCard from '../../components/users/PaymentSuccessCard';
+import { getProduct } from '../../services/ProductService';
 
 const CheckoutPage = () => {
   
@@ -16,11 +17,10 @@ const CheckoutPage = () => {
   const { cart } = useContext(CartContext);
   const {userData} =useContext(UserContext);
   const location = useLocation();
-  const buyNowItem = location.state?.buyNowItem;
+  const productId = location.state?.productId;
+  const quantity = location.state?.quantity || 1;
 
-  // If Buy Now, use single product; else use cart
-  const checkoutItems = buyNowItem? [buyNowItem] : (cart?.items || []); 
- 
+  const [buyNowItem, setBuyNowItem] = useState(null);
   const [formData, setFormData] = useState({
   selectedAddressId:addresses?.find(addr => addr.isDefault)?.id || null,
   useNewAddress: false,       // user chooses new address instead of saved one
@@ -48,6 +48,28 @@ const CheckoutPage = () => {
   const [paymentSuccess, setPaymentSuccess] = useState('');
   const [orderSuccessData, setOrderSuccessData] = useState(null);
 
+//useEffect to load product
+  useEffect(() => {
+  if (productId) {
+    getProduct(productId)
+      .then((product) => {
+
+        setBuyNowItem({
+          product,
+          quantity
+        });
+
+      })
+      .catch((err) => {
+        console.error("Failed to load product", err);
+      });
+  }
+
+}, [productId, quantity]);
+
+const checkoutItems = buyNowItem
+  ? [buyNowItem]
+  : (cart?.items || []);
   
 
  // ---------------------- Helper Functions -----------------------
@@ -253,6 +275,13 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
+  if (productId && !buyNowItem) {
+    return (
+      <div className="text-center mt-5">
+        <div className="spinner-border text-primary"></div>
+      </div>
+    );
+  }
   return (
     <div className="container mt-4 mb-5">
       <div className="row mb-4">
@@ -376,19 +405,19 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
               <div className="card-body">
                 <div className="mb-3">
                   {checkoutItems?.map(item => (
-                    <div key={item.cartItemId} className="d-flex align-items-center mb-3">
+                    <div key={item?.cartItemId || item?.product?.productId} className="d-flex align-items-center mb-3">
                       <img 
-                        src={item.product.productImageUrls?.[0]} 
-                        alt={item.product.title}
+                        src={item?.product?.productImageUrls?.[0]} 
+                        alt={item?.product?.title}
                         className="rounded me-3"
                         style={{ width: '50px', height: '50px', objectFit: 'contain' }}
                       />
                       <div className="flex-grow-1">
-                        <h6 className="mb-0 small">{item.product.title}</h6>
-                        <small className="text-muted">Qty: {item.quantity}</small>
+                        <h6 className="mb-0 small">{item?.product?.title}</h6>
+                        <small className="text-muted">Qty: {item?.quantity}</small>
                       </div>
                       <div className="text-end">
-                        <strong>${(item.product.discountedPrice * item.quantity).toFixed(2)}</strong>
+                        <strong>${(item?.product?.discountedPrice * item?.quantity).toFixed(2)}</strong>
                       </div>
                     </div>
                   ))}

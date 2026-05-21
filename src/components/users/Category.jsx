@@ -26,10 +26,7 @@ const CategoryPage = () => {
   const productsPerPage = 8;
     
 
-  // ============================================================================
   // API CALLS - REPLACE THESE WITH YOUR ACTUAL BACKEND CALLS
-  // ============================================================================
-
   useEffect(() => {
     fetchCategories(0,10);
     fetchProducts();
@@ -60,9 +57,7 @@ const CategoryPage = () => {
 
   let fetchPromise;
 
-  // ==============================
   // CATEGORY PRODUCTS
-  // ==============================
   if (categoryId && categoryId !== "all") {
 
     fetchPromise = getProductsOfCategories(
@@ -73,9 +68,7 @@ const CategoryPage = () => {
 
   }
 
-  // ==============================
   // ALL PRODUCTS
-  // ==============================
   else {
 
     fetchPromise = getAllLiveProducts(
@@ -85,9 +78,7 @@ const CategoryPage = () => {
 
   }
 
-  // ==============================
   // HANDLE RESPONSE
-  // ==============================
   fetchPromise
     .then((data) => {
 
@@ -137,10 +128,7 @@ const handleCategoryChange = (categoryId) => {
 
 };
 
-  // ============================================================================
   // FILTERING AND SORTING
-  // ============================================================================
-
   useEffect(() => {
     let filtered = [...products];
 
@@ -183,10 +171,7 @@ const handleCategoryChange = (categoryId) => {
     setCurrentPage(1);
   }, [products, sortBy, priceRange, minRating]);
 
-// ============================================================================
 // PAGINATION
-// ============================================================================
-
 const indexOfLastProduct = currentPage * productsPerPage;
 const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
 
@@ -212,10 +197,8 @@ const goToPreviousPage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 };
-  // ============================================================================
-  // HELPER FUNCTIONS
-  // ============================================================================
 
+  // HELPER FUNCTIONS
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {

@@ -40,7 +40,7 @@ const AddressStepComponent = ({ formData, savedAddresses, handleInputChange, han
           <h6 className="mb-3">Saved Addresses</h6>
           <div className="row">
             {savedAddresses?.map(address => (
-              <div key={address.id} className="col-md-6 mb-3">
+              <div key={address?.id} className="col-md-6 mb-3">
                 <div 
                   className={`card h-100 cursor-pointer ${
                     formData.selectedAddressId === address.id ? 'border-primary bg-primary bg-opacity-10' : ''

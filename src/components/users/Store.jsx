@@ -10,55 +10,82 @@ const StorePage = () => {
  
   const { wishlist, addItemWishlist, removeItemWishlist } = useContext(WishlistContext);
   const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
   const navigate = useNavigate();
-  const [activeCollection, setActiveCollection] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [pageSize] = useState(12);  // adjust per your needs
   const [hasMore, setHasMore] = useState(true);
-  const categories = ["All", "Trending", "Best Deals", "Electronics", "Fashion","Home & Garden", "Sports & Outdoors"];
-
 
   // reset products when collection/search changes
     useEffect(() => {
     fetchProducts(true); 
-  }, [activeCollection, searchQuery]);
+  }, [searchQuery]);
   
    // Fetch products depending on category or search
-   const fetchProducts = (reset = false) => {
-    if (loading || (!hasMore && !reset)) return;
+  const fetchProducts = (reset = false) => {
+
+      if (loading) return;
+        setLoading(true);
+
+      const currentPage = reset ? 0 : page;
+
+      let fetchPromise;
+
+      // SEARCH PRODUCTS
+      if (searchQuery && searchQuery.trim() !== "") {
+
+        fetchPromise = searchProduct(
+          searchQuery,
+          currentPage,
+          pageSize
+        );
+
+      }
+
+      // ALL PRODUCTS
+      else {
+
+        fetchPromise = getAllLiveProducts(
+          currentPage,
+          pageSize
+        );
+      }
+
+      fetchPromise
+        .then(data => {
+
+          const newProducts = data.content || [];
+
+          if (reset) {
+
+            setProducts(newProducts);
+
+          } else {
+
+            setProducts(prev => [
+              ...prev,
+              ...newProducts
+            ]);
+          }
+
+          setPage(currentPage + 1);
+
+          setHasMore(newProducts.length >= pageSize);
+
+        })
+        .catch(err =>
+          console.error("Error fetching products:", err)
+        )
+        .finally(() => setLoading(false));
+    };
   
-    setLoading(true);
-  
-    let fetchPromise;
-    const currentPage = reset ? 0 : page;
-  
-    if (searchQuery) {
-      fetchPromise = searchProduct(searchQuery, currentPage, pageSize);
-    } else if (activeCollection && activeCollection !== 'all') {
-      fetchPromise = getProductsByCollection(activeCollection, currentPage, pageSize);
-    } else {
-      fetchPromise = getAllLiveProducts(currentPage, pageSize);
-    }
-  
-    fetchPromise
-      .then(data => {
-        const newProducts = data.content || data;
-        if (reset) {
-          setProducts(newProducts);
-        } else {
-          setProducts(prev => [...prev, ...newProducts]);
-        }
-        setPage(currentPage + 1);
-        setHasMore(newProducts.length >= pageSize);
-      })
-      .catch(err => console.error("Error fetching products:", err))
-      .finally(() => setLoading(false));
-  };
-  
+      useEffect(() => {
+        setPage(0);
+        setHasMore(true);
+        fetchProducts(true);
+
+      }, [searchQuery]);
 
 
 
@@ -130,21 +157,21 @@ const StorePage = () => {
                     animationDelay: "0.4s"
                   }}
                 >
-                  <input
+                 <input
                     type="text"
                     className="form-control border-0"
                     placeholder="Search for products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                      padding: "16px 20px",
-                      fontSize: "15px",
-                      backgroundColor: "rgba(255,255,255,0.95)",
-                    }}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   <button
                     className="btn border-0"
                     type="button"
+                    // onClick={() => {
+                    //   setProducts([]);
+                    //   setPage(0);
+                    //   setHasMore(true);
+                    // }}
                     style={{
                       backgroundColor: "#1f2937",
                       color: "white",
@@ -152,25 +179,9 @@ const StorePage = () => {
                       fontWeight: "500",
                     }}
                   >
-                    Search
+                   Search
                   </button>
                 </div>
-              </div>
-
-              {/* 🔹 Categories */}
-              <div className="d-flex flex-wrap gap-2 justify-content-center fadeInUp" style={{animation: "fadeInUp 1s ease 0.3s both"}}>
-                
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    className={`btn ${
-                      selectedCategory === category ? "btn-light text-dark" : "btn-outline-light"
-                    } btn-sm rounded-pill px-3`}
-                    onClick={() => setSelectedCategory(category)}
-                  >
-                    {category}
-                  </button>
-                ))}
               </div>
             </div>
           </div>

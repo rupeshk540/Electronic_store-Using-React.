@@ -120,7 +120,12 @@ const handleBuyNow = (product,quantity=1) => {
   }
 
   // navigate to checkout with product details in state
-  navigate("/user/checkout", { state: { buyNowItem: { product,quantity } } });
+ navigate("/user/checkout", {
+  state: {
+    productId: product.productId,
+    quantity
+  }
+});
 };
 
   const handleRentNow = () => {
