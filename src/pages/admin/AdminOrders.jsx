@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Filter, Download, ChevronDown, Package, Clock, CheckCircle, XCircle, TrendingUp, DollarSign, ShoppingBag } from 'lucide-react';
-import { getAllOrders, updateOrderStatusApi } from '../../services/OrderService';
+import { Clock1, Package2, TrendingUpIcon, CheckCircle2, XCircleIcon, ShoppingBagIcon, DollarSignIcon, Clock10, CheckCircle2Icon, SearchCheck, FilterIcon, ChevronDownCircle, DownloadIcon, Package2Icon } from 'lucide-react';
+import { getAllOrders, updateOrderStatus } from '../../services/OrderService';
 import { toast } from 'react-toastify';
+import { getAddress } from '../../services/AddressService';
 
 // // Sample order data
 // const initialOrders = [
@@ -112,10 +113,30 @@ const OrderManagement = () => {
     try {
       setLoading(true);
       const data = await getAllOrders(0,10,"orderDate","desc");
-      setOrders(data.content);
+      const ordersWithAddress = await Promise.all(
+      data.content.map(async (order) => {
+        try {
 
-      console.log(orders)
+          const address = await getAddress(order.addressId);
 
+          return {
+            ...order,
+            address
+          };
+
+        } catch (err) {
+
+          return {
+            ...order,
+            address: null
+          };
+        }
+      })
+    );
+
+    setOrders(ordersWithAddress);
+    console.log(ordersWithAddress)
+  
     } catch (error) {
       console.error(error);
        console.log(error.response);
@@ -128,11 +149,11 @@ const OrderManagement = () => {
     }
   };
 
-  const updateOrderStatus = async (orderId, newStatus) => {
+  const handleUpdateOrderStatus = async (orderId, newStatus) => {
 
     try {
         
-      await updateOrderStatusApi(orderId, newStatus);
+      await updateOrderStatus(orderId, newStatus);
         setOrders(prev =>
             prev.map(order =>
                 order.orderId === orderId
@@ -145,7 +166,7 @@ const OrderManagement = () => {
             ...prev,
             orderStatus: newStatus
         }));
-
+        toast.success("Order status updated");
         setShowModal(false);
 
     } catch (error) {
@@ -155,22 +176,26 @@ const OrderManagement = () => {
   };
 
   const statusConfig = {
-    pending: { label: 'Pending', color: '#ff9800', icon: Clock, bg: '#fff3e0' },
-    processing: { label: 'Processing', color: '#2196f3', icon: Package, bg: '#e3f2fd' },
-    shipped: { label: 'Shipped', color: '#9c27b0', icon: TrendingUp, bg: '#f3e5f5' },
-    delivered: { label: 'Delivered', color: '#4caf50', icon: CheckCircle, bg: '#e8f5e9' },
-    cancelled: { label: 'Cancelled', color: '#f44336', icon: XCircle, bg: '#ffebee' }
+    PENDING: { label: 'Pending', color: '#ff9800', icon: Clock1, bg: '#fff3e0' },
+    PLACED: { label: 'Placed', color: '#2196f3', icon: Package2, bg: '#e3f2fd' },
+    SHIPPED: { label: 'Shipped', color: '#9c27b0', icon: TrendingUpIcon, bg: '#f3e5f5' },
+    DELIVERED: { label: 'Delivered', color: '#4caf50', icon: CheckCircle2, bg: '#e8f5e9' },
+    CANCELLED: { label: 'Cancelled', color: '#f44336', icon: XCircleIcon, bg: '#ffebee' }
   };
 
   // Filter and search orders
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
-      const matchesSearch = 
-        order?.orderId?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-        order?.customer?.toLowerCase().includes(searchTerm?.toLowerCase()) ||
-        order?.email?.toLowerCase().includes(searchTerm?.toLowerCase());
+      const matchesSearch =
+        order?.orderId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order?.phone?.includes(searchTerm) ||
+
+        `${order?.address?.firstName} ${order?.address?.lastName}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
       
-      const matchesFilter = filterStatus === 'all' || order.status === filterStatus;
+      const matchesFilter = filterStatus === 'all' || order.orderStatus === filterStatus.toUpperCase();
       
       return matchesSearch && matchesFilter;
     });
@@ -180,9 +205,9 @@ const OrderManagement = () => {
   const stats = useMemo(() => {
     return {
       total: orders.length,
-      revenue: orders.reduce((sum, order) => sum + order.total, 0),
-      pending: orders.filter(o => o.status === 'pending').length,
-      delivered: orders.filter(o => o.status === 'delivered').length
+      revenue: orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0),
+      pending: orders.filter(o => o.orderStatus === 'PENDING').length,
+      delivered: orders.filter(o => o.orderStatus === 'DELIVERED').length
     };
   }, [orders]);
 
@@ -194,7 +219,7 @@ const OrderManagement = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: 'linear-gradient(135deg, #787272 0%, #796b86 100%)',
       fontFamily: '"Work Sans", system-ui, -apple-system, sans-serif',
       padding: '2rem'
     }}>
@@ -244,7 +269,7 @@ const OrderManagement = () => {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <ShoppingBag size={28} color="#fff" />
+              <ShoppingBagIcon size={28} color="#fff" />
             </div>
           </div>
         </div>
@@ -263,17 +288,7 @@ const OrderManagement = () => {
               <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Revenue</p>
               <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>₹{stats?.revenue?.toLocaleString()}</h2>
             </div>
-            <div style={{ 
-              width: '60px', 
-              height: '60px', 
-              borderRadius: '12px', 
-              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <DollarSign size={28} color="#fff" />
-            </div>
+            
           </div>
         </div>
 
@@ -300,7 +315,7 @@ const OrderManagement = () => {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <Clock size={28} color="#fff" />
+              <Clock10 size={28} color="#fff" />
             </div>
           </div>
         </div>
@@ -328,7 +343,7 @@ const OrderManagement = () => {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <CheckCircle size={28} color="#fff" />
+              <CheckCircle2Icon size={28} color="#fff" />
             </div>
           </div>
         </div>
@@ -355,7 +370,7 @@ const OrderManagement = () => {
             flex: '1 1 300px',
             position: 'relative'
           }}>
-            <Search 
+            <SearchCheck
               size={20} 
               style={{ 
                 position: 'absolute', 
@@ -387,7 +402,7 @@ const OrderManagement = () => {
 
           {/* Filter */}
           <div style={{ position: 'relative' }}>
-            <Filter 
+            <FilterIcon
               size={18} 
               style={{ 
                 position: 'absolute', 
@@ -420,7 +435,7 @@ const OrderManagement = () => {
               <option value="delivered">Delivered</option>
               <option value="cancelled">Cancelled</option>
             </select>
-            <ChevronDown 
+            <ChevronDownCircle 
               size={18} 
               style={{ 
                 position: 'absolute', 
@@ -453,7 +468,7 @@ const OrderManagement = () => {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <Download size={18} />
+            <DownloadIcon size={18} />
             Export
           </button>
         </div>
@@ -463,23 +478,23 @@ const OrderManagement = () => {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#f8f9fa' }}>
-                <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order ID</th>
-                <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Customer</th>
-                <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Items</th>
-                <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total</th>
-                <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date</th>
-                <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
-                <th style={{ padding: '1rem 2rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Action</th>
+                <th style={{ padding: '1rem 1rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order ID</th>
+                <th style={{ padding: '1rem 1rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Customer</th>
+                <th style={{ padding: '1rem 1rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Items</th>
+                <th style={{ padding: '1rem 1rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total</th>
+                <th style={{ padding: '1rem 1rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date</th>
+                <th style={{ padding: '1rem 1rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
+                <th style={{ padding: '1rem 1rem', textAlign: 'left', fontWeight: '600', color: '#666', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Action</th>
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.map((order, index) => {
+              {filteredOrders?.map((order, index) => {
                 const config = statusConfig[order?.orderStatus];
                 const StatusIcon = config?.icon;
                 
                 return (
                   <tr 
-                    key={order.id}
+                    key={order.orderId}
                     style={{ 
                       borderBottom: '1px solid #f0f0f0',
                       transition: 'background 0.2s ease',
@@ -488,21 +503,21 @@ const OrderManagement = () => {
                     onMouseEnter={(e) => e.currentTarget.style.background = '#f8f9fa'}
                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td style={{ padding: '1.25rem 2rem' }}>
-                      <span style={{ fontWeight: '600', color: '#667eea' }}>{order.id}</span>
+                    <td style={{ padding: '1rem 1rem' }}>
+                      <span style={{ fontWeight: '600', color: '#667eea' }}>{order.orderId}</span>
                     </td>
-                    <td style={{ padding: '1.25rem 2rem' }}>
+                    <td style={{ padding: '1rem 1rem' }}>
                       <div>
-                        <div style={{ fontWeight: '600', color: '#333', marginBottom: '0.25rem' }}>{order.customer}</div>
-                        <div style={{ fontSize: '0.85rem', color: '#999' }}>{order.email}</div>
+                        <div style={{ fontWeight: '600', color: '#333', marginBottom: '0.25rem' }}>{order?.address?.firstName} {order?.address?.lastName}</div>
+                        <div style={{ fontSize: '0.85rem', color: '#bc6060' }}>{order.email}</div>
                       </div>
                     </td>
-                    <td style={{ padding: '1.25rem 2rem', color: '#666' }}>{order.items}</td>
-                    <td style={{ padding: '1.25rem 2rem' }}>
-                      <span style={{ fontWeight: '600', color: '#333' }}>₹{order?.total?.toLocaleString()}</span>
+                    <td style={{ padding: '1rem 1rem', color: '#666' }}>{order.orderItems?.map(item => item.productTitle).join(", ")}</td>
+                    <td style={{ padding: '1rem 1rem' }}>
+                      <span style={{ fontWeight: '600', color: '#333' }}>₹{order?.totalAmount?.toLocaleString?.() || 0}</span>
                     </td>
-                    <td style={{ padding: '1.25rem 2rem', color: '#666' }}>{order.date}</td>
-                    <td style={{ padding: '1.25rem 2rem' }}>
+                    <td style={{ padding: '1rem 1rem', color: '#666' }}>{new Date(order.orderDate).toLocaleDateString()}</td>
+                    <td style={{ padding: '1rem 1rem' }}>
                       <div style={{
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -514,11 +529,11 @@ const OrderManagement = () => {
                         fontSize: '0.85rem',
                         fontWeight: '600'
                       }}>
-                        <StatusIcon size={16} />
+                        {/* <StatusIco size={16} /> */}
                         {config?.label}
                       </div>
                     </td>
-                    <td style={{ padding: '1.25rem 2rem' }}>
+                    <td style={{ padding: '1rem 1rem' }}>
                       <button
                         onClick={() => openOrderDetails(order)}
                         style={{
@@ -557,7 +572,7 @@ const OrderManagement = () => {
               textAlign: 'center',
               color: '#999'
             }}>
-              <Package size={64} style={{ opacity: 0.3, marginBottom: '1rem' }} />
+              <Package2Icon size={64} style={{ opacity: 0.3, marginBottom: '1rem' }} />
               <p style={{ fontSize: '1.1rem' }}>No orders found</p>
             </div>
           )}
@@ -608,7 +623,7 @@ const OrderManagement = () => {
               }}>
                 Order Details
               </h2>
-              <p style={{ color: '#999', fontSize: '0.95rem' }}>{selectedOrder.id}</p>
+              <p style={{ color: '#999', fontSize: '0.95rem' }}>{selectedOrder.orderId}</p>
             </div>
 
             {/* Modal Body */}
@@ -632,7 +647,7 @@ const OrderManagement = () => {
                 }}>
                   <div>
                     <span style={{ color: '#999', fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Name</span>
-                    <span style={{ color: '#333', fontWeight: '600' }}>{selectedOrder.customer}</span>
+                    <span style={{ color: '#333', fontWeight: '600' }}>{selectedOrder?.address?.firstName} {selectedOrder?.address?.lastName}</span>
                   </div>
                   <div>
                     <span style={{ color: '#999', fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Email</span>
@@ -640,7 +655,7 @@ const OrderManagement = () => {
                   </div>
                   <div>
                     <span style={{ color: '#999', fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Shipping Address</span>
-                    <span style={{ color: '#333', fontWeight: '600' }}>{selectedOrder.shippingAddress}</span>
+                    <span style={{ color: '#333', fontWeight: '600' }}>{selectedOrder?.address?.address},{selectedOrder?.address?.city},{selectedOrder?.address?.state} - {selectedOrder?.address?.pinCode}</span>
                   </div>
                 </div>
               </div>
@@ -664,11 +679,11 @@ const OrderManagement = () => {
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#999' }}>Items</span>
-                    <span style={{ color: '#333', fontWeight: '600' }}>{selectedOrder.items}</span>
+                    <span style={{ color: '#333', fontWeight: '600' }}>{selectedOrder?.orderItems?.map(item => item.productTitle).join(", ")}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#999' }}>Order Date</span>
-                    <span style={{ color: '#333', fontWeight: '600' }}>{selectedOrder.date}</span>
+                    <span style={{ color: '#333', fontWeight: '600' }}>{new Date(selectedOrder?.orderDate).toLocaleDateString()}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: '#999' }}>Payment Method</span>
@@ -676,7 +691,7 @@ const OrderManagement = () => {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '1rem', borderTop: '2px solid #e0e0e0' }}>
                     <span style={{ color: '#333', fontWeight: '700', fontSize: '1.1rem' }}>Total</span>
-                    <span style={{ color: '#667eea', fontWeight: '700', fontSize: '1.1rem' }}>₹{selectedOrder.total.toLocaleString()}</span>
+                    <span style={{ color: '#667eea', fontWeight: '700', fontSize: '1.1rem' }}>₹{selectedOrder?.totalAmount?.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -695,33 +710,33 @@ const OrderManagement = () => {
                   {Object.entries(statusConfig).map(([status, config]) => (
                     <button
                       key={status}
-                      onClick={() => updateOrderStatus(selectedOrder.id, status)}
-                      disabled={selectedOrder.status === status}
+                      onClick={() => handleUpdateOrderStatus(selectedOrder.orderId, status)}
+                      disabled={selectedOrder?.orderStatus === status}
                       style={{
                         padding: '1rem',
-                        background: selectedOrder.status === status ? config.bg : '#fff',
-                        color: selectedOrder.status === status ? config.color : '#333',
-                        border: `2px solid ${selectedOrder.status === status ? config.color : '#f0f0f0'}`,
+                        background: selectedOrder?.orderStatus === status ? config.bg : '#fff',
+                        color: selectedOrder?.orderStatus === status ? config.color : '#333',
+                        border: `2px solid ${selectedOrder.orderStatus === status ? config.color : '#f0f0f0'}`,
                         borderRadius: '12px',
                         fontSize: '0.95rem',
                         fontWeight: '600',
-                        cursor: selectedOrder.status === status ? 'not-allowed' : 'pointer',
+                        cursor: selectedOrder?.orderStatus === status ? 'not-allowed' : 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.75rem',
                         transition: 'all 0.2s ease',
-                        opacity: selectedOrder.status === status ? 0.7 : 1,
+                        opacity: selectedOrder?.orderStatus === status ? 0.7 : 1,
                         fontFamily: 'inherit'
                       }}
                       onMouseEnter={(e) => {
-                        if (selectedOrder.status !== status) {
+                        if (selectedOrder.orderStatus !== status) {
                           e.currentTarget.style.background = config.bg;
                           e.currentTarget.style.borderColor = config.color;
                           e.currentTarget.style.color = config.color;
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (selectedOrder.status !== status) {
+                        if (selectedOrder.orderStatus !== status) {
                           e.currentTarget.style.background = '#fff';
                           e.currentTarget.style.borderColor = '#f0f0f0';
                           e.currentTarget.style.color = '#333';
@@ -729,7 +744,7 @@ const OrderManagement = () => {
                       }}
                     >
                       <config.icon size={20} />
-                      {selectedOrder.status === status ? `Current: ${config.label}` : `Mark as ${config.label}`}
+                      {selectedOrder?.orderStatus === status ? `Current: ${config?.label}` : `Mark as ${config.label}`}
                     </button>
                   ))}
                 </div>

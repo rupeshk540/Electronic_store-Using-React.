@@ -67,10 +67,9 @@ const CheckoutPage = () => {
 
 }, [productId, quantity]);
 
-const checkoutItems = buyNowItem
+const checkoutItems = buyNowItem?.product
   ? [buyNowItem]
   : (cart?.items || []);
-  
 
  // ---------------------- Helper Functions -----------------------
 
@@ -113,7 +112,11 @@ const checkoutItems = buyNowItem
   };
 
   const getSubtotal = () => {
-    return (checkoutItems || []).reduce((total, item) => total + (item.product.discountedPrice * item.quantity), 0);
+   return (checkoutItems || []).reduce(
+    (total, item) =>
+      total + ((item?.product?.discountedPrice || 0) * (item?.quantity || 0)),
+      0
+    );
   };
 
   const getShippingCost = () => {
@@ -175,13 +178,23 @@ const checkoutItems = buyNowItem
  // ----------------------Order & Payment Logic -----------------------
 
 const handlePlaceOrder = async () => {
+
+  if (productId && !buyNowItem?.product) {
+    setPaymentError("Please wait, product is loading...");
+    return;
+  }
   try {
     setIsProcessing(true);
     setPaymentError("");
     setPaymentSuccess("");
 
-    const orderData = await buildOrderRequest();
-    const result = await createOrderAndInitPayment(orderData);
+  if (productId && !buyNowItem) {
+    setPaymentError("Product still loading...");
+    return;
+  }
+
+  const orderData = await buildOrderRequest();
+  const result = await createOrderAndInitPayment(orderData);
    
     if (formData.paymentMethod === "COD") {
       setPaymentSuccess("Order placed successfully with COD..!");

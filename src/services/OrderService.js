@@ -44,11 +44,10 @@ export const updateOrder = async(order, orderId) => {
 };
 
 //update order status
-export const updateOrderStatusApi = async (orderId, status) => {
+export const updateOrderStatus = async (orderId, status) => {
 
     const response = await privateAxios.put(
-        `/orders/${orderId}/status`,
-        { orderStatus: status }
+      `/orders/${orderId}/status?orderStatus=${status}`
     );
 
     return response.data;
