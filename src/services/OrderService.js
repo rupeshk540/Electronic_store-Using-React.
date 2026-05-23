@@ -71,3 +71,11 @@ export const requestReturn = async(orderId) => {
 
    return response.data;
 }
+
+//order stats service
+export const getOrderStats = async () => {
+
+    const response = await privateAxios.get("/orders/stats");
+
+    return response.data;
+};

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Clock1, Package2, TrendingUpIcon, CheckCircle2, XCircleIcon, ShoppingBagIcon, DollarSignIcon, Clock10, CheckCircle2Icon, SearchCheck, FilterIcon, ChevronDownCircle, DownloadIcon, Package2Icon } from 'lucide-react';
-import { getAllOrders, updateOrderStatus } from '../../services/OrderService';
+import { getAllOrders, getOrderStats, updateOrderStatus } from '../../services/OrderService';
 import { toast } from 'react-toastify';
 import { getAddress } from '../../services/AddressService';
 
@@ -103,51 +103,86 @@ const OrderManagement = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(10);
+  const [stats, setStats] = useState({
+  totalOrders: 0,
+  totalRevenue: 0,
+  placedOrders: 0,
+  deliveredOrders: 0
+});
 
   useEffect(() => {
-    loadOrders();
-  }, []);
 
-  const loadOrders = async () => {
+    loadOrders(currentPage);
+
+    loadStats();
+
+  }, [currentPage]);
+
+  const loadOrders = async (page = currentPage) => {
 
     try {
+
       setLoading(true);
-      const data = await getAllOrders(0,10,"orderDate","desc");
+
+      const data = await getAllOrders(
+        page - 1,
+        pageSize,
+        "orderDate",
+        "desc"
+      );
+
       const ordersWithAddress = await Promise.all(
-      data.content.map(async (order) => {
-        try {
+        data.content.map(async (order) => {
 
-          const address = await getAddress(order.addressId);
+          try {
 
-          return {
-            ...order,
-            address
-          };
+            const address = await getAddress(order.addressId);
 
-        } catch (err) {
+            return {
+              ...order,
+              address
+            };
 
-          return {
-            ...order,
-            address: null
-          };
-        }
-      })
-    );
+          } catch (err) {
 
-    setOrders(ordersWithAddress);
-    console.log(ordersWithAddress)
-  
+            return {
+              ...order,
+              address: null
+            };
+          }
+        })
+      );
+
+      setOrders(ordersWithAddress);
+
+      setTotalPages(data.totalPages);
+
     } catch (error) {
+
       console.error(error);
-       console.log(error.response);
 
-   console.log(error.response.data);
-
-   console.log(error.response.status);
     } finally {
+
       setLoading(false);
     }
   };
+
+  const loadStats = async () => {
+
+  try {
+
+    const data = await getOrderStats();
+
+    setStats(data);
+
+  } catch (error) {
+
+    console.log(error);
+  }
+};
 
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
 
@@ -172,6 +207,32 @@ const OrderManagement = () => {
     } catch (error) {
      console.error(error);
      toast.error("Unable to change Orderstatus..!!")
+    }
+  };
+
+  const goToPreviousPage = () => {
+
+    if (currentPage > 1) {
+
+      setCurrentPage(prev => prev - 1);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+  };
+
+  const goToNextPage = () => {
+
+    if (currentPage < totalPages) {
+
+      setCurrentPage(prev => prev + 1);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
     }
   };
 
@@ -206,16 +267,6 @@ const OrderManagement = () => {
     });
   }, [orders, searchTerm, filterStatus]);
 
-  // Calculate statistics
-  const stats = useMemo(() => {
-    return {
-      total: orders.length,
-      revenue: orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0),
-      pending: orders.filter(o => o.orderStatus === 'PENDING').length,
-      delivered: orders.filter(o => o.orderStatus === 'DELIVERED').length
-    };
-  }, [orders]);
-
   const openOrderDetails = (order) => {
     setSelectedOrder(order);
     setShowModal(true);
@@ -224,7 +275,7 @@ const OrderManagement = () => {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #787272 0%, #796b86 100%)',
+      background: 'linear-gradient(135deg, #7c73fa 0%, #796b86 100%)',
       fontFamily: '"Work Sans", system-ui, -apple-system, sans-serif',
       padding: '2rem'
     }}>
@@ -263,7 +314,7 @@ const OrderManagement = () => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Orders</p>
-              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>{stats.total}</h2>
+              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>{stats.totalOrders}</h2>
             </div>
             <div style={{ 
               width: '60px', 
@@ -291,7 +342,7 @@ const OrderManagement = () => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Total Revenue</p>
-              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>₹{stats?.revenue?.toLocaleString()}</h2>
+              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>₹{stats?.totalRevenue?.toLocaleString()}</h2>
             </div>
             
           </div>
@@ -308,8 +359,8 @@ const OrderManagement = () => {
            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Pending Orders</p>
-              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>{stats?.pending}</h2>
+              <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Confirmed Orders</p>
+              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>{stats?.placedOrders}</h2>
             </div>
             <div style={{ 
               width: '60px', 
@@ -337,7 +388,7 @@ const OrderManagement = () => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '0.5rem' }}>Delivered</p>
-              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>{stats?.delivered}</h2>
+              <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#333', margin: 0 }}>{stats?.deliveredOrders}</h2>
             </div>
             <div style={{ 
               width: '60px', 
@@ -434,11 +485,16 @@ const OrderManagement = () => {
               }}
             >
               <option value="all">All Orders</option>
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="shipped">Shipped</option>
-              <option value="delivered">Delivered</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="PENDING">Pending</option>
+              <option value="PLACED">Placed</option>
+              <option value="DISPATCHED">Dispatched</option>
+              <option value="SHIPPED">Shipped</option>
+              <option value="DELIVERED">Delivered</option>
+              <option value="CANCELLED">Cancelled</option>
+              <option value="RETURN_REQUESTED">Return Requested</option>
+              <option value="RETURN_APPROVED">Return Approved</option>
+              <option value="RETURNED">Returned</option>
+              <option value="RETURN_REJECTED">Return Rejected</option>
             </select>
             <ChevronDownCircle 
               size={18} 
@@ -584,6 +640,55 @@ const OrderManagement = () => {
         </div>
       </div>
 
+       {/* Pagination */}
+          <div className="d-flex justify-content-center align-items-center gap-3 mt-5 mb-4 flex-wrap">
+
+            <button
+              className="btn btn-outline-dark px-4"
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+            >
+              ← Previous
+            </button>
+
+            <div className="d-flex align-items-center gap-2">
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  className={`btn ${
+                    currentPage === index + 1
+                      ? "btn-dark"
+                      : "btn-outline-warning"
+                  }`}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%"
+                  }}
+                  onClick={() => {
+                    setCurrentPage(index + 1);
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth"
+                    });
+                  }}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="btn btn-outline-dark px-4"
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next →
+            </button>
+
+          </div>
+
       {/* Modal */}
       {showModal && selectedOrder && (
         <div 
@@ -609,7 +714,7 @@ const OrderManagement = () => {
               borderRadius: '20px',
               maxWidth: '600px',
               width: '100%',
-              maxHeight: '90vh',
+              maxHeight: '80vh',
               overflow: 'auto',
               animation: 'slideUp 0.3s ease'
             }}
@@ -671,7 +776,7 @@ const OrderManagement = () => {
                   fontSize: '1.1rem', 
                   fontWeight: '600', 
                   color: '#333',
-                  marginBottom: '1rem'
+                  marginBottom: '0.2rem'
                 }}>
                   Order Information
                 </h3>
