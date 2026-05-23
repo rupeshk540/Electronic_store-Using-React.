@@ -404,7 +404,7 @@ const handleReturn = async(orderId) => {
                     {/* Order Items */}
                     {order.orderItems.map((item, idx) => (
                       <div key={idx} 
-                        className="row mb-3 rounded"
+                        className="d-flex justify-content-between align-items-center border-bottom py-2"
                         style={{
                           cursor: "pointer",
                           transition: "0.2s ease"
@@ -420,19 +420,31 @@ const handleReturn = async(orderId) => {
                         <div className="col-auto">
                           <img 
                             src={item.image} 
-                            alt={item.productTitle}
                             className="item-image"
                             width="80"
                             height="80"
                           />
                         </div>
-                        <div className="col">
+                        <div className="col ms-4">
                           <h6 className="mb-1">{item.productTitle}</h6>
                           <div className="text-muted small mb-2">Qty: {item.quantity}</div>
                           <div className="fw-semibold" style={{ color: '#2874f0' }}>
                             ₹{item.subtotal.toLocaleString('en-IN')}
                           </div>
                         </div>
+
+                        {status === 'delivered' && (
+                          <button
+                            className="btn btn-outline-primary btn-sm"
+                            onClick={(e) =>{
+                              e.stopPropagation();
+                              openReviewModal(item, order.orderId)
+                            }}
+                          >
+                            Rate & Review
+                          </button>
+                        )}
+
                       </div>
                     ))}
 
@@ -443,16 +455,6 @@ const handleReturn = async(orderId) => {
                     
                         {status === 'delivered' && (
                           <>
-                            {order.orderItems.map((item, idx) => (
-                              <button
-                                className="btn btn-outline-primary btn-sm mt-2"
-                                onClick={() =>
-                                  openReviewModal(item, order.orderId)
-                                }
-                              >
-                                Rate & Review
-                              </button>
-                            ))}
                             {order.orderStatus === "DELIVERED" && (
                               <button 
                                 className="btn btn-outline-warning btn-sm mt-2"

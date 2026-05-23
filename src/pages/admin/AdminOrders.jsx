@@ -176,12 +176,17 @@ const OrderManagement = () => {
   };
 
   const statusConfig = {
-    PENDING: { label: 'Pending', color: '#ff9800', icon: Clock1, bg: '#fff3e0' },
-    PLACED: { label: 'Placed', color: '#2196f3', icon: Package2, bg: '#e3f2fd' },
-    SHIPPED: { label: 'Shipped', color: '#9c27b0', icon: TrendingUpIcon, bg: '#f3e5f5' },
-    DELIVERED: { label: 'Delivered', color: '#4caf50', icon: CheckCircle2, bg: '#e8f5e9' },
-    CANCELLED: { label: 'Cancelled', color: '#f44336', icon: XCircleIcon, bg: '#ffebee' }
-  };
+  PLACED: { label: 'Order Placed', color: '#7b1fa2', bg: '#f3e5f5', icon: '📦' },
+  DISPATCHED: { label: 'Dispatched', color: '#ef6c00', bg: '#fff3e0', icon: '🚛' },
+  SHIPPED: { label: 'Shipped', color: '#1976d2', bg: '#e3f2fd', icon: '🚚' },
+  DELIVERED: { label: 'Delivered', color: '#388e3c', bg: '#e8f5e9', icon: '✓' },
+  PENDING: { label: 'Pending', color: '#f57c00', bg: '#fff8e1', icon: '⏳' },
+  CANCELLED: { label: 'Cancelled', color: '#d32f2f', bg: '#ffebee', icon: '✕' },
+  RETURN_REQUESTED: { label: 'Return Requested', color: '#ef6c00', bg: '#fff3e0', icon: '↩️' },
+  RETURN_APPROVED: { label: 'Return Approved', color: '#2e7d32', bg: '#e8f5e9', icon: '✔️' },
+  RETURNED: { label: 'Returned', color: '#455a64', bg: '#eceff1', icon: '📦' },
+  RETURN_REJECTED: { label: 'Return Rejected', color: '#c62828', bg: '#ffebee', icon: '❌' }
+};
 
   // Filter and search orders
   const filteredOrders = useMemo(() => {
@@ -743,7 +748,9 @@ const OrderManagement = () => {
                         }
                       }}
                     >
-                      <config.icon size={20} />
+                      <span style={{ fontSize: '18px' }}>
+                        {config.icon}
+                      </span>
                       {selectedOrder?.orderStatus === status ? `Current: ${config?.label}` : `Mark as ${config.label}`}
                     </button>
                   ))}
