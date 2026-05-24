@@ -8,13 +8,42 @@ import { MdDashboard, MdOutlineCategory, MdViewDay } from "react-icons/md";
 import { MdAddBox } from "react-icons/md";
 import { FaOpencart, FaUserSecret } from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "../../context/UserContext";
+import { getOrderStats } from "../../services/OrderService";
 
 const SideMenu = () => {
 
     const {logout} = useContext(UserContext)
+    const [stats, setStats] = useState({
+      totalOrders: 0,
+      totalRevenue: 0,
+      placedOrders: 0,
+      deliveredOrders: 0
+    });
 
+    useEffect(() => {
+
+        loadStats();
+
+        const interval = setInterval(loadStats, 60000);
+
+        return () => clearInterval(interval);
+
+    }, []);
+
+    const loadStats = async () => {
+    
+      try {
+        const data = await getOrderStats();
+        setStats(data);
+    
+      } catch (error) {
+    
+        console.log(error);
+      }
+    };
+    
     return(
         <>
             <ListGroup variant="flush">
@@ -53,9 +82,14 @@ const SideMenu = () => {
                     <span className="ms-2"> View Products</span>
                 </ListGroup.Item>
 
-                <ListGroup.Item as={NavLink} to="/admin/orders" action>
+                <ListGroup.Item as={NavLink} to="/admin/orders"className="d-flex justify-content-between align-items-start"action>
+                <div>
                     <FaOpencart size={20}/>
-                    <span> Orders</span>
+                    <span className="ms-2"> Orders</span>
+                </div>
+                    <Badge bg="danger" pill>
+                        {stats.placedOrders}
+                    </Badge>
                 </ListGroup.Item>
 
                 <ListGroup.Item as={NavLink} to="/admin/users"className="d-flex justify-content-between align-items-start"action>
@@ -63,15 +97,15 @@ const SideMenu = () => {
                     <FaUserSecret size={20}/>
                     <span className="ms-2"> Users</span>
                 </div>
-                    <Badge bg="danger" pill>
+                    {/* <Badge bg="danger" pill>
                         New
-                    </Badge>
+                    </Badge> */}
                 </ListGroup.Item>
 
-                <ListGroup.Item as={NavLink} to="/users/home" action>
+                {/* <ListGroup.Item as={NavLink} to="/users/home" action>
                     <MdDashboard size={20}/>
                     <span className="ms-2">Dashboard</span>
-                </ListGroup.Item>
+                </ListGroup.Item> */}
 
                 <ListGroup.Item action onClick={(event) => {
                     logout()

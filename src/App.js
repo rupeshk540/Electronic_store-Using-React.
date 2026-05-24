@@ -41,6 +41,8 @@ import WishlistPage from './pages/users/WishlistPage.jsx';
 import WishlistProvider from './context/WishlistProvider.js';
 import UserAddressPage from './pages/users/UserAddressPage.jsx';
 import AddressProvider from './context/AddressProvider.js';
+import HelpSupport from './pages/users/HelpAndSupport.jsx';
+import AIChatBot from './pages/AIChatbot.jsx';
 
 function App() {
 
@@ -80,6 +82,7 @@ function App() {
                     <Route path='checkout' element={<CheckoutPage/>}/>
                     <Route path='addresses' element={<UserAddressPage/>}/>
                     <Route path='order' element={<Order/>}/>
+                    <Route path='help' element={<HelpSupport/>}/>
                     <Route path='payment/:orderId' element={<PaymentPage/>}/>
                   </Route>
 
@@ -99,6 +102,8 @@ function App() {
 
               </Routes>
               <Footer/>
+
+              <AIChatBot/>
             </BrowserRouter>
           </WishlistProvider>
         </CartProvider>
