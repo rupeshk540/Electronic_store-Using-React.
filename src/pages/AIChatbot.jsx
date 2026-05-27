@@ -1,22 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../customcss/AIChatbot.css';
+import { sendMessageToAI } from '../services/AiChatService';
 
 const AIChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: "Hi! How can I help you today?",
-      sender: 'ai',
-      timestamp: new Date()
-    },
-    {
-      id: 2,
-      text: "I'm your AI shopping assistant. Ask me about products, recommendations, or anything else!",
-      sender: 'ai',
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -41,52 +29,56 @@ const AIChatBot = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
     e.preventDefault();
-    
+
     if (inputValue.trim() === '') return;
 
-    // Add user message
+    // 1. Add user message
     const userMessage = {
-      id: Date.now(),
-      text: inputValue,
-      sender: 'user',
-      timestamp: new Date()
+        id: Date.now(),
+        text: inputValue,
+        sender: 'user',
+        timestamp: new Date()
     };
 
-    setMessages([...messages, userMessage]);
-    setInputValue('');
+    setMessages(prev => [...prev, userMessage]);
 
-    // Simulate AI response (dummy for now)
-    setTimeout(() => {
-      const aiResponse = {
+    const currentMessage = inputValue;
+    setInputValue('');
+    
+    // 2. Call backend (THIS PART YOU ASKED)
+    try {
+        const response = await sendMessageToAI(currentMessage);
+
+        const aiMessage = {
         id: Date.now() + 1,
-        text: getDummyAIResponse(inputValue),
+        text: response.reply,
         sender: 'ai',
         timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiResponse]);
-    }, 800);
-  };
+        };
 
-  // Dummy AI responses
-  const getDummyAIResponse = (userInput) => {
-    const responses = [
-      "That's a great question! Let me help you find the perfect product.",
-      "I'd be happy to assist you with that. Could you tell me more about what you're looking for?",
-      "Based on your interest, I have some excellent recommendations for you!",
-      "I understand. Let me search through our catalog to find the best options.",
-      "Great choice! This is one of our most popular items."
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
+        setMessages(prev => [...prev, aiMessage]);
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
+    } catch (error) {
+        const errorMessage = {
+        id: Date.now() + 1,
+        text: "Sorry, I couldn't connect to the server.",
+        sender: 'ai',
+        timestamp: new Date()
+        };
+
+        setMessages(prev => [...prev, errorMessage]);
+
+    
+    }
+    };
+    const formatTime = (date) => {
+        return new Date(date).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
 
   return (
     <>
@@ -180,7 +172,7 @@ const AIChatBot = () => {
               <button 
                 type="submit" 
                 className="send-btn"
-                disabled={inputValue.trim() === ''}
+                disabled={inputValue.trim() === '' }
                 aria-label="Send message"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
