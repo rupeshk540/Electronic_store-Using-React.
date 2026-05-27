@@ -149,8 +149,32 @@ const AIChatBot = () => {
                 )}
                 <div className="message-content">
                   <div className="message-bubble">
-                    {message.text}
-                  </div>
+                    {message.text.split("\n").map((line, index) => {
+                        const urlMatch = line.match(/(https?:\/\/[^\s]+)/);
+
+                        if (urlMatch) {
+                        const url = urlMatch[0];
+                        const textBeforeUrl = line.replace(url, "");
+
+                        return (
+                            <React.Fragment key={index}>
+                            
+                            <a href={url} target="_blank" rel="noreferrer">
+                                View Product
+                            </a>
+                            <br />
+                            </React.Fragment>
+                        );
+                        }
+
+                        return (
+                        <React.Fragment key={index}>
+                            {line}
+                            <br />
+                        </React.Fragment>
+                        );
+                    })}
+                    </div>
                   <span className="message-time">{formatTime(message.timestamp)}</span>
                 </div>
               </div>

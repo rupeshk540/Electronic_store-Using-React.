@@ -460,6 +460,7 @@
   .message-bubble {
     font-size: 13px;
     padding: 10px 14px;
+    white-space: pre-line;
   }
 
   .chatbot-input {
