@@ -16,7 +16,7 @@ const AddProduct = () => {
     rentalPrice: '',
     rentalUnit: 'perDay',
     stock: '',
-    rating: 5,
+    averageRating: 5,
     features: [],
     specifications: {},
     productImageUrls: [],
@@ -221,7 +221,10 @@ selectedImages.forEach(img => formData.append("images", img.file));
       rentalPrice: '',
       rentalUnit: 'perDay',
       stock: '',
-      rating: 5,
+      averageRating: 5,
+      features: [],
+      specifications: {},
+      productImageUrls: [],
       categoryId: '',
       collectionIds: [],
       live: true
@@ -469,7 +472,7 @@ selectedImages.forEach(img => formData.append("images", img.file));
 
                     <div className="card-body">
 
-                        {productData.features.map((feature,index)=>(
+                        {(productData.features || []).map((feature,index)=>(
                             <div
                                 className="input-group mb-2"
                                 key={index}
@@ -516,7 +519,7 @@ selectedImages.forEach(img => formData.append("images", img.file));
 
                   <div className="card-body">
 
-                      {Object.entries(productData.specifications).map(([key,value],index)=>(
+                      {Object.entries(productData.specifications || {}).map(([key,value],index)=>(
                           <div
                               className="row mb-2"
                               key={index}
