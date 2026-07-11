@@ -364,22 +364,22 @@ const handleBuyNow = (product,quantity) => {
               <div className=" mb-4">
                 <div className="card-body">
                   <ul className="nav nav-tabs mb-3">
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                       <button 
                         className={`nav-link ${activeTab === 'buy' ? 'active' : ''}`}
                         onClick={() => setActiveTab('buy')}
                       >
                         Buy
                       </button>
-                    </li>
-                    <li className="nav-item">
+                    </li> */}
+                    {/* <li className="nav-item">
                       <button 
                         className={`nav-link ${activeTab === 'rent' ? 'active' : ''}`}
                         onClick={() => setActiveTab('rent')}
                       >
                         Rent
                       </button>
-                    </li>
+                    </li> */}
                   </ul>
 
                   {/* Buy Tab */}
@@ -450,7 +450,7 @@ const handleBuyNow = (product,quantity) => {
               </div>
             </div>
 
-            {/* Shipping & Return Info */}
+            {/* Shipping & Return Info
             <div className="border rounded p-3 mb-3 bg-light">
               <div className="row g-3">
                 <div className="col-6">
@@ -472,22 +472,78 @@ const handleBuyNow = (product,quantity) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
+     
 
-            {/* Seller Info */}
-            <div className="border rounded-0 p-3 mb-3 bg-light">
+          
+            {/* Seller Information */}
+            <div className="card shadow-sm border-0 mb-4">
               <div className="card-body">
-                <h5 className="card-title mb-3">Seller Information</h5>
-                <div className="d-flex align-items-center mb-2">
-                  <i className="bi bi-shop fs-3 text-primary me-3"></i>
+                <div className="d-flex justify-content-between align-items-start">
                   <div>
-                    <h6 className="mb-0">TechWorld Electronics</h6>
-                    <small className="text-muted">Top Rated Seller • 4.8 ★ (1200+ sales)</small>
-                  </div>
-                </div>
-                <button className="btn btn-outline-primary btn-sm">
-                  <i className="bi bi-chat-dots me-1"></i> Contact Seller
-                </button>
+                    <small className="text-uppercase text-muted fw-semibold">
+                      Sold & Fulfilled By
+                    </small>
+                    <h4 className="fw-bold mt-1 mb-2">
+                      Zeptra Official Store
+                    </h4>
+                    <div className="d-flex align-items-center gap-2 flex-wrap">
+                      <span className="badge bg-success">
+                        <i className="bi bi-patch-check-fill me-1"></i>
+                        Verified Seller
+                      </span>
+
+                      <span className="text-muted">
+                        <i className="bi bi-shield-check me-1 text-success"></i>
+                        100% Genuine Products
+                      </span>
+                    </div>
+                    </div>
+                      <i
+                        className="bi bi-shop-window text-primary"
+                        style={{
+                            fontSize: "42px"
+                        }}
+                      ></i>
+                    </div>
+
+                    <hr />
+                    <div className="row text-center g-3">
+                      <div className="col-md-4">
+                        <div className="border rounded-3 p-3 h-100">
+                          <i className="bi bi-truck fs-4 text-primary"></i>
+                          <h6 className="mt-2 mb-1">
+                            Fast Shipping
+                          </h6>
+                          <small className="text-muted">
+                            Delivered within 2–5 business days
+                          </small>
+
+                        </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="border rounded-3 p-3 h-100">
+                            <i className="bi bi-arrow-repeat fs-4 text-success"></i>
+                            <h6 className="mt-2 mb-1">
+                              Easy Returns
+                            </h6>
+                            <small className="text-muted">
+                              Hassle-free return policy
+                            </small>
+                          </div>
+                        </div>
+                        <div className="col-md-4">
+                          <div className="border rounded-3 p-3 h-100">
+                            <i className="bi bi-shield-check fs-2 text-warning"></i>
+                            <h6 className="mt-2 mb-1">
+                              Secure Payment
+                            </h6>
+                            <small className="text-muted">
+                              100 % protected checkout
+                            </small>
+                            </div>
+                          </div>
+                        </div>
               </div>
             </div>
               

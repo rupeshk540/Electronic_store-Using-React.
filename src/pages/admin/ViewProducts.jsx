@@ -22,24 +22,61 @@ const ViewProductsPage = () => {
   const [categoryChangeId, setCategoryChangeId] = useState('');
   const editorRef = useRef();
   const navigate = useNavigate();
+  const [pageInfo, setPageInfo] = useState({
+    pageNumber: 0,
+    pageSize: 10,
+    totalPages: 0,
+    totalElements: 0,
+    lastPage: false
+});
 
   // Load categories and products on page load
   useEffect(() => {
     loadCategories();
-    loadProducts();
   }, []);
 
-  const loadProducts = async () => {
+  useEffect(() => {
+    loadProducts(pageInfo.pageNumber);
+  }, [pageInfo.pageNumber]);
+
+  const loadProducts = async (page = 0) => {
     try {
-      const data = await getAllProducts(0, 50, "addedDate", "asc");
-      console.log(data)
-      setProducts(data.content || data);
-      setFilteredProducts(data.content || data);
+
+      const data = await getAllProducts(
+          page,
+          pageInfo.pageSize,
+          "addedDate",
+          "desc"
+      );
+
+      setProducts(data.content);
+      setFilteredProducts(data.content);
+
+      setPageInfo({
+          pageNumber: data.pageNumber,
+          pageSize: data.pageSize,
+          totalPages: data.totalPages,
+          totalElements: data.totalElements,
+          lastPage: data.lastPage
+      });
+
     } catch (error) {
-      console.error("Error fetching products:", error);
+        console.log(error);
     }
   };
 
+  const changePage = (page) => {
+
+    if (page < 0) return;
+
+    if (page >= pageInfo.totalPages) return;
+
+    setPageInfo(prev => ({
+        ...prev,
+        pageNumber: page
+    }));
+
+  };
   const loadCategories = async () => {
     try {
       const data = await getAllCategories(0, 50); // load all categories
@@ -505,6 +542,30 @@ const ProductGridCard = ({ product }) => {
           {filteredProducts.length===0 && <div className="col-12"><div className="card"><div className="card-body text-center py-5"><Package size={48} className="text-muted mb-3" /><h5 className="text-muted">No products found</h5><p className="text-muted">Try adjusting your search or filter criteria</p></div></div></div>}
         </div>
       )}
+
+    <div className="d-flex justify-content-between align-items-center mt-4">
+
+    <button
+        className="btn btn-outline-primary"
+        disabled={pageInfo.pageNumber === 0}
+        onClick={() => changePage(pageInfo.pageNumber - 1)}
+    >
+        Previous
+    </button>
+
+    <span>
+        Page {pageInfo.pageNumber + 1} of {pageInfo.totalPages}
+    </span>
+
+    <button
+        className="btn btn-outline-primary"
+        disabled={pageInfo.lastPage}
+        onClick={() => changePage(pageInfo.pageNumber + 1)}
+    >
+        Next
+    </button>
+
+  </div>
 
       {/* Delete Modal */}
       {showDeleteModal && (
