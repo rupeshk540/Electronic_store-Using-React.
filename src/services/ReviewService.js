@@ -9,3 +9,12 @@ export const createReview = async (reviewData) => {
 
     return response.data;
 };
+
+export const getReviewsOfProduct = async (productId) => {
+
+    const response = await privateAxios.get(
+        `/reviews/product/${productId}`
+    );
+
+    return response.data;
+};

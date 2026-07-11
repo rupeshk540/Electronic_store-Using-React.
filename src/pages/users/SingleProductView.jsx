@@ -5,6 +5,7 @@ import { getProduct } from '../../services/ProductService';
 import CartContext from '../../context/CartContext';
 import UserContext from '../../context/UserContext';
 import WishlistContext from '../../context/WishlistContext';
+import { getReviewsOfProduct } from '../../services/ReviewService';
 
 const SingleProductView = () => {
   // const [product,setProduct] = useState({
@@ -62,6 +63,7 @@ const SingleProductView = () => {
   const [showRemovedFromCart, setShowRemovedFromCart] = useState(false);
   const { isLogin, userData } = useContext(UserContext);
   const [quantity, setQuantity] = useState(1);
+  const [reviews, setReviews] = useState([]);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -78,6 +80,20 @@ const SingleProductView = () => {
     };
 
     fetchProduct();
+
+    const loadReviews = async () => {
+
+      try{
+        const data = await getReviewsOfProduct(productId);
+
+        setReviews(data);
+
+      }catch(error){
+          console.log(error);
+      }
+    }
+
+    loadReviews();
   }, [productId]);
 
  // Check if product is in cart
@@ -112,7 +128,7 @@ const toggleCart = () => {
   }
 };
   
-const handleBuyNow = (product,quantity=1) => {
+const handleBuyNow = (product,quantity) => {
   if (!isLogin) {
     // redirect to login
     navigate("/login");
@@ -240,7 +256,7 @@ const handleBuyNow = (product,quantity=1) => {
             <button 
               className="btn btn-primary btn-lg flex-fill"
               style={{maxWidth:"270px"}}
-              onClick={()=>handleBuyNow(product)}
+              onClick={()=>handleBuyNow(product,quantity)}
              // disabled={!product.Stock}
             >
               <i className={`bi ${activeTab === 'buy' ? 'bi-bag-check':'bi-clock-history'} me-2`}></i>
@@ -526,16 +542,33 @@ const handleBuyNow = (product,quantity=1) => {
               <div className="card-body">
                 <h5 className="mb-3">Customer Reviews</h5>
                 <div className="mb-3">
-                  <h2 className="fw-bold text-primary">{product.rating}</h2>
-                  {renderStars(product.rating)}
-                  <p className="text-muted">{product.reviews} total reviews</p>
+                  <p className="text-muted">Average Rating : {product.averageRating} </p>
+                  {renderStars(product.averageRating)}
+                  <p className="text-muted">Total reviews : {product.totalReviews} </p>
                 </div>
-                <button className="btn btn-outline-primary btn-sm mb-3">Write a Review</button>
-
+        
                 {/* Sample Review */}
                 <div className="border-top pt-3">
-                  <p className="mb-1"><strong>John D.</strong> ⭐⭐⭐⭐⭐</p>
-                  <p className="text-muted mb-0">Amazing headphones with crystal clear sound!</p>
+                  {
+                    reviews.length === 0 ? (
+
+                    <p className="text-muted">
+                        No reviews yet.
+                    </p>
+
+                    ) : (
+
+                    reviews.map(review => (
+                      <div
+                        key={review.reviewId}
+                        className="border-top pt-3"
+                      ><h6>{review.userName}</h6>
+                        {renderStars(review.rating)}
+                        <p>{review.review}</p>
+                      </div>
+
+                    )))
+                    }
                 </div>
               </div>
             </div>

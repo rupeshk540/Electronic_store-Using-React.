@@ -35,7 +35,7 @@ import CategoryPage from './pages/CategoriesPage.jsx';
 import HotDealsPage from './pages/HotDealsPage.jsx';
 import AddCollection from './pages/admin/AddCollection.jsx';
 import ViewCollections from './pages/admin/ViewCollections.jsx';
-import AdminProductView from './components/admin/SingleProductEditView.jsx';
+import AdminProductView from './pages/admin/SingleProductEditView.jsx';
 import CheckoutPage from './pages/users/checkoutPage.jsx';
 import WishlistPage from './pages/users/WishlistPage.jsx';
 import WishlistProvider from './context/WishlistProvider.js';

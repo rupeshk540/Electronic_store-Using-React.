@@ -1,101 +1,3 @@
-// import { Button, Modal } from "react-bootstrap";
-// import { BsFillPencilFill } from "react-icons/bs";
-// import { GrFormView } from "react-icons/gr";
-// import { MdDelete } from "react-icons/md";
-// import { toast } from "react-toastify";
-// import {Swal} from "sweetalert2";
-// import { deleteProduct } from "../../services/ProductService";
-// import { useState } from "react";
-
-// const SingleProductView = ({
-//     index,
-//     product,
-//     updateProductList,
-//     openProductViewModal,
-//     openEditProductModel
-// })=>{
-
-    
-//     const formatDate=(time)=>{
-//         return new Date(time).toLocaleString()
-//     }
-
-//     const getBackgroundForProduct = () => {
-//         //live+stock ==> green
-//         //not live ==> red
-//         //not stock ==> yellow
-
-//         if(product.live && product.stock){
-//             return "table-success"
-//         }else if(!product.live){
-//             return "table-danger"
-//         }else if(!product.stock){
-//             return "table-warning"
-//         }else{
-
-//         }
-//     }
-
-//     //delete product
-//     const deleteProductLocal = (productId) =>{
-//          //sweat alert 
-//          Swal.fire({
-//             title:'Are you sure ?',
-//             text:"You won't be able to revert this !",
-//             icon:"warning",
-//             showCancelButton:true,
-//             confirmButtonColor:'#3085d6',
-//             cancelButtonColor:'#d33',
-//             confirmButtonText:'Yes, delete it !'
-//         }).then((result)=>{
-//             if(result.isConfirmed){
-//                 //api call for delete 
-              
-//                 deleteProduct(product.productId).then(data=>{
-//                     toast.success("Product Deleted")
-
-//                     updateProductList(productId)
-//                 })
-//                 .catch(error=>{
-//                     toast.error("Error in deleting product !!")
-//                 })
-//             }
-//         })
-//     }
-   
-
-//     return (
-//         <tr className={getBackgroundForProduct()}>
-//         <td className="px-3 small">{index+1}</td>
-//         <td className="px-3 small">{product.title}</td>
-//         <td className="px-3 small">{product.quantity}</td>
-//         <td className="px-3 small">₹{product.price}</td>
-//         <td className="px-3 small">₹{product.discountedPrice}</td>
-//         <td className="px-3 small">{product.live ? 'Live': 'Not Live'}</td>
-//         <td className="px-3 small">{product.stock ? 'In Stock': 'Out of Stock'}</td>
-//         <td className="px-3 small">{product.category ? product.category.title : ''}</td>
-//         <td className="px-3 small">{formatDate(product.addedDate)}</td>
-//         <td className="px-3 small d-flex table-light">
-            
-//             {/* delete button */}
-//             <Button variant="danger" size="sm" onClick={(event)=> deleteProductLocal(product.productId)}>
-//                 <MdDelete/>    
-//             </Button>
-//             {/* view button */}
-//             <Button className="ms-2" onClick={(event)=>openProductViewModal(event,product)} variant="warning" size="sm">
-//                 <GrFormView/>    
-//             </Button>
-//             {/* update button */}
-//             <Button onClick={(event=> openEditProductModel(event,product))}variant="dark" size="sm">
-//                 <BsFillPencilFill/>    
-//             </Button>
-//         </td>
-//     </tr>
-//     )
-// }
-
-// export default SingleProductView;
-
 
 import { useState, useEffect, useRef } from 'react';
 import { Trash2, Edit, Eye, Package, Star, Calendar, DollarSign, Tag, Archive } from 'lucide-react';
@@ -103,9 +5,10 @@ import { deleteProduct, getProduct, updateProduct } from '../../services/Product
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllCategories } from '../../services/CategoryService';
 import { getAllCollections } from '../../services/CollectionService';
-import ShowHtml from '../ShowHtml';
 import { Editor } from '@tinymce/tinymce-react';
 import { getProductImageUrl } from '../../services/HelperService';
+import ShowHtml from '../../components/ShowHtml';
+import { toast } from 'react-toastify';
 
 
 
@@ -141,16 +44,24 @@ const AdminProductView = () => {
   useEffect(() => {
     if (!product) return;
     setEditForm({
-      title: product.title || '',
-      description: product.description || '',
-      price: product.price || 0,
-      discountedPrice: product.discountedPrice || 0,
-      rentalPrice: product.rentalPrice || 0,
-      quantity: product.quantity,
-      live: product.live || false,
-      stock: product.stock || 0,
-      categoryId: product.category.categoryId || '',
-      collectionIds: product.collectionIds || product.collections?.map(c => c.collectionId) ||[]
+      title: product.title ?? "",
+      description: product.description ?? "",
+      price: product.price ?? 0,
+      discountedPrice: product.discountedPrice ?? 0,
+      rentalPrice: product.rentalPrice ?? 0,
+      rentalUnit: product.rentalUnit ?? "perDay",
+
+      stock: product.stock ?? 0,
+      live: product.live ?? true,
+
+      categoryId: product.category?.categoryId ?? "",
+
+      collectionIds:
+          product.collections?.map(c => c.collectionId) ?? [],
+
+      features: product.features ?? [],
+
+      specifications: product.specifications ?? {}
     });
   }, [product, isEditing]);
 
@@ -159,37 +70,63 @@ const AdminProductView = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-  updateProduct(editForm,product.productId)
-    .then((res) => {
-      setProduct(res); // update with fresh backend response
+  const handleSave = async () => {
+    try {
+      const updatedProduct = await updateProduct(
+        editForm,
+        [],
+        product.productId
+      );
+
+      setProduct(updatedProduct);
       setIsEditing(false);
-    })
-    .catch((err) => console.error(err));
-};
+
+      toast.success("Product updated successfully!");
+
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message ||"Failed to update product.");
+    }
+  };
 
   const handleCancel = () => {
     setIsEditing(false);
     setEditForm({
-      title: product.title || '',
-      description: product.description || '',
-      price: product.price || 0,
-      discountedPrice: product.discountedPrice || 0,
-      rentalPrice: product.rentalPrice || 0,
-      quantity: product.quantity || 0,
-      live: product.live || false,
-      stock: product.stock || 0,
-      categoryId: product.category.categoryId || '',
-      collectionIds: product.collectionIds || []
-    });
-  };
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        discountedPrice: product.discountedPrice,
+        rentalPrice: product.rentalPrice,
+        rentalUnit: product.rentalUnit,
 
- const handleDelete = () => {
-  deleteProduct(product.productId)
-    .then(() => {
-      navigate("/admin/products"); // go back to product list
-    })
-    .catch((err) => console.error(err));
+        stock: product.stock,
+        live: product.live,
+
+        categoryId: product.category?.categoryId,
+
+        collectionIds:
+            product.collections?.map(c => c.collectionId) || [],
+
+        features: product.features || [],
+
+        specifications: product.specifications || {}
+    });
+
+  }
+
+ const handleDelete = async () => {
+    try {
+
+      await deleteProduct(product.productId);
+
+      toast.success("Product deleted successfully!");
+
+      navigate("/admin/products");
+
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message ||"Failed to delete product.");
+    }
   };
 
 
@@ -223,15 +160,19 @@ const AdminProductView = () => {
     });
   };
 
-  const getRatingStars = (rating) => {
+ const getRatingStars = (rating = 0) => {
+    const rounded = Math.round(rating);
+
     return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`h-4 w-4 ${i < rating ? 'text-warning' : 'text-muted'}`}
-        fill={i < rating ? 'currentColor' : 'none'}
-      />
+        <Star
+            key={i}
+            className={`h-4 w-4 ${
+                i < rounded ? "text-warning" : "text-muted"
+            }`}
+            fill={i < rounded ? "currentColor" : "none"}
+        />
     ));
-  };
+};
 
     if (!product) {
     return <div className="text-center py-5">Loading product details...</div>;
@@ -342,9 +283,10 @@ const AdminProductView = () => {
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <span className="fw-bold">Rating:</span>
                   <div className="d-flex align-items-center">
-                    {getRatingStars(product.rating)}
-                    <span className="ms-2 small text-muted">({product.rating}/5)</span>
+                    {getRatingStars(Math.round(product.averageRating || 0))}
+                    <span className="ms-2 small text-muted">({product.averageRating?.toFixed(1) || 0}/5)</span>
                   </div>
+                  
                 </div>
                 
                 <div className="d-flex justify-content-between align-items-center">
@@ -469,17 +411,21 @@ const AdminProductView = () => {
 
               <div className="row">
                 <div className="col-md-4 mb-3">
-                  <label className="form-label fw-bold">
-                    <Archive size={16} className="me-1" />
-                    Quantity
-                  </label>
+                  <div className="mt-4">
+                <div className="form-check">
                   <input 
-                    type="number" 
-                    className="form-control" 
-                    value={isEditing ? editForm.quantity : product.quantity}
-                    onChange={(e) => handleFormChange('quantity', parseInt(e.target.value))}
+                    className="form-check-input" 
+                    type="checkbox" 
+                    id="liveStatus"
+                    checked={isEditing ? editForm.live : product.live}
+                    onChange={(e) => handleFormChange('live', e.target.checked)}
                     disabled={!isEditing}
                   />
+                  <label className="form-check-label fw-bold" htmlFor="liveStatus">
+                    {isEditing ? 'Product is Live' : product.live ? 'Product is Live' : 'Product is Not Live'}
+                  </label>
+                </div>
+              </div>
                 </div>
                 
                 <div className="col-md-4 mb-3">
@@ -513,21 +459,7 @@ const AdminProductView = () => {
                 </div>
               </div>
 
-              <div className="mb-3">
-                <div className="form-check">
-                  <input 
-                    className="form-check-input" 
-                    type="checkbox" 
-                    id="liveStatus"
-                    checked={isEditing ? editForm.live : product.live}
-                    onChange={(e) => handleFormChange('live', e.target.checked)}
-                    disabled={!isEditing}
-                  />
-                  <label className="form-check-label fw-bold" htmlFor="liveStatus">
-                    {isEditing ? 'Product is Live' : product.live ? 'Product is Live' : 'Product is Not Live'}
-                  </label>
-                </div>
-              </div>
+              
 
               <div className="mb-3">
                 <label className="form-label fw-bold">Collections</label>
@@ -539,7 +471,9 @@ const AdminProductView = () => {
                           className="form-check-input" 
                           type="checkbox" 
                           id={`collection-${collection.collectionId}`}
-                          checked={(isEditing ? editForm.collectionIds : product.collectionIds || []).includes(collection.collectionId)}
+                          checked={(isEditing ? editForm.collectionIds
+                                      : product.collections?.map(c => c.collectionId) || [])
+                                      .includes(collection.collectionId)}
                           onChange={() => handleFormChange('collectionIds', collection.collectionId)}
                           disabled={!isEditing}
                         />
@@ -551,6 +485,172 @@ const AdminProductView = () => {
                   ))}
                 </div>
               </div>
+              <hr />
+              <h5>Features</h5>
+                {(isEditing ? editForm.features : product.features || []).map((feature, index) => (
+
+                  <div className="d-flex mb-2" key={index}>
+                    <input
+                      className="form-control"
+                      value={feature}
+                      disabled={!isEditing}
+                      onChange={(e) => {
+
+                        const updated = [...editForm.features];
+                        updated[index] = e.target.value;
+                        setEditForm({
+                          ...editForm,
+                          features: updated
+                        });
+
+                      }}
+                      />
+
+                      {isEditing && (
+                          <button
+                            className="btn btn-danger ms-2"
+                            onClick={() => {
+                              const updated = editForm.features.filter((_, i) => i !== index );
+                              setEditForm({...editForm,features: updated});
+
+                            }}
+                          >
+                            Remove
+                          </button>
+                      )}
+
+                    </div>
+
+                ))}
+                {isEditing && (
+
+                <button
+                    className="btn btn-outline-primary"
+                    onClick={() =>
+                        setEditForm({
+                            ...editForm,
+                            features: [...editForm.features, ""]
+                        })
+                    }
+                >
+                    + Add Feature
+                </button>
+
+                )}
+
+                <hr />
+
+                <h5>Specifications</h5>
+
+                {Object.entries(
+                    isEditing
+                        ? editForm.specifications
+                        : product.specifications || {}
+                ).map(([key, value], index) => (
+
+                <div
+                    key={index}
+                    className="row mb-2"
+                >
+
+                <div className="col-md-5">
+
+                <input
+                className="form-control"
+                value={key}
+                disabled={!isEditing}
+                onChange={(e)=>{
+
+                const specs={...editForm.specifications};
+
+                delete specs[key];
+
+                specs[e.target.value]=value;
+
+                setEditForm({
+                ...editForm,
+                specifications:specs
+                });
+
+                }}
+                />
+
+                </div>
+
+                <div className="col-md-5">
+
+                <input
+                className="form-control"
+                value={value}
+                disabled={!isEditing}
+                onChange={(e)=>{
+
+                const specs={...editForm.specifications};
+
+                specs[key]=e.target.value;
+
+                setEditForm({
+                ...editForm,
+                specifications:specs
+                });
+
+                }}
+                />
+
+                </div>
+
+                {isEditing && (
+
+                <div className="col-md-2">
+
+                <button
+                className="btn btn-danger"
+                onClick={()=>{
+
+                const specs={...editForm.specifications};
+
+                delete specs[key];
+
+                setEditForm({
+                ...editForm,
+                specifications:specs
+                });
+
+                }}
+                >
+                Delete
+                </button>
+
+                </div>
+
+                )}
+
+                </div>
+
+                ))}
+                {isEditing && (
+
+                <button
+                className="btn btn-outline-success mt-2"
+                onClick={()=>{
+
+                const specs={
+                ...editForm.specifications
+                };
+
+                specs[""]="";
+
+                setEditForm({
+                ...editForm,
+                specifications:specs
+                });
+
+                }}
+                >
+                + Add Specification
+                </button>
+
+                )}
             </div>
           </div>
         </div>

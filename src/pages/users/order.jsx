@@ -15,7 +15,7 @@ const OrdersPage = () => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState("");
+  const [review, setReview] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -113,7 +113,7 @@ const handleReturn = async(orderId) => {
 
     setRating(5);
 
-    setComment("");
+    setReview("");
 
     setShowReviewModal(true);
   };
@@ -131,10 +131,9 @@ const handleReturn = async(orderId) => {
         productId: selectedItem?.productId,
         orderId: selectedItem?.orderId,
         rating,
-        comment
+        review
       };
-      console.log(reviewData);
-     
+    
       await createReview(reviewData);
       toast.success("Review added successfully");
       setShowReviewModal(false);
@@ -844,9 +843,9 @@ const handleReturn = async(orderId) => {
                     className="form-control"
                     rows="4"
                     placeholder="Write your review..."
-                    value={comment}
+                    value={review}
                     onChange={(e) =>
-                      setComment(e.target.value)
+                      setReview(e.target.value)
                     }
                   />
                 </div>

@@ -456,7 +456,7 @@ const toggleWishlist = (e, productId) => {
         @media (max-width: 576px) {
           .col-xxl-2 {
             flex: 0 0 auto;
-            width: 100%;
+            width: 50%;
           }
         }
       `}</style>
