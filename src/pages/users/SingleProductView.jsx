@@ -6,6 +6,7 @@ import CartContext from '../../context/CartContext';
 import UserContext from '../../context/UserContext';
 import WishlistContext from '../../context/WishlistContext';
 import { getReviewsOfProduct } from '../../services/ReviewService';
+import ShowHtml from '../../components/ShowHtml';
 
 const SingleProductView = () => {
   // const [product,setProduct] = useState({
@@ -221,7 +222,7 @@ const handleBuyNow = (product,quantity) => {
            <div className="d-flex">
             {/* Thumbnail Images */}
             <div className="d-flex flex-column gap-2 overflow-auto" style={{ maxHeight: "500px" }}>
-              {product.productImageUrls.map((img, idx) => (
+              {product.productImageUrls?.map((img, idx) => (
                 <img
                   key={idx}
                   src={img}
@@ -315,10 +316,12 @@ const handleBuyNow = (product,quantity) => {
             {/* Rating and Reviews */}
               <div className="d-flex align-items-center mb-3">
               <div className="me-2">
-                  {renderStars(product.rating)}
+                  {renderStars(product.averageRating || 0)}
               </div>
               <span className="text-muted">
-                {product.rating} ({product.reviews} reviews)
+                {(product.averageRating || 0).toFixed(1)}
+                {" "}
+                ({product.totalReviews || 0} Reviews)
               </span>
               </div>
 
@@ -326,7 +329,7 @@ const handleBuyNow = (product,quantity) => {
             <div className="mb-4">
               <div className="card-body">
                 <div className="d-flex align-items-baseline gap-3">
-                  <h3 className="text-primary mb-0">$ {product.discountedPrice}</h3>
+                  <h3 className="text-primary mb-0"> ₹{product.discountedPrice || product.price}</h3>
                   {product.price && (
                     <>
                       <span className="text-muted text-decoration-line-through">
@@ -492,7 +495,9 @@ const handleBuyNow = (product,quantity) => {
             <div className="border rounded p-3 mb-3">
               <div className="card-body">
                 <h5 className="mb-3">Description</h5>
-                <p className="text-muted">{product.description}</p>
+                <div className="text-muted">
+                  <ShowHtml htmlText={product.description} />
+                </div>
               </div>
             </div>
 
