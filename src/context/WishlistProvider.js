@@ -1,5 +1,5 @@
 import {  useCallback, useContext, useEffect, useState } from "react";
-import { getWishlist, addToWishlist, removeFromWishlist, clearWishlist } from "../services/WishlistService";
+import { getWishlist, clearWishlist } from "../services/WishlistService";
 import UserContext from "./UserContext";
 import WishlistContext from "./WishlistContext";
 import { toast } from "react-toastify";

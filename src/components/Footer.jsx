@@ -52,7 +52,7 @@ const Footer = () => {
                   { icon: '💼', color: '#0077B5', label: 'LinkedIn' }
                 ].map((social, index) => (
                   <a key={index} 
-                    //  href="#" 
+                     href="/twitter" 
                      className="d-flex align-items-center justify-content-center text-white text-decoration-none rounded-circle"
                      aria-label={social.label}
                      style={{ 
@@ -101,7 +101,7 @@ const Footer = () => {
                 ].map((item, index) => (
                   <li key={index} className="mb-3">
                     <a
-                      //  href="#" 
+                       href="/products" 
                        className="text-decoration-none d-flex align-items-center"
                        style={{ 
                          color: 'rgba(255,255,255,0.7)',
@@ -145,7 +145,7 @@ const Footer = () => {
                 ].map((item, index) => (
                   <li key={index} className="mb-3">
                     <a 
-                      // href="#" 
+                      href="/help" 
                        className="text-decoration-none d-flex align-items-center"
                        style={{ 
                          color: 'rgba(255,255,255,0.7)',
@@ -276,7 +276,7 @@ const Footer = () => {
               <div className="d-flex justify-content-md-end gap-4">
                 {['Privacy', 'Terms', 'Security', 'Help'].map((item, index) => (
                   <a key={index}
-                    //  href="#" 
+                     href="/" 
                      className="text-decoration-none"
                      style={{ 
                        color: 'rgba(255,255,255,0.6)', 

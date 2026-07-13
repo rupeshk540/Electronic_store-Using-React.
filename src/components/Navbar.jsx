@@ -34,7 +34,7 @@ const CustomNavbar = () => {
       >
         <Container>
           {/* Brand Logo */}
-          <Navbar.Brand as={NavLink} to="/" className="brand-logo">
+          <Navbar.Brand as={NavLink} to="/home" className="brand-logo">
             <img src={brandlogo} alt={""} width="30"height="30"/>
             <span className="brand-text fw-bold">ZEPTRA</span>
           </Navbar.Brand>
@@ -46,7 +46,7 @@ const CustomNavbar = () => {
             {/* Main Navigation - Always visible */}
             <Nav className="mx-auto">
               
-                <Nav.Link as={NavLink} to="/hotdeals" className="nav-link-custom">
+                <Nav.Link as={NavLink} to="/" className="nav-link-custom">
                     <BadgePercent size={18} className="me-2" color='red' />Hot
                     Deals
                 </Nav.Link>

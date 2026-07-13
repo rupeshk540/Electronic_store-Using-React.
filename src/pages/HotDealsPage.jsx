@@ -9,7 +9,7 @@ const HotDealsPage = () => {
     seconds: 45
   });
 
-  const [activeCategory] = useState('all');
+  // const [activeCategory] = useState('all');
   
 
   // Countdown timer effect
@@ -32,16 +32,16 @@ const HotDealsPage = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const categories = [
-    { id: 'all', name: 'All Deals', icon: '🔥' },
-    { id: 'hot-deals', name: 'Hot Deals', icon: '⚡' },
-    { id: 'trending', name: 'Trending', icon: '📈' },
-    { id: '50-off', name: '50% Off', icon: '💥' },
-    { id: 'bestseller', name: 'Best Seller', icon: '⭐' },
-    { id: 'new-arrival', name: 'New Arrival', icon: '🆕' },
-    { id: 'best-buy', name: 'Best Buy', icon: '💎' },
-    { id: 'best-rental', name: 'Best Rental', icon: '🏆' }
-  ];
+  // const categories = [
+  //   { id: 'all', name: 'All Deals', icon: '🔥' },
+  //   { id: 'hot-deals', name: 'Hot Deals', icon: '⚡' },
+  //   { id: 'trending', name: 'Trending', icon: '📈' },
+  //   { id: '50-off', name: '50% Off', icon: '💥' },
+  //   { id: 'bestseller', name: 'Best Seller', icon: '⭐' },
+  //   { id: 'new-arrival', name: 'New Arrival', icon: '🆕' },
+  //   { id: 'best-buy', name: 'Best Buy', icon: '💎' },
+  //   { id: 'best-rental', name: 'Best Rental', icon: '🏆' }
+  // ];
 
 
   return (

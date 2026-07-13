@@ -60,8 +60,8 @@ function App() {
               <CustomNavbar/>
               <Loading show={loading}/>
               <Routes>
-                  <Route path='/' element={<Index/>}/>
-                  <Route path='/hotdeals' element={<HotDealsPage/>}/>
+                  <Route path='/home' element={<Index/>}/>
+                  <Route path='/' element={<HotDealsPage/>}/>
                   <Route path='/about' element={<About/>}/>
                   <Route path='/services' element={<Services/>}/>
                   <Route path='/contact' element={<Contact/>}/>
