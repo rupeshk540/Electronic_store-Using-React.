@@ -1,5 +1,5 @@
 import {  useCallback, useContext, useEffect, useState } from "react";
-import { getWishlist, clearWishlist } from "../services/WishlistService";
+import { getWishlist, clearWishlist, removeFromWishlist, addToWishlist } from "../services/WishlistService";
 import UserContext from "./UserContext";
 import WishlistContext from "./WishlistContext";
 import { toast } from "react-toastify";
@@ -32,11 +32,7 @@ const WishlistProvider = ({ children }) => {
 
   }
 
-}, [
-  isLogin,
-  userData?.user?.userId,
-  loadWishlist
-]);
+}, [ isLogin,userData?.user?.userId,loadWishlist]);
 
   // Add product
   const addItemWishlist = async (productId) => {
@@ -45,7 +41,7 @@ const WishlistProvider = ({ children }) => {
         toast.error("Please login to add products to wishlist");
         return;
       }
-      // const result = await addToWishlist(userData.user.userId, productId);
+      await addToWishlist(userData.user.userId, productId);
       setWishlist(prevWishlist => [...prevWishlist, { productId }]);
       toast.success("Added to wishlist ❤️");
     } catch (error) {
@@ -56,7 +52,7 @@ const WishlistProvider = ({ children }) => {
   // Remove product
   const removeItemWishlist = async (productId) => {
     try {
-      // const result = await removeFromWishlist(userData.user.userId, productId);
+       await removeFromWishlist(userData.user.userId, productId);
       setWishlist(prevWishlist => prevWishlist.filter(item => item.productId !== productId));
       toast.warn("Removed from wishlist 💔");
     } catch (error) {
