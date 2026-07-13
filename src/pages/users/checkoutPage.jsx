@@ -19,6 +19,7 @@ const CheckoutPage = () => {
   const location = useLocation();
   const productId = location.state?.productId;
   const quantity = location.state?.quantity || 1;
+  const [errors, setErrors] = useState({});
 
   const [buyNowItem, setBuyNowItem] = useState(null);
   const [formData, setFormData] = useState({
@@ -279,9 +280,76 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
   };
 
 
+  const validateStep1 = () => {
+    const newErrors = {};
+
+    // Contact Information
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required.";
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      newErrors.phone = "Enter a valid 10-digit mobile number.";
+    }
+
+    if (formData.email.trim() && !/\S+@\S+\.\S+/.test(formData.email)) {
+       newErrors.email = "Enter a valid email address.";
+    }
+
+    // Saved Address
+    if (!formData.useNewAddress && !formData.selectedAddressId) {
+      newErrors.selectedAddress =
+        "Please select a delivery address.";
+    }
+
+  
+    // New Address
+    if (formData.useNewAddress) {
+
+      if (!formData.newAddress.firstName.trim()) {
+        newErrors.firstName = "First name is required.";
+      }
+
+      if (!formData.newAddress.lastName.trim()) {
+        newErrors.lastName = "Last name is required.";
+      }
+
+      if (!formData.newAddress.address.trim()) {
+        newErrors.address = "Address is required.";
+      }
+
+      if (!formData.newAddress.city.trim()) {
+        newErrors.city = "City is required.";
+      }
+
+      if (!formData.newAddress.state.trim()) {
+        newErrors.state = "Please select a state.";
+      }
+
+      if (!/^\d{6}$/.test(formData.newAddress.pinCode)) {
+        newErrors.pinCode = "Enter a valid 6-digit PIN Code.";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const nextStep = () => {
-    if (currentStep < 3) setCurrentStep(currentStep + 1);
+
+    if (currentStep === 1) {
+      if (!validateStep1()) {
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+
+        return;
+      }
+
+    }
+
+    setCurrentStep(prev => prev + 1);
+
   };
 
   const prevStep = () => {
@@ -346,6 +414,7 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
                   handleInputChange={handleInputChange}
                   handleAddressSelection={handleAddressSelection}
                   handleUseNewAddress={handleUseNewAddress}
+                  errors={errors}
                 />
               )}
 
@@ -440,7 +509,7 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
 
                 <div className="d-flex justify-content-between mb-2">
                   <span>Subtotal ({getTotalItems()} items)</span>
-                  <span>${getSubtotal().toFixed(2)}</span>
+                  <span>₹{getSubtotal().toFixed(2)}</span>
                 </div>
                 
                 <div className="d-flex justify-content-between mb-2">
@@ -456,14 +525,14 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
                 
                 <div className="d-flex justify-content-between mb-3">
                   <span>Tax</span>
-                  <span>${getTax().toFixed(2)}</span>
+                  <span>₹{getTax().toFixed(2)}</span>
                 </div>
                 
                 <hr />
                 
                 <div className="d-flex justify-content-between mb-3">
                   <strong>Total</strong>
-                  <strong className="text-primary">${getTotal().toFixed(2)}</strong>
+                  <strong className="text-primary">₹{getTotal().toFixed(2)}</strong>
                 </div>
 
                 <div className="text-center">

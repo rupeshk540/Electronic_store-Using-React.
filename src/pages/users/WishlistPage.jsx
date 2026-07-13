@@ -232,7 +232,7 @@ const WishlistPage = () => {
                     </p>
                     <div className="mb-2">
                       <span className="fw-bold" style={{ fontSize: '0.8rem', color: '#25770eff' }}>
-                        ${product?.price}
+                        ₹{product?.price}
                       </span>
                     </div>
                     

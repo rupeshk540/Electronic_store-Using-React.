@@ -291,7 +291,7 @@ const StorePage = () => {
                     </p>
                     <div className="mb-2">
                       <span className="fw-bold" style={{ fontSize: '0.9rem', color: '#25770eff' }}>
-                        ${product?.price}
+                        ₹{product?.discountedPrice}
                       </span>
                     </div>
                     

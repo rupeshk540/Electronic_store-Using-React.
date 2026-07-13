@@ -32,8 +32,7 @@ const HotDealsPage = () => {
 
     return () => clearInterval(timer);
   }, []);
-
-  // Sample hot deals data with more products
+// Sample hot deals data with more products
   const hotDeals = [
     {
       id: 1,

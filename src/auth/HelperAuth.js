@@ -41,8 +41,9 @@ export const isAdminUser = () => {
 
   // Match admin role by ID or name
   return user.roles.some((role) =>
-    role.roleId === "e8220e09-762a-451e-b9c2-b29c347ddb13" ||
-    role.roleName?.toLowerCase() === "admin"
+    role.roleId === "90ac1a0e-599c-4478-9dbf-d528dd29609b" ||
+    role.roleName?.toLowerCase() === "admin" ||
+    role.roleId==="901baba5-3cf0-4138-a932-e645ce5efe1f"
   );
 };
 

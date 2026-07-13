@@ -9,48 +9,6 @@ import { getReviewsOfProduct } from '../../services/ReviewService';
 import ShowHtml from '../../components/ShowHtml';
 
 const SingleProductView = () => {
-  // const [product,setProduct] = useState({
-  //   id: 1,
-  //   title: "Premium Wireless Headphones",
-  //   brand: "AudioTech Pro",
-  //   discountedPrice: 299.99,
-  //   price: 399.99,
-  //   rating: 4.5,
-  //   reviews: 324,
-  //   description: "Experience crystal-clear audio with our premium wireless headphones. Featuring advanced noise cancellation technology, 40-hour battery life, and superior comfort for all-day wear.",
-  //   features: [
-  //     "Active Noise Cancellation",
-  //     "40-hour battery life",
-  //     "Bluetooth 5.0 connectivity",
-  //     "Premium leather ear cushions",
-  //     "Foldable design with carrying case",
-  //     "Built-in microphone for calls"
-  //   ],
-  //   productImageUrls: [
-  //     "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
-  //     "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500",
-  //     "https://images.unsplash.com/photo-1528148343865-51218c4a13e6?w=500",
-  //     "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=500"
-  //   ],
-
-  //   stock: 15,
-  //   rentalPrice: {
-  //     daily: 9.99,
-  //     weekly: 49.99,
-  //     monthly: 149.99
-  //   },
-  //   specifications: {
-  //     "Weight": "250g",
-  //     "Battery Life": "40 hours",
-  //     "Charging Time": "2 hours",
-  //     "Connectivity": "Bluetooth 5.0",
-  //     "Range": "10 meters",
-  //     "Driver Size": "40mm"
-  //   }
-  // });
-
-  //const [product, setProduct] = useState(null);
- 
   const[product,setProduct] =useState();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedRentalPlan, setSelectedRentalPlan] = useState('daily');
@@ -333,7 +291,7 @@ const handleBuyNow = (product,quantity) => {
                   {product.price && (
                     <>
                       <span className="text-muted text-decoration-line-through">
-                        ${product.price}
+                        ₹{product.price}
                       </span>
                       <span className="badge bg-success">
                         {Math.round(((product.price - product.discountedPrice) / product.price) * 100)}% OFF
@@ -477,6 +435,7 @@ const handleBuyNow = (product,quantity) => {
 
           
             {/* Seller Information */}
+        
             <div className="card shadow-sm border-0 mb-4">
               <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start">

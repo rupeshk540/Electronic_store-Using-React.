@@ -558,8 +558,8 @@ const toggleWishlist = (e, productId) => {
                         <div className="rental-price">📅 ${product.rentalPrice}/day</div>
                       ) : ( */}
                         <>
-                          <span className="discount-price">${product.discountedPrice}</span>
-                          <span className="original-price">${product.price}</span>
+                          <span className="discount-price">₹{product.discountedPrice}</span>
+                          <span className="original-price">₹{product.price}</span>
                         </>
                       {/* )}
                       

@@ -8,7 +8,8 @@ import UserContext from '../context/UserContext';
 import { useContext } from 'react';
 import CartContext from '../context/CartContext';
 import '../customcss/CustomNavbar.css'; // Import custom CSS
-
+import { BadgePercent, Heart, LogIn, ShoppingCart, Store, UserPlus } from 'lucide-react';
+import brandlogo from '../assets/brandlogo.png';
 const CustomNavbar = () => {
   const userContext = useContext(UserContext);
   const { cart } = useContext(CartContext);
@@ -34,8 +35,8 @@ const CustomNavbar = () => {
         <Container>
           {/* Brand Logo */}
           <Navbar.Brand as={NavLink} to="/" className="brand-logo">
-            <span className="brand-icon">⚡</span>
-            <span className="brand-text">Zeptra</span>
+            <img src={brandlogo} width="30"height="30"/>
+            <span className="brand-text fw-bold">ZEPTRA</span>
           </Navbar.Brand>
           
           <Navbar.Toggle aria-controls="responsive-navbar-nav" className="custom-toggler" />
@@ -46,7 +47,7 @@ const CustomNavbar = () => {
             <Nav className="mx-auto">
               
                 <Nav.Link as={NavLink} to="/hotdeals" className="nav-link-custom">
-                    <Badge bg="danger" className="pulse-badge">Hot</Badge>
+                    <BadgePercent size={18} className="me-2" color='red' />Hot
                     Deals
                 </Nav.Link>
               
@@ -55,8 +56,8 @@ const CustomNavbar = () => {
                </Nav.Link>
 
                <Nav.Link as={NavLink} to="/store" className="nav-link-custom">
-                  <span className="nav-icon">🛍️</span>
-                  Shop
+                  <span className="nav-icon"><Store size={18} className="me-2" />Shop</span>
+                 
                 </Nav.Link>
 
                  <Nav.Link as={NavLink} to="/services" className="nav-link-custom">
@@ -143,11 +144,13 @@ const CustomNavbar = () => {
               {!isLoggedIn && (
                 <div className="auth-buttons">
                   <Nav.Link as={NavLink} to="/login" className="btn-outline-custom me-2">
-                    <span className="nav-icon">🔐</span>
+                    {/* <span className="nav-icon">🔐</span> */}
+                    <LogIn size={18} className="me-2" />
                     Login
                   </Nav.Link>
                   <Nav.Link as={NavLink} to="/signup" className="btn-primary-custom">
-                    <span className="nav-icon">🚀</span>
+                    {/* <span className="nav-icon">🚀</span> */}
+                     <UserPlus size={18} className="me-2" />
                     Get Started
                   </Nav.Link>
                 </div>
@@ -157,12 +160,12 @@ const CustomNavbar = () => {
               {isCustomer && (
                 <>
                   <Nav.Link as={NavLink} to="/user/wishlist" className="nav-link-custom icon-link">
-                    <span className="nav-icon">❤️</span>
+                    <span className="nav-icon"><Heart size={20} className='text-danger' fill='currentcolor' /></span>
                     <span className="d-none d-lg-inline">Wishlist</span>
                   </Nav.Link>
                   
                   <Nav.Link as={NavLink} to="/user/cart" className="nav-link-custom cart-link">
-                    <span className="nav-icon">🛒</span>
+                    <span className="nav-icon"><ShoppingCart size={20} /></span>
                     <span className="d-none d-lg-inline">Cart</span>
                     {cart && cart.items && cart.items.length > 0 && (
                       <Badge bg="primary" className="cart-count">
@@ -224,7 +227,7 @@ const CustomNavbar = () => {
                       {isAdmin ? 'Administrator' : isSeller ? 'Seller Account' : 'Customer Account'}
                     </small>
                   </div>
-                  
+{/*                   
                   <NavDropdown.Item 
                     as={NavLink} 
                     to={`/user/profile/${userContext?.userData?.user?.userId}`}
@@ -232,7 +235,7 @@ const CustomNavbar = () => {
                   >
                     <span className="dropdown-icon">👤</span>
                     Profile
-                  </NavDropdown.Item>
+                  </NavDropdown.Item> */}
 
                   {isCustomer && (
                     <>
@@ -276,7 +279,7 @@ const CustomNavbar = () => {
                     </>
                   )}
 
-                  <NavDropdown.Item 
+                  {/* <NavDropdown.Item 
                     as={NavLink} 
                     to="/settings"
                     className="dropdown-item-custom"
@@ -284,7 +287,7 @@ const CustomNavbar = () => {
                     <span className="dropdown-icon">⚙️</span>
                     Settings
                   </NavDropdown.Item>
-                  
+                   */}
                   <NavDropdown.Item 
                     as={NavLink} 
                     to="/user/help"

@@ -1,6 +1,11 @@
 import React from 'react';
 
-const AddressStepComponent = ({ formData, savedAddresses, handleInputChange, handleAddressSelection, handleUseNewAddress }) => {
+const AddressStepComponent = ({ formData, savedAddresses, handleInputChange, handleAddressSelection, handleUseNewAddress,errors }) => {
+ 
+ const indianStates = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+                         "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", 
+                         "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh",
+                          "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"];
   return (
     <div className="card shadow-sm mb-4">
       <div className="card-header">
@@ -11,24 +16,35 @@ const AddressStepComponent = ({ formData, savedAddresses, handleInputChange, han
         <div className="row mb-3">
           <div className="col-md-6">
              <label className="form-label">Phone Number *</label>
-            <input 
-              type="tel" 
-              className="form-control"
+            <input
+              type="tel"
+              className={`form-control ${errors.phone ? "is-invalid" : ""}`}
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
-              required
             />
+
+            {errors.phone && (
+              <div className="invalid-feedback">
+                {errors.phone}
+              </div>
+            )}
           </div>
           <div className="col-md-6">
             <label className="form-label">Email Address</label>
-            <input 
-              type="email" 
-              className="form-control"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
+          <input
+            type="email"
+            className={`form-control ${errors.email ? "is-invalid" : ""}`}
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+
+          {errors.email && (
+            <div className="invalid-feedback">
+              {errors.email}
+            </div>
+          )}
           </div>
         </div>
 
@@ -38,12 +54,22 @@ const AddressStepComponent = ({ formData, savedAddresses, handleInputChange, han
         
         <div className="mb-4">
           <h6 className="mb-3">Saved Addresses</h6>
+          {errors.selectedAddress && (
+            <div className="alert alert-danger py-2 mb-3">
+              <i className="bi bi-exclamation-circle me-2"></i>
+              {errors.selectedAddress}
+            </div>
+          )}
           <div className="row">
             {savedAddresses?.map(address => (
               <div key={address?.id} className="col-md-6 mb-3">
-                <div 
+                <div
                   className={`card h-100 cursor-pointer ${
-                    formData.selectedAddressId === address.id ? 'border-primary bg-primary bg-opacity-10' : ''
+                    formData.selectedAddressId === address.id
+                      ? "border-primary bg-primary bg-opacity-10"
+                      : ""
+                  } ${
+                    errors.selectedAddress ? "border-danger" : ""
                   }`}
                   onClick={() => handleAddressSelection(address.id)}
                   style={{ cursor: 'pointer' }}
@@ -106,38 +132,53 @@ const AddressStepComponent = ({ formData, savedAddresses, handleInputChange, han
             <div className="row mb-3">
               <div className="col-md-6">
                 <label className="form-label">First Name *</label>
-                <input 
-                  type="text" 
-                  className="form-control"
+                <input
+                  type="text"
+                  className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
                   name="firstName"
                   value={formData.newAddress.firstName}
                   onChange={handleInputChange}
-                  required
                 />
+
+                {errors.firstName && (
+                  <div className="invalid-feedback">
+                    {errors.firstName}
+                  </div>
+                )}
               </div>
               <div className="col-md-6">
                 <label className="form-label">Last Name *</label>
-                <input 
-                  type="text" 
-                  className="form-control"
+                <input
+                  type="text"
+                  className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
                   name="lastName"
                   value={formData.newAddress.lastName}
                   onChange={handleInputChange}
-                  required
                 />
+
+                {errors.lastName && (
+                  <div className="invalid-feedback">
+                    {errors.lastName}
+                  </div>
+                )}
               </div>
             </div>
             
             <div className="mb-3">
               <label className="form-label">Address *</label>
-              <input 
-                type="text" 
-                className="form-control"
+              <input
+                type="text"
+                className={`form-control ${errors.address ? "is-invalid" : ""}`}
                 name="address"
                 value={formData.newAddress.address}
                 onChange={handleInputChange}
-                required
               />
+
+              {errors.address && (
+                <div className="invalid-feedback">
+                  {errors.address}
+                </div>
+              )}
             </div>
             
             <div className="mb-3">
@@ -154,41 +195,57 @@ const AddressStepComponent = ({ formData, savedAddresses, handleInputChange, han
             <div className="row mb-3">
               <div className="col-md-4">
                 <label className="form-label">City *</label>
-                <input 
-                  type="text" 
-                  className="form-control"
+                <input
+                  type="text"
+                  className={`form-control ${errors.city ? "is-invalid" : ""}`}
                   name="city"
                   value={formData.newAddress.city}
                   onChange={handleInputChange}
-                  required
                 />
+
+                {errors.city && (
+                  <div className="invalid-feedback">
+                    {errors.city}
+                  </div>
+                )}
               </div>
               <div className="col-md-4">
                 <label className="form-label">State *</label>
-                <select 
-                  className="form-select"
+               <select
+                  className={`form-select ${errors.state ? "is-invalid" : ""}`}
                   name="state"
                   value={formData.newAddress.state}
                   onChange={handleInputChange}
-                  required
                 >
                   <option value="">Select State</option>
-                  <option value="CA">Maharastra</option>
-                  <option value="NY">Madya Pradesh</option>
-                  <option value="TX">Texas</option>
-                  <option value="FL">Florida</option>
+
+                  {indianStates.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
                 </select>
+                {errors.state && (
+                  <div className="invalid-feedback">
+                    {errors.state}
+                  </div>
+                )}
               </div>
               <div className="col-md-4">
                 <label className="form-label">PIN Code *</label>
-                <input 
-                  type="text" 
-                  className="form-control"
+                <input
+                  type="text"
+                  className={`form-control ${errors.pinCode ? "is-invalid" : ""}`}
                   name="pinCode"
                   value={formData.newAddress.pinCode}
                   onChange={handleInputChange}
-                  required
                 />
+
+                {errors.pinCode && (
+                  <div className="invalid-feedback">
+                    {errors.pinCode}
+                  </div>
+                )}
               </div>
             </div>
           </div>
