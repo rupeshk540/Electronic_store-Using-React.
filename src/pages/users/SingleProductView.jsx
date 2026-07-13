@@ -12,7 +12,7 @@ const SingleProductView = () => {
   const[product,setProduct] =useState();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedRentalPlan, setSelectedRentalPlan] = useState('daily');
-  const [activeTab, setActiveTab] = useState('buy');
+  const [activeTab] = useState('buy');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { productId } = useParams();
@@ -20,7 +20,7 @@ const SingleProductView = () => {
   const { wishlist, addItemWishlist, removeItemWishlist } = useContext(WishlistContext);  
   const [showAddedToCart, setShowAddedToCart] = useState(false);
   const [showRemovedFromCart, setShowRemovedFromCart] = useState(false);
-  const { isLogin, userData } = useContext(UserContext);
+  const { isLogin } = useContext(UserContext);
   const [quantity, setQuantity] = useState(1);
   const [reviews, setReviews] = useState([]);
   const navigate = useNavigate();
@@ -103,10 +103,10 @@ const handleBuyNow = (product,quantity) => {
 });
 };
 
-  const handleRentNow = () => {
-    // Rent now logic here
-    alert(`Proceeding to rent: ${selectedRentalPlan} plan - $${product.rentalPrice[selectedRentalPlan]}`);
-  };
+  // const handleRentNow = () => {
+  //   // Rent now logic here
+  //   alert(`Proceeding to rent: ${selectedRentalPlan} plan - $${product.rentalPrice[selectedRentalPlan]}`);
+  // };
 
   const incrementQuantity = () => {
     if (quantity < product.stock) {
@@ -154,7 +154,7 @@ const handleBuyNow = (product,quantity) => {
             style={{ top: "80px", zIndex: 1 }}>
         <ol className="breadcrumb">
           <li className="breadcrumb-item"><a href="/" className="text-decoration-none">Home</a></li>
-          <li className="breadcrumb-item"><a href="#" className="text-decoration-none">{product.category?.title}</a></li>
+          <li className="breadcrumb-item"><a href="/cateogies" className="text-decoration-none">{product.category?.title}</a></li>
           <li className="breadcrumb-item active" aria-current="page">{product.title}</li>
         </ol>
       </nav>

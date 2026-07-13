@@ -35,7 +35,7 @@ const CustomNavbar = () => {
         <Container>
           {/* Brand Logo */}
           <Navbar.Brand as={NavLink} to="/" className="brand-logo">
-            <img src={brandlogo} width="30"height="30"/>
+            <img src={brandlogo} alt={""} width="30"height="30"/>
             <span className="brand-text fw-bold">ZEPTRA</span>
           </Navbar.Brand>
           

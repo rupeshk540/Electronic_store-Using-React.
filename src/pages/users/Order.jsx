@@ -5,6 +5,7 @@ import { cancelOrder, getOrdersOfUser, requestReturn } from '../../services/Orde
 import { toast } from 'react-toastify';
 import { createReview } from '../../services/ReviewService';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'bootstrap';
 
 const OrdersPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -169,12 +170,12 @@ const handleReturn = async(orderId) => {
     return_rejected: { label: 'Return Rejected', color: '#c62828', bgColor: '#ffebee', icon: '❌' }
   };
 
-  const paymentConfig = {
-    SUCCESS: { label: "Paid", color: "#2e7d32", bgColor: "#e8f5e9", icon: "💳" },
-    PENDING: { label: "Pending", color: "#ef6c00", bgColor: "#fff3e0", icon: "⏳" },
-    FAILED: { label: "Failed", color: "#c62828", bgColor: "#ffebee", icon: "❌" },
-    REFUNDED: { label: "Refunded", color: "#6a1b9a", bgColor: "#f3e5f5", icon: "💸" }
-  };
+  // const paymentConfig = {
+  //   SUCCESS: { label: "Paid", color: "#2e7d32", bgColor: "#e8f5e9", icon: "💳" },
+  //   PENDING: { label: "Pending", color: "#ef6c00", bgColor: "#fff3e0", icon: "⏳" },
+  //   FAILED: { label: "Failed", color: "#c62828", bgColor: "#ffebee", icon: "❌" },
+  //   REFUNDED: { label: "Refunded", color: "#6a1b9a", bgColor: "#f3e5f5", icon: "💸" }
+  // };
 
   const filteredOrders =
   activeFilter === "all"
@@ -204,6 +205,10 @@ const handleReturn = async(orderId) => {
         return status === activeFilter;
       });
 
+      <Button disabled={loading}>
+        {loading ? "Loading..." : "Refresh"}
+    </Button>
+      
   return (
     
     <div style={{ 
@@ -419,6 +424,7 @@ const handleReturn = async(orderId) => {
                         <div className="col-auto">
                           <img 
                             src={item.image} 
+                            alt='img'
                             className="item-image"
                             width="80"
                             height="80"

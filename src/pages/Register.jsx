@@ -28,7 +28,7 @@ const ZeptaSignup = () => {
     
 
   const handleChange = (e) => {
-     const { name, value } = e.target;
+     const { name} = e.target;
 
      setFormData({ ...formData, [e.target.name]: e.target.value });
      // simple validation
@@ -58,23 +58,23 @@ const ZeptaSignup = () => {
        event.preventDefault();
       
        //validate client side
-       if(formData.name == undefined || formData.name.trim() == ``){
+       if(formData.name === undefined || formData.name.trim() === ``){
         toast.error("Name is required !!")
         return
        }
-       if(formData.email == undefined || formData.email.trim() == ``){
+       if(formData.email === undefined || formData.email.trim() === ``){
         toast.error("Email is required !!")
         return
        }
-       if(formData.password == undefined || formData.password.trim() == ``){
+       if(formData.password === undefined || formData.password.trim() === ``){
         toast.error("Password is required !!")
         return
        }
-       if(formData.confirmPassword== undefined || formData.confirmPassword.trim() == ``){
+       if(formData.confirmPassword=== undefined || formData.confirmPassword.trim() === ``){
         toast.error("confirm your password !!")
         return
        }
-       if(formData.password != formData.confirmPassword){
+       if(formData.password !== formData.confirmPassword){
         toast.error("password does not matched !")
        }
 

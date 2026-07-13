@@ -9,7 +9,7 @@ import useJwtTokenExpiration from "../../hooks/useJwtTokenExpiration.js";
 const AdminDashboard = () => {
 
   useJwtTokenExpiration();
-  const userContext = useContext(UserContext);
+  // const userContext = useContext(UserContext);
 
   const dashboardView=()=>{
     return (

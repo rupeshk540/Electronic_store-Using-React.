@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import AddressStepComponent from '../../components/users/AddressStepComponent';
 import PaymentStepComponent from '../../components/users/PaymentStepComponent';
 import ShippingStepComponent from '../../components/users/ShippingStepComponent';
-import { createOrder, createOrderAndInitPayment, verifyPayment } from '../../services/OrderService';
+import { createOrderAndInitPayment, verifyPayment } from '../../services/OrderService';
 import AddressContext from '../../context/AddressContext';
 import CartContext from '../../context/CartContext';
 import { useLocation } from 'react-router-dom';
@@ -13,7 +13,7 @@ import { getProduct } from '../../services/ProductService';
 
 const CheckoutPage = () => {
   
-  const { addresses, selectedAddressId, selectAddress, createAddress } = useContext(AddressContext);
+  const { addresses, createAddress } = useContext(AddressContext);
   const { cart } = useContext(CartContext);
   const {userData} =useContext(UserContext);
   const location = useLocation();
@@ -369,7 +369,7 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
         <div className="col-12">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><a href="#" className="text-decoration-none">Cart</a></li>
+              <li className="breadcrumb-item"><a href="/user/cart" className="text-decoration-none">Cart</a></li>
               <li className="breadcrumb-item active">Checkout</li>
             </ol>
           </nav>

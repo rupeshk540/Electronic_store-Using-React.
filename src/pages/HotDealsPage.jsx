@@ -1,4 +1,3 @@
-import { Search } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import HomePageComponent from '../components/HomePageComponent';
 
@@ -10,8 +9,8 @@ const HotDealsPage = () => {
     seconds: 45
   });
 
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory] = useState('all');
+  
 
   // Countdown timer effect
   useEffect(() => {
@@ -32,204 +31,6 @@ const HotDealsPage = () => {
 
     return () => clearInterval(timer);
   }, []);
-// Sample hot deals data with more products
-  const hotDeals = [
-    {
-      id: 1,
-      title: "Wireless Bluetooth Headphones",
-      originalPrice: 199.99,
-      discountPrice: 79.99,
-      discount: 60,
-      image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop",
-      category: "hot-deals",
-      rating: 4.5,
-      reviews: 1250,
-      tag: "Limited Time",
-      stock: 15
-    },
-    {
-      id: 2,
-      title: "Designer Leather Jacket",
-      originalPrice: 299.99,
-      discountPrice: 149.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop",
-      category: "50-off",
-      rating: 4.8,
-      reviews: 890,
-      tag: "Flash Sale",
-      stock: 8
-    },
-    {
-      id: 3,
-      title: "4K Smart TV 55 inch",
-      originalPrice: 899.99,
-      discountPrice: 549.99,
-      discount: 39,
-      image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop",
-      category: "bestseller",
-      rating: 4.3,
-      reviews: 567,
-      tag: "Best Seller",
-      stock: 5
-    },
-    {
-      id: 4,
-      title: "Gaming Mechanical Keyboard",
-      originalPrice: 129.99,
-      discountPrice: 69.99,
-      discount: 46,
-      image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=400&h=300&fit=crop",
-      category: "trending",
-      rating: 4.7,
-      reviews: 2100,
-      tag: "Hot Deal",
-      stock: 22
-    },
-    {
-      id: 5,
-      title: "Luxury Watch Collection",
-      originalPrice: 599.99,
-      discountPrice: 299.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=400&h=300&fit=crop",
-      category: "best-buy",
-      rating: 4.6,
-      reviews: 445,
-      tag: "Exclusive",
-      stock: 12
-    },
-    {
-      id: 6,
-      title: "Fitness Tracker Pro",
-      originalPrice: 249.99,
-      discountPrice: 129.99,
-      discount: 48,
-      image: "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400&h=300&fit=crop",
-      category: "new-arrival",
-      rating: 4.4,
-      reviews: 1567,
-      tag: "New Arrival",
-      stock: 18
-    },
-    {
-      id: 7,
-      title: "Professional Camera Kit",
-      originalPrice: 1299.99,
-      discountPrice: 899.99,
-      discount: 31,
-      image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop",
-      category: "best-rental",
-      rating: 4.9,
-      reviews: 234,
-      tag: "Rental Pro",
-      stock: 6
-    },
-    {
-      id: 8,
-      title: "Electric Scooter",
-      originalPrice: 799.99,
-      discountPrice: 399.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-      category: "50-off",
-      rating: 4.2,
-      reviews: 678,
-      tag: "Half Price",
-      stock: 11
-    },
-    {
-      id: 9,
-      title: "Wireless Gaming Mouse",
-      originalPrice: 89.99,
-      discountPrice: 45.99,
-      discount: 49,
-      image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=400&h=300&fit=crop",
-      category: "hot-deals",
-      rating: 4.5,
-      reviews: 892,
-      tag: "Gaming Pro",
-      stock: 28
-    },
-    {
-      id: 10,
-      title: "Bluetooth Speaker",
-      originalPrice: 159.99,
-      discountPrice: 79.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=300&fit=crop",
-      category: "trending",
-      rating: 4.3,
-      reviews: 1456,
-      tag: "Trending",
-      stock: 35
-    },
-    {
-      id: 11,
-      title: "Smartphone 128GB",
-      originalPrice: 699.99,
-      discountPrice: 449.99,
-      discount: 36,
-      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop",
-      category: "bestseller",
-      rating: 4.6,
-      reviews: 3200,
-      tag: "Top Rated",
-      stock: 19
-    },
-    {
-      id: 12,
-      title: "Laptop Stand Adjustable",
-      originalPrice: 79.99,
-      discountPrice: 39.99,
-      discount: 50,
-      image: "https://images.unsplash.com/photo-1527209634-de3f5e2b70b3?w=400&h=300&fit=crop",
-      category: "50-off",
-      rating: 4.4,
-      reviews: 567,
-      tag: "Office Pro",
-      stock: 42
-    },
-    {
-      id: 13,
-      title: "Air Purifier Smart",
-      originalPrice: 299.99,
-      discountPrice: 199.99,
-      discount: 33,
-      image: "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=300&fit=crop",
-      category: "new-arrival",
-      rating: 4.7,
-      reviews: 445,
-      tag: "Health Tech",
-      stock: 14
-    },
-    {
-      id: 14,
-      title: "Drone with 4K Camera",
-      originalPrice: 899.99,
-      discountPrice: 649.99,
-      discount: 28,
-      image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&h=300&fit=crop",
-      category: "best-rental",
-      rating: 4.8,
-      reviews: 278,
-      tag: "Rental Fav",
-      stock: 9
-    },
-    {
-      id: 15,
-      title: "Coffee Maker Premium",
-      originalPrice: 189.99,
-      discountPrice: 129.99,
-      discount: 32,
-      image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop",
-      category: "best-buy",
-      rating: 4.5,
-      reviews: 1123,
-      tag: "Kitchen Pro",
-      stock: 26
-    }
-  ];
 
   const categories = [
     { id: 'all', name: 'All Deals', icon: '🔥' },
@@ -242,23 +43,6 @@ const HotDealsPage = () => {
     { id: 'best-rental', name: 'Best Rental', icon: '🏆' }
   ];
 
-  const filteredDeals = activeCategory === 'all' 
-    ? hotDeals 
-    : hotDeals.filter(deal => deal.category === activeCategory);
-
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<span key={i} className="text-warning">★</span>);
-    }
-    if (hasHalfStar) {
-      stars.push(<span key="half" className="text-warning">☆</span>);
-    }
-    return stars;
-  };
 
   return (
     <div className="hot-deals-page">

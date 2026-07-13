@@ -1,100 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Clock1, Package2, TrendingUpIcon, CheckCircle2, XCircleIcon, ShoppingBagIcon, DollarSignIcon, Clock10, CheckCircle2Icon, SearchCheck, FilterIcon, ChevronDownCircle, DownloadIcon, Package2Icon } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { ShoppingBagIcon, Clock10, CheckCircle2Icon, SearchCheck, FilterIcon, ChevronDownCircle, DownloadIcon, Package2Icon } from 'lucide-react';
 import { getAllOrders, getOrderStats, updateOrderStatus } from '../../services/OrderService';
 import { toast } from 'react-toastify';
 import { getAddress } from '../../services/AddressService';
+import { Spinner } from 'react-bootstrap';
 
-// // Sample order data
-// const initialOrders = [
-//   {
-//     id: 'ORD-2024-1891',
-//     customer: 'Rajesh Kumar',
-//     email: 'rajesh.k@email.com',
-//     items: 3,
-//     total: 4599,
-//     status: 'pending',
-//     date: '2024-05-18',
-//     paymentMethod: 'UPI',
-//     shippingAddress: 'Mumbai, Maharashtra'
-//   },
-//   {
-//     id: 'ORD-2024-1890',
-//     customer: 'Priya Sharma',
-//     email: 'priya.sharma@email.com',
-//     items: 1,
-//     total: 1299,
-//     status: 'processing',
-//     date: '2024-05-18',
-//     paymentMethod: 'Credit Card',
-//     shippingAddress: 'Bangalore, Karnataka'
-//   },
-//   {
-//     id: 'ORD-2024-1889',
-//     customer: 'Amit Patel',
-//     email: 'amit.p@email.com',
-//     items: 5,
-//     total: 8750,
-//     status: 'shipped',
-//     date: '2024-05-17',
-//     paymentMethod: 'Cash on Delivery',
-//     shippingAddress: 'Delhi, NCR'
-//   },
-//   {
-//     id: 'ORD-2024-1888',
-//     customer: 'Sneha Reddy',
-//     email: 'sneha.reddy@email.com',
-//     items: 2,
-//     total: 3200,
-//     status: 'delivered',
-//     date: '2024-05-16',
-//     paymentMethod: 'Debit Card',
-//     shippingAddress: 'Hyderabad, Telangana'
-//   },
-//   {
-//     id: 'ORD-2024-1887',
-//     customer: 'Vikram Singh',
-//     email: 'vikram.s@email.com',
-//     items: 4,
-//     total: 6890,
-//     status: 'cancelled',
-//     date: '2024-05-15',
-//     paymentMethod: 'UPI',
-//     shippingAddress: 'Pune, Maharashtra'
-//   },
-//   {
-//     id: 'ORD-2024-1886',
-//     customer: 'Ananya Iyer',
-//     email: 'ananya.iyer@email.com',
-//     items: 2,
-//     total: 2499,
-//     status: 'delivered',
-//     date: '2024-05-14',
-//     paymentMethod: 'Net Banking',
-//     shippingAddress: 'Chennai, Tamil Nadu'
-//   },
-//   {
-//     id: 'ORD-2024-1885',
-//     customer: 'Rahul Verma',
-//     email: 'rahul.v@email.com',
-//     items: 1,
-//     total: 899,
-//     status: 'processing',
-//     date: '2024-05-14',
-//     paymentMethod: 'UPI',
-//     shippingAddress: 'Kolkata, West Bengal'
-//   },
-//   {
-//     id: 'ORD-2024-1884',
-//     customer: 'Deepika Menon',
-//     email: 'deepika.m@email.com',
-//     items: 3,
-//     total: 5299,
-//     status: 'shipped',
-//     date: '2024-05-13',
-//     paymentMethod: 'Credit Card',
-//     shippingAddress: 'Kochi, Kerala'
-//   }
-// ];
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -113,15 +23,8 @@ const OrderManagement = () => {
   deliveredOrders: 0
 });
 
-  useEffect(() => {
 
-    loadOrders(currentPage);
-
-    loadStats();
-
-  }, [currentPage]);
-
-  const loadOrders = async (page = currentPage) => {
+  const loadOrders = useCallback(async (page) => {
 
     try {
 
@@ -168,21 +71,28 @@ const OrderManagement = () => {
 
       setLoading(false);
     }
-  };
+  },[pageSize]);
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
 
-  try {
+    try {
 
-    const data = await getOrderStats();
+      const data = await getOrderStats();
 
-    setStats(data);
+      setStats(data);
 
-  } catch (error) {
+    } catch (error) {
 
-    console.log(error);
-  }
-};
+      console.log(error);
+    }
+  },[]);
+
+  useEffect(() => {
+
+    loadOrders(currentPage);
+    loadStats();
+
+  }, [currentPage, loadOrders, loadStats]);
 
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
 
@@ -272,7 +182,11 @@ const OrderManagement = () => {
     setShowModal(true);
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
   return (
+    
     <div style={{ 
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #7c73fa 0%, #796b86 100%)',
@@ -551,7 +465,7 @@ const OrderManagement = () => {
             <tbody>
               {filteredOrders?.map((order, index) => {
                 const config = statusConfig[order?.orderStatus];
-                const StatusIcon = config?.icon;
+                // const StatusIcon = config?.icon;
                 
                 return (
                   <tr 

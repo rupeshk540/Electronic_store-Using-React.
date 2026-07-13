@@ -24,6 +24,15 @@ const UserProvider = ({ children }) => {
     setIsAdminUser(adminUser());
   }, []);
 
+   // Logout & clear everything
+  const handleLogout = useCallback(() => {
+    doLogoutFromLocalStorage();
+    setIsLogin(false);
+    setUserData(null);
+    setIsAdminUser(false);
+    if (refreshTimer.current) clearTimeout(refreshTimer.current);
+  }, []);
+
   // Auto-refresh token 1 minute before expiry
   const scheduleTokenRefresh = useCallback(() => {
     const storedData = getDataFromLocalStorage();
@@ -100,14 +109,6 @@ const UserProvider = ({ children }) => {
     scheduleTokenRefresh();
   };
 
-  // Logout & clear everything
-  const handleLogout = useCallback(() => {
-    doLogoutFromLocalStorage();
-    setIsLogin(false);
-    setUserData(null);
-    setIsAdminUser(false);
-    if (refreshTimer.current) clearTimeout(refreshTimer.current);
-  }, []);
 
   return (
     <UserContext.Provider

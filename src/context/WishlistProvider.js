@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {  useCallback, useContext, useEffect, useState } from "react";
 import { getWishlist, addToWishlist, removeFromWishlist, clearWishlist } from "../services/WishlistService";
 import UserContext from "./UserContext";
 import WishlistContext from "./WishlistContext";
@@ -9,24 +9,34 @@ const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
 
   // Load wishlist initially
-  const loadWishlist = async (userId) => {
-    try {
-      const result = await getWishlist(userId);
-      console.log(result)
-      setWishlist(result.products || []);
-    } catch (error) {
-      console.error("Error loading wishlist:", error);
-      setWishlist([]);
-    }
-  };
+ const loadWishlist = useCallback(async (userId) => {
+  try {
+    const result = await getWishlist(userId);
+    console.log(result);
+    setWishlist(result.products || []);
+  } catch (error) {
+    console.error("Error loading wishlist:", error);
+    setWishlist([]);
+  }
+}, []);
 
   useEffect(() => {
-    if (isLogin) {
-      loadWishlist(userData.user.userId);
-    } else {
-      setWishlist([]);
-    }
-  }, [isLogin]);
+
+  if (isLogin && userData?.user?.userId) {
+
+    loadWishlist(userData.user.userId);
+
+  } else {
+
+    setWishlist([]);
+
+  }
+
+}, [
+  isLogin,
+  userData?.user?.userId,
+  loadWishlist
+]);
 
   // Add product
   const addItemWishlist = async (productId) => {
@@ -35,7 +45,7 @@ const WishlistProvider = ({ children }) => {
         toast.error("Please login to add products to wishlist");
         return;
       }
-      const result = await addToWishlist(userData.user.userId, productId);
+      // const result = await addToWishlist(userData.user.userId, productId);
       setWishlist(prevWishlist => [...prevWishlist, { productId }]);
       toast.success("Added to wishlist ❤️");
     } catch (error) {
@@ -46,7 +56,7 @@ const WishlistProvider = ({ children }) => {
   // Remove product
   const removeItemWishlist = async (productId) => {
     try {
-      const result = await removeFromWishlist(userData.user.userId, productId);
+      // const result = await removeFromWishlist(userData.user.userId, productId);
       setWishlist(prevWishlist => prevWishlist.filter(item => item.productId !== productId));
       toast.warn("Removed from wishlist 💔");
     } catch (error) {

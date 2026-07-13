@@ -1,10 +1,9 @@
 import { useContext, useState } from 'react';
-import { Heart, ShoppingCart, MoreHorizontal, Share, Check, Link } from 'lucide-react';
+import { Heart, ShoppingCart, MoreHorizontal, Share, Check} from 'lucide-react';
 import WishlistContext from '../../context/WishlistContext';
 import CartContext from "../../context/CartContext";
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { isLoggedIn } from '../../auth/HelperAuth';
 import UserContext from '../../context/UserContext';
 
 const WishlistPage = () => {
@@ -260,7 +259,7 @@ const WishlistPage = () => {
                           e.target.style.color = '#333';
                         }}
                       >
-                      {cart?.items?.some(item => item.product.productId== product.productId) ? (
+                      {cart?.items?.some(item => item.product.productId=== product.productId) ? (
                         <><Check size={14} className='me-1'/> Added</>
                         ):("Add to cart")
                       }

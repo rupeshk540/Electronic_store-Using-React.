@@ -4,7 +4,7 @@ import {GrHome} from 'react-icons/gr';
 import { BiCategory } from "react-icons/bi";
 import { AiOutlineAppstoreAdd } from 'react-icons/ai';
 import { FcViewDetails } from 'react-icons/fc';
-import { MdDashboard, MdOutlineCategory, MdViewDay } from "react-icons/md";
+import { MdOutlineCategory, MdViewDay } from "react-icons/md";
 import { MdAddBox } from "react-icons/md";
 import { FaOpencart, FaUserSecret } from "react-icons/fa";
 import { HiOutlineLogout } from "react-icons/hi";

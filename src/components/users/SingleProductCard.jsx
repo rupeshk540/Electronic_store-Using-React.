@@ -1,6 +1,5 @@
 import React from 'react'
 import { Badge, Button, Card, Container } from 'react-bootstrap';
-import { getProductImageUrl } from '../../services/HelperService';
 import "../users/SingleProductCard.css";
 import defaultProductImage from "../../assets/defaultProduct_img.jpg";
 import { Link } from 'react-router-dom';

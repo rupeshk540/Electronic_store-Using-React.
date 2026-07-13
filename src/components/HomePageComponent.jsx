@@ -1,5 +1,5 @@
 import { Heart, Search } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { getAllCollections } from "../services/CollectionService";
 import { getAllLiveProducts, getProductsByCollection, searchProduct } from "../services/ProductService";
 import { useNavigate } from "react-router-dom";
@@ -19,49 +19,50 @@ const HomePageComponent = () => {
   const { wishlist, addItemWishlist, removeItemWishlist } = useContext(WishlistContext)
 
 
-  // Fetch all collections on mount
+  // Fetch products depending on category or search
+ const fetchProducts = useCallback((reset = false) => {
+    if (loading || (!hasMore && !reset)) return;
+
+    setLoading(true);
+
+    let fetchPromise;
+    const currentPage = reset ? 0 : page;
+
+    if (searchQuery) {
+      fetchPromise = searchProduct(searchQuery, currentPage, pageSize);
+    } else if (activeCollection && activeCollection !== 'all') {
+      fetchPromise = getProductsByCollection(activeCollection, currentPage, pageSize);
+    } else {
+      fetchPromise = getAllLiveProducts(currentPage, pageSize);
+    }
+
+    fetchPromise
+      .then(data => {
+        const newProducts = data.content || data;
+
+        if (reset) {
+          setProducts(newProducts);
+        } else {
+          setProducts(prev => [...prev, ...newProducts]);
+        }
+
+        setPage(currentPage + 1);
+        setHasMore(newProducts.length >= pageSize);
+      })
+      .catch(err => console.error("Error fetching products:", err))
+      .finally(() => setLoading(false));
+
+  }, [loading, hasMore, page, searchQuery, activeCollection]);
+
+// Fetch all collections on mount
   useEffect(() => {
     getAllCollections().then(data => setCollections(data.content));
   }, []);
 
 // reset products when collection/search changes
   useEffect(() => {
-  fetchProducts(true); 
-}, [activeCollection, searchQuery]);
-
-
-  // Fetch products depending on category or search
- const fetchProducts = (reset = false) => {
-  if (loading || (!hasMore && !reset)) return;
-
-  setLoading(true);
-
-  let fetchPromise;
-  const currentPage = reset ? 0 : page;
-
-  if (searchQuery) {
-    fetchPromise = searchProduct(searchQuery, currentPage, pageSize);
-  } else if (activeCollection && activeCollection !== 'all') {
-    fetchPromise = getProductsByCollection(activeCollection, currentPage, pageSize);
-  } else {
-    fetchPromise = getAllLiveProducts(currentPage, pageSize);
-  }
-
-  fetchPromise
-    .then(data => {
-      const newProducts = data.content || data;
-      if (reset) {
-        setProducts(newProducts);
-      } else {
-        setProducts(prev => [...prev, ...newProducts]);
-      }
-      setPage(currentPage + 1);
-      setHasMore(newProducts.length >= pageSize);
-    })
-    .catch(err => console.error("Error fetching products:", err))
-    .finally(() => setLoading(false));
-};
-
+    fetchProducts(true);
+  }, [fetchProducts]);
 
 const renderStars = (rating) => {
   const stars = [];

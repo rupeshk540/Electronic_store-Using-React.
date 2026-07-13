@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Upload, X, Plus } from 'lucide-react';
+import {  X, Plus } from 'lucide-react';
 import { Editor } from '@tinymce/tinymce-react';
 import { getAllCategories } from "../../services/CategoryService";
 import { getAllCollections } from "../../services/CollectionService"; 

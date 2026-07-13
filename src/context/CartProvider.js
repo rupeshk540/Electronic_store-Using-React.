@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import CartContext from './CartContext';
 import UserContext from "./UserContext";
 import { addItemToCart, clearTheCart, getCart, removeItemFromCart } from '../services/CartService';
@@ -16,22 +16,28 @@ const CartProvider = ({children}) => {
 
 
     //load user cart initially
-    const loadUserCart = async (userId) => {
+   const loadUserCart = useCallback(async (userId) => {
         try {
             const cart = await getCart(userId);
             setCart({...cart});
         } catch (error) {
-           setCart({items:[]})
+            setCart({items:[]});
         }
-    };
+    }, []);
 
     useEffect(() => {
-        if(isLogin){
+
+        if(isLogin && userData?.user?.userId){
+
             loadUserCart(userData.user.userId);
+
         }else{
-            setCart(null);
+
+            setCart({items:[]});
+
         }
-    },[isLogin]);
+
+    }, [isLogin, userData?.user?.userId, loadUserCart]);
 
     //add item to cart
     const addItemCart = async(quantity, productId, next) => {

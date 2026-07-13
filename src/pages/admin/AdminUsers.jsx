@@ -397,7 +397,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { getAllUsers } from "../../services/UserService";
-import SingleUserView from "../../components/SingleUserView";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { USER_PAGE_SIZE } from "../../services/HelperService";
 import { toast } from "react-toastify";

@@ -1,12 +1,10 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Trash2, Edit, Eye, Package, Star, Calendar, DollarSign, Tag, Archive, Plus, Search, Filter, Grid, List } from 'lucide-react';
-import { Editor } from '@tinymce/tinymce-react';
-import {deleteProduct, getAllProducts, patchProduct, updateProduct } from '../../services/ProductService';
+import { Trash2, Package, Star, Plus, Search, Filter, Grid, List } from 'lucide-react';
+import {deleteProduct, getAllProducts, patchProduct } from '../../services/ProductService';
 import { getAllCategories } from '../../services/CategoryService';
-import ShowHtml from "../../components/ShowHtml";
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ViewProductsPage = () => {
  const [products, setProducts] = useState([]);
@@ -16,11 +14,6 @@ const ViewProductsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState("table");
   const [showDeleteModal, setShowDeleteModal] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editProductData, setEditProductData] = useState(null);
-  const [editImages, setEditImages] = useState([]);
-  const [categoryChangeId, setCategoryChangeId] = useState('');
-  const editorRef = useRef();
   const navigate = useNavigate();
   const [pageInfo, setPageInfo] = useState({
     pageNumber: 0,
@@ -184,8 +177,6 @@ const handleDelete = async (productId) => {
 
   // Table row component
   const ProductTableRow = ({ product }) => {
-    const stockStatus = getStockStatus(product.stock);
-
     return (
       <tr onClick={()=> goToProductPage(product.productId)} style={{cursor:"pointer"}}>
         <td>
@@ -489,7 +480,7 @@ const ProductGridCard = ({ product }) => {
         <div>
           <h2 className="text-primary mb-1"><Package className="me-2" size={28} />Products Management</h2>
           <nav aria-label="breadcrumb"><ol className="breadcrumb">
-            <li className="breadcrumb-item"><a onClick={() =>navigate("/admin/home")}style={{ cursor: "pointer"}} className="text-decoration-none">Admin</a></li>
+            <li className="breadcrumb-item"><Link to="/admin/home" className="text-decoration-none">Admin</Link></li>
             <li className="breadcrumb-item active" aria-current="page">View Products</li></ol>
           </nav>
         </div>

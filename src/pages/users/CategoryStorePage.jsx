@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import SingleProductCard from "../../components/users/SingleProductCard";
 import CategoryView from "../../components/users/CategoryView";
 import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { STORE_PAGE_PRODUCT_SIZE } from "../../services/HelperService";
 import { getProductsOfCategories } from "../../services/ProductService";
 import { toast } from "react-toastify";
@@ -12,23 +12,20 @@ import { toast } from "react-toastify";
 const CategoryStorePage = () => {
     
     const {categoryId, categoryTitle} = useParams()
-    const [products, setProducts] = useState(null)
     const [currentPage, setCurrentPage] = useState(0)
-
-    useEffect(() => {
-        loadProductOfCategories(0, STORE_PAGE_PRODUCT_SIZE,'addedDate', 'desc')
-    },[categoryId])
-
-    useEffect(() => {
-        if(currentPage > 0){
-            loadProductOfCategories(currentPage, STORE_PAGE_PRODUCT_SIZE,'addedDate', 'desc')
-        }
-    },[currentPage])
-
-    const loadProductOfCategories = (pageNumber, pageSize, sortBy, sortDir) => {
+    const [products, setProducts] = useState({
+        content: [],
+        lastPage: false,
+        pageNumber: 0,
+        pageSize: 0,
+        totalElements: 0,
+        totalPages: 0
+    });
+    
+    const loadProductOfCategories = useCallback((pageNumber, pageSize, sortBy, sortDir) => {
         getProductsOfCategories(categoryId, pageNumber, pageSize, sortBy, sortDir)
             .then(data => {
-                if(currentPage > 0) {
+                if(pageNumber > 0) {
                     setCurrentPage({
                         content: [...products.content, ...data.content],
                         lastPage: data.lastPage,
@@ -44,7 +41,27 @@ const CategoryStorePage = () => {
             .catch(error => {
                 toast.error("Error in fetching products !!")
             })
-    }
+    },[categoryId]);
+
+    useEffect(() => {
+        loadProductOfCategories(
+            0,
+            STORE_PAGE_PRODUCT_SIZE,
+            "addedDate",
+            "desc"
+        );
+    }, [categoryId, loadProductOfCategories]);
+
+    useEffect(() => {
+        if (currentPage > 0) {
+            loadProductOfCategories(
+            currentPage,
+            STORE_PAGE_PRODUCT_SIZE,
+            "addedDate",
+            "desc"
+            );
+        }
+    }, [currentPage, loadProductOfCategories]);
 
     //loading next page
     const loadNextPage = () => {

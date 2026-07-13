@@ -1,12 +1,11 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { Trash2, Edit, Eye, Package, Star, Calendar, DollarSign, Tag, Archive } from 'lucide-react';
+import { Trash2, Edit, Eye, Package, Star, Calendar, DollarSign, Tag} from 'lucide-react';
 import { deleteProduct, getProduct, updateProduct } from '../../services/ProductService';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllCategories } from '../../services/CategoryService';
 import { getAllCollections } from '../../services/CollectionService';
 import { Editor } from '@tinymce/tinymce-react';
-import { getProductImageUrl } from '../../services/HelperService';
 import ShowHtml from '../../components/ShowHtml';
 import { toast } from 'react-toastify';
 

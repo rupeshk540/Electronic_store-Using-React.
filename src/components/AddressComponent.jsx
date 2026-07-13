@@ -3,52 +3,10 @@ import UserContext from '../context/UserContext';
 import { addAddress, deleteAddress, getAddressesOfUser, updateAddress } from '../services/AddressService';
 
 const AddressManager = () => {
-  // const [savedAddresses, setSavedAddresses] = useState([
-  //   {
-  //     id: 1,
-  //     type: 'Home',
-  //     firstName: 'John',
-  //     lastName: 'Doe',
-  //     address: '123 Main Street',
-  //     apartment: 'Apt 4B',
-  //     city: 'New York',
-  //     state: 'NY',
-  //     zipCode: '10001',
-  //     phone: '+1 234-567-8900',
-  //     isDefault: true
-  //   },
-  //   {
-  //     id: 2,
-  //     type: 'Office',
-  //     firstName: 'John',
-  //     lastName: 'Doe',
-  //     address: '456 Business Ave',
-  //     apartment: 'Suite 200',
-  //     city: 'New York',
-  //     state: 'NY',
-  //     zipCode: '10002',
-  //     phone: '+1 234-567-8901',
-  //     isDefault: false
-  //   },
-  //   {
-  //     id: 3,
-  //     type: 'Parent\'s House',
-  //     firstName: 'John',
-  //     lastName: 'Doe',
-  //     address: '789 Family Street',
-  //     apartment: '',
-  //     city: 'Brooklyn',
-  //     state: 'NY',
-  //     zipCode: '11201',
-  //     phone: '+1 234-567-8902',
-  //     isDefault: false
-  //   }
-  // ]);
-
+  
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
-  const [dropdownOpen, setDropdownOpen] = useState(null);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [newAddressData, setNewAddressData] = useState({
     type: '',

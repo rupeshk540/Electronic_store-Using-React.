@@ -1,247 +1,243 @@
-import React, { useState, useEffect } from 'react';
- import { Search, Filter, ShoppingCart, Clock, Star, Heart, Zap, TrendingUp, Sparkles, Bot, Brain, Cpu, Eye, MousePointer, ArrowRight, Shield, Award } from 'lucide-react';
+import React, { useState} from 'react';
+ import { Zap, Sparkles, Bot, Brain, Cpu, Eye, } from 'lucide-react';
 import { useNavigate} from 'react-router-dom';
 import HomePageComponent from '../components/HomePageComponent';
 
  const MainPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('featured');
-  const [favorites, setFavorites] = useState(new Set());
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const navigate = useNavigate();
 
   // Product data matching your brand aesthetic
-  const products = [
-    {
-      id: 1,
-      name: "MacBook Pro M3",
-      category: "electronics",
-      price: 2499,
-      rentPrice: 149,
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviews: 1247,
-      badge: "ai-recommended",
-      aiScore: 96,
-      description: "Professional laptop with M3 chip, perfect for developers and creatives",
-      tags: ["Pro", "M3 Chip", "16GB RAM"],
-      availability: "In Stock",
-      trending: true
-    },
-    {
-      id: 2,
-      name: "Designer Sofa Set",
-      category: "furniture",
-      price: 3299,
-      rentPrice: 199,
-      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviews: 892,
-      badge: "popular",
-      aiScore: 94,
-      description: "Luxurious 3-piece sofa set, premium comfort for modern living",
-      tags: ["Luxury", "3-Piece", "Premium"],
-      availability: "Limited",
-      trending: true
-    },
-    {
-      id: 3,
-      name: "Canon EOS R5",
-      category: "electronics",
-      price: 4299,
-      rentPrice: 249,
-      image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviews: 2156,
-      badge: "featured",
-      aiScore: 98,
-      description: "Professional mirrorless camera with 8K video capabilities",
-      tags: ["8K Video", "45MP", "Professional"],
-      availability: "Pre-order",
-      trending: false
-    },
-    {
-      id: 4,
-      name: "Ergonomic Office Chair",
-      category: "furniture",
-      price: 899,
-      rentPrice: 59,
-      image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=400&fit=crop",
-      rating: 4.7,
-      reviews: 567,
-      badge: "bestseller",
-      aiScore: 92,
-      description: "Premium ergonomic chair with lumbar support and adjustable features",
-      tags: ["Ergonomic", "Lumbar Support", "Adjustable"],
-      availability: "In Stock",
-      trending: true
-    },
-    {
-      id: 5,
-      name: "iPhone 15 Pro",
-      category: "electronics",
-      price: 1599,
-      rentPrice: 99,
-      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviews: 3421,
-      badge: "trending",
-      aiScore: 95,
-      description: "Latest iPhone with titanium design and advanced camera system",
-      tags: ["Titanium", "48MP Camera", "5G"],
-      availability: "In Stock",
-      trending: true
-    },
-    {
-      id: 6,
-      name: "Premium Leather Bag",
-      category: "fashion",
-      price: 599,
-      rentPrice: 49,
-      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
-      rating: 4.6,
-      reviews: 334,
-      badge: "luxury",
-      aiScore: 89,
-      description: "Handcrafted genuine leather messenger bag with premium finish",
-      tags: ["Genuine Leather", "Handcrafted", "Premium"],
-      availability: "Limited",
-      trending: false
-    },
-    {
-      id: 7,
-      name: "MacBook Pro M3",
-      category: "electronics",
-      price: 2499,
-      rentPrice: 149,
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviews: 1247,
-      badge: "ai-recommended",
-      aiScore: 96,
-      description: "Professional laptop with M3 chip, perfect for developers and creatives",
-      tags: ["Pro", "M3 Chip", "16GB RAM"],
-      availability: "In Stock",
-      trending: true
-    },
-    {
-      id: 8,
-      name: "Designer Sofa Set",
-      category: "furniture",
-      price: 3299,
-      rentPrice: 199,
-      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviews: 892,
-      badge: "popular",
-      aiScore: 94,
-      description: "Luxurious 3-piece sofa set, premium comfort for modern living",
-      tags: ["Luxury", "3-Piece", "Premium"],
-      availability: "Limited",
-      trending: true
-    },
-    {
-      id: 9,
-      name: "Canon EOS R5",
-      category: "electronics",
-      price: 4299,
-      rentPrice: 249,
-      image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=400&fit=crop",
-      rating: 4.9,
-      reviews: 2156,
-      badge: "featured",
-      aiScore: 98,
-      description: "Professional mirrorless camera with 8K video capabilities",
-      tags: ["8K Video", "45MP", "Professional"],
-      availability: "Pre-order",
-      trending: false
-    },
-    {
-      id: 10,
-      name: "Ergonomic Office Chair",
-      category: "furniture",
-      price: 899,
-      rentPrice: 59,
-      image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=400&fit=crop",
-      rating: 4.7,
-      reviews: 567,
-      badge: "bestseller",
-      aiScore: 92,
-      description: "Premium ergonomic chair with lumbar support and adjustable features",
-      tags: ["Ergonomic", "Lumbar Support", "Adjustable"],
-      availability: "In Stock",
-      trending: true
-    },
-    {
-      id: 11,
-      name: "iPhone 15 Pro",
-      category: "electronics",
-      price: 1599,
-      rentPrice: 99,
-      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
-      rating: 4.8,
-      reviews: 3421,
-      badge: "trending",
-      aiScore: 95,
-      description: "Latest iPhone with titanium design and advanced camera system",
-      tags: ["Titanium", "48MP Camera", "5G"],
-      availability: "In Stock",
-      trending: true
-    },
-    {
-      id: 12,
-      name: "Premium Leather Bag",
-      category: "fashion",
-      price: 599,
-      rentPrice: 49,
-      image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
-      rating: 4.6,
-      reviews: 334,
-      badge: "luxury",
-      aiScore: 89,
-      description: "Handcrafted genuine leather messenger bag with premium finish",
-      tags: ["Genuine Leather", "Handcrafted", "Premium"],
-      availability: "Limited",
-      trending: false
-    }
-  ];
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "MacBook Pro M3",
+  //     category: "electronics",
+  //     price: 2499,
+  //     rentPrice: 149,
+  //     image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
+  //     rating: 4.9,
+  //     reviews: 1247,
+  //     badge: "ai-recommended",
+  //     aiScore: 96,
+  //     description: "Professional laptop with M3 chip, perfect for developers and creatives",
+  //     tags: ["Pro", "M3 Chip", "16GB RAM"],
+  //     availability: "In Stock",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Designer Sofa Set",
+  //     category: "furniture",
+  //     price: 3299,
+  //     rentPrice: 199,
+  //     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop",
+  //     rating: 4.8,
+  //     reviews: 892,
+  //     badge: "popular",
+  //     aiScore: 94,
+  //     description: "Luxurious 3-piece sofa set, premium comfort for modern living",
+  //     tags: ["Luxury", "3-Piece", "Premium"],
+  //     availability: "Limited",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Canon EOS R5",
+  //     category: "electronics",
+  //     price: 4299,
+  //     rentPrice: 249,
+  //     image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=400&fit=crop",
+  //     rating: 4.9,
+  //     reviews: 2156,
+  //     badge: "featured",
+  //     aiScore: 98,
+  //     description: "Professional mirrorless camera with 8K video capabilities",
+  //     tags: ["8K Video", "45MP", "Professional"],
+  //     availability: "Pre-order",
+  //     trending: false
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Ergonomic Office Chair",
+  //     category: "furniture",
+  //     price: 899,
+  //     rentPrice: 59,
+  //     image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=400&fit=crop",
+  //     rating: 4.7,
+  //     reviews: 567,
+  //     badge: "bestseller",
+  //     aiScore: 92,
+  //     description: "Premium ergonomic chair with lumbar support and adjustable features",
+  //     tags: ["Ergonomic", "Lumbar Support", "Adjustable"],
+  //     availability: "In Stock",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "iPhone 15 Pro",
+  //     category: "electronics",
+  //     price: 1599,
+  //     rentPrice: 99,
+  //     image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
+  //     rating: 4.8,
+  //     reviews: 3421,
+  //     badge: "trending",
+  //     aiScore: 95,
+  //     description: "Latest iPhone with titanium design and advanced camera system",
+  //     tags: ["Titanium", "48MP Camera", "5G"],
+  //     availability: "In Stock",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Premium Leather Bag",
+  //     category: "fashion",
+  //     price: 599,
+  //     rentPrice: 49,
+  //     image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
+  //     rating: 4.6,
+  //     reviews: 334,
+  //     badge: "luxury",
+  //     aiScore: 89,
+  //     description: "Handcrafted genuine leather messenger bag with premium finish",
+  //     tags: ["Genuine Leather", "Handcrafted", "Premium"],
+  //     availability: "Limited",
+  //     trending: false
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "MacBook Pro M3",
+  //     category: "electronics",
+  //     price: 2499,
+  //     rentPrice: 149,
+  //     image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
+  //     rating: 4.9,
+  //     reviews: 1247,
+  //     badge: "ai-recommended",
+  //     aiScore: 96,
+  //     description: "Professional laptop with M3 chip, perfect for developers and creatives",
+  //     tags: ["Pro", "M3 Chip", "16GB RAM"],
+  //     availability: "In Stock",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Designer Sofa Set",
+  //     category: "furniture",
+  //     price: 3299,
+  //     rentPrice: 199,
+  //     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop",
+  //     rating: 4.8,
+  //     reviews: 892,
+  //     badge: "popular",
+  //     aiScore: 94,
+  //     description: "Luxurious 3-piece sofa set, premium comfort for modern living",
+  //     tags: ["Luxury", "3-Piece", "Premium"],
+  //     availability: "Limited",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 9,
+  //     name: "Canon EOS R5",
+  //     category: "electronics",
+  //     price: 4299,
+  //     rentPrice: 249,
+  //     image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=400&fit=crop",
+  //     rating: 4.9,
+  //     reviews: 2156,
+  //     badge: "featured",
+  //     aiScore: 98,
+  //     description: "Professional mirrorless camera with 8K video capabilities",
+  //     tags: ["8K Video", "45MP", "Professional"],
+  //     availability: "Pre-order",
+  //     trending: false
+  //   },
+  //   {
+  //     id: 10,
+  //     name: "Ergonomic Office Chair",
+  //     category: "furniture",
+  //     price: 899,
+  //     rentPrice: 59,
+  //     image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=400&h=400&fit=crop",
+  //     rating: 4.7,
+  //     reviews: 567,
+  //     badge: "bestseller",
+  //     aiScore: 92,
+  //     description: "Premium ergonomic chair with lumbar support and adjustable features",
+  //     tags: ["Ergonomic", "Lumbar Support", "Adjustable"],
+  //     availability: "In Stock",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 11,
+  //     name: "iPhone 15 Pro",
+  //     category: "electronics",
+  //     price: 1599,
+  //     rentPrice: 99,
+  //     image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop",
+  //     rating: 4.8,
+  //     reviews: 3421,
+  //     badge: "trending",
+  //     aiScore: 95,
+  //     description: "Latest iPhone with titanium design and advanced camera system",
+  //     tags: ["Titanium", "48MP Camera", "5G"],
+  //     availability: "In Stock",
+  //     trending: true
+  //   },
+  //   {
+  //     id: 12,
+  //     name: "Premium Leather Bag",
+  //     category: "fashion",
+  //     price: 599,
+  //     rentPrice: 49,
+  //     image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
+  //     rating: 4.6,
+  //     reviews: 334,
+  //     badge: "luxury",
+  //     aiScore: 89,
+  //     description: "Handcrafted genuine leather messenger bag with premium finish",
+  //     tags: ["Genuine Leather", "Handcrafted", "Premium"],
+  //     availability: "Limited",
+  //     trending: false
+  //   }
+  // ];
 
-  const categories = [
-    { id: 'all', name: 'All Products', icon: '🛍️', color: '#6366f1' },
-    { id: 'electronics', name: 'Electronics', icon: '📱', color: '#8b5cf6' },
-    { id: 'furniture', name: 'Furniture', icon: '🪑', color: '#06b6d4' },
-    { id: 'fashion', name: 'Fashion', icon: '👕', color: '#f59e0b' }
-  ];
+  // const categories = [
+  //   { id: 'all', name: 'All Products', icon: '🛍️', color: '#6366f1' },
+  //   { id: 'electronics', name: 'Electronics', icon: '📱', color: '#8b5cf6' },
+  //   { id: 'furniture', name: 'Furniture', icon: '🪑', color: '#06b6d4' },
+  //   { id: 'fashion', name: 'Fashion', icon: '👕', color: '#f59e0b' }
+  // ];
 
-  const getBadgeConfig = (badge) => {
-    const configs = {
-      'ai-recommended': { bg: 'bg-primary', icon: Brain, text: 'AI Recommended', color: '#6366f1' },
-      'popular': { bg: 'bg-success', icon: TrendingUp, text: 'Popular', color: '#10b981' },
-      'featured': { bg: 'bg-warning', icon: Sparkles, text: 'Featured', color: '#f59e0b' },
-      'bestseller': { bg: 'bg-info', icon: Award, text: 'Bestseller', color: '#06b6d4' },
-      'trending': { bg: 'bg-danger', icon: Zap, text: 'Trending', color: '#ef4444' },
-      'luxury': { bg: 'bg-dark', icon: Shield, text: 'Luxury', color: '#374151' }
-    };
-    return configs[badge] || configs['featured'];
-  };
+  // const getBadgeConfig = (badge) => {
+  //   const configs = {
+  //     'ai-recommended': { bg: 'bg-primary', icon: Brain, text: 'AI Recommended', color: '#6366f1' },
+  //     'popular': { bg: 'bg-success', icon: TrendingUp, text: 'Popular', color: '#10b981' },
+  //     'featured': { bg: 'bg-warning', icon: Sparkles, text: 'Featured', color: '#f59e0b' },
+  //     'bestseller': { bg: 'bg-info', icon: Award, text: 'Bestseller', color: '#06b6d4' },
+  //     'trending': { bg: 'bg-danger', icon: Zap, text: 'Trending', color: '#ef4444' },
+  //     'luxury': { bg: 'bg-dark', icon: Shield, text: 'Luxury', color: '#374151' }
+  //   };
+  //   return configs[badge] || configs['featured'];
+  // };
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // const filteredProducts = products.filter(product => {
+  //   const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //                        product.description.toLowerCase().includes(searchTerm.toLowerCase());
+  //   const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+  //   return matchesSearch && matchesCategory;
+  // });
 
-  const toggleFavorite = (productId) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(productId)) {
-      newFavorites.delete(productId);
-    } else {
-      newFavorites.add(productId);
-    }
-    setFavorites(newFavorites);
-  };
+  // const toggleFavorite = (productId) => {
+  //   const newFavorites = new Set(favorites);
+  //   if (newFavorites.has(productId)) {
+  //     newFavorites.delete(productId);
+  //   } else {
+  //     newFavorites.add(productId);
+  //   }
+  //   setFavorites(newFavorites);
+  // };
 
   return (
     <div className="bg-light min-vh-100">

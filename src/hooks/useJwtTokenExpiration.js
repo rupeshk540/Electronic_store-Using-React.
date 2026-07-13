@@ -10,20 +10,28 @@ const useJwtTokenExpiration = () => {
     const navigate = useNavigate();
     const {logout} = useContext(UserContext);
 
-    useEffect(() => {
-        const token = getTokenFromLocalStorage();
-       
-        try {
-            if(isJwtExpired(token)){
+   useEffect(() => {
+
+    const token = getTokenFromLocalStorage();
+
+    try {
+
+            if (token && isJwtExpired(token)) {
+
                 setFlag(true);
+
                 toast.error("Session Expired ! Relogin");
+
                 logout();
+
                 navigate("/login");
             }
+
         } catch (error) {
-            
+            console.error("JWT expiration check failed:", error);
         }
-    },[]);
+
+    }, [logout, navigate]);
 
     return flag;
    

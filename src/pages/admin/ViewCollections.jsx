@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getAllCollections } from '../../services/CollectionService';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -15,12 +15,7 @@ const ViewCollections = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-
-  useEffect(() => {
-    loadCollections(0, collections.pageSize);
-  }, []);
-
-  const loadCollections = (page, size) => {
+  const loadCollections =useCallback ((page, size) => {
     setLoading(true);
     getAllCollections(page, size)
       .then((data) => {
@@ -31,7 +26,12 @@ const ViewCollections = () => {
         toast.error("Error in loading collections");
         setLoading(false);
       });
-  };
+  },[]);
+
+  useEffect(() => {
+    loadCollections(0, 10);
+  }, [loadCollections]);
+
 
   const handleNextPage = () => {
     if (!collections.lastPage) {

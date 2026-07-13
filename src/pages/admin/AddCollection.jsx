@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Plus, X } from "lucide-react";
-import { addCategory } from "../../services/CategoryService";
+import React, { useState} from "react";
+import { Plus } from "lucide-react";
 import { addCollection } from "../../services/CollectionService";
 import { toast } from "react-toastify";
 

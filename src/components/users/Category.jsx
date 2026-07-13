@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { getAllCategories } from '../../services/CategoryService';
 import { toast } from 'react-toastify';
-import { getAllLiveProducts, getProductsOfCategories, searchProduct } from '../../services/ProductService';
+import { getAllLiveProducts, getProductsOfCategories} from '../../services/ProductService';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import WishlistContext from '../../context/WishlistContext';
@@ -30,7 +30,7 @@ const CategoryPage = () => {
   useEffect(() => {
     fetchCategories(0,10);
     fetchProducts();
-  }, []);
+  });
 
   const fetchCategories=(pageNumber, pageSize)=>{
       getAllCategories(pageNumber, pageSize)

@@ -3,7 +3,6 @@
 import React, { useContext, useState } from "react";
 import UserContext from "../context/UserContext"
 import { loginUser } from "../services/UserService"
-import { getTokenFromLocalStorage } from "../auth/HelperAuth"
 import { Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"
@@ -324,7 +323,7 @@ const ZeptaLogin = () => {
                             <input type="checkbox" id="remember" />
                             <label htmlFor="remember">Remember me</label>
                           </div>
-                          <a href="#" className="forgot-link">
+                          <a className="forgot-link">
                             Forgot password?
                           </a>
                         </div>

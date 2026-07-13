@@ -147,7 +147,7 @@ const AIChatBot = () => {
 
                         if (urlMatch) {
                         const url = urlMatch[0];
-                        const textBeforeUrl = line.replace(url, "");
+                        // const textBeforeUrl = line.replace(url, "");
 
                         return (
                             <React.Fragment key={index}>

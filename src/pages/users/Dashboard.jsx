@@ -1,7 +1,5 @@
-import { useContext } from "react";
-import { Outlet,NavLink, Navigate } from "react-router-dom";
-import UserContext from "../../context/UserContext.js";
-import { Col,Container,Card,Row, Button } from "react-bootstrap";
+
+import { Outlet, Navigate } from "react-router-dom";
 import { isLoggedIn } from "../../auth/HelperAuth.js";
 import useJwtTokenExpiration from "../../hooks/useJwtTokenExpiration.js";
 
@@ -9,7 +7,7 @@ const Dashboard=()=>{
 
     useJwtTokenExpiration();
 
-    const userContext=useContext(UserContext);
+    // const userContext=useContext(UserContext);
     
     //private dashboard view 
 
@@ -25,28 +23,28 @@ const Dashboard=()=>{
 
     // not logged in view
 
-    const notLoggedInView = () =>{
-        return (
-            <Container>
-                <Row>
-                    <Col md={{
-                        span: 8,
-                        offset: 2
-                    }}>
-                    <Card className="border-0 shadow mt-3">
-                        <Card.Body className="text-center">
+    // const notLoggedInView = () =>{
+    //     return (
+    //         <Container>
+    //             <Row>
+    //                 <Col md={{
+    //                     span: 8,
+    //                     offset: 2
+    //                 }}>
+    //                 <Card className="border-0 shadow mt-3">
+    //                     <Card.Body className="text-center">
 
-                            <h3>You are not logged In !!</h3>
-                            <p>Please do login to view the page </p>
-                            <Button as={NavLink} to="/login" variant="success">Login Now</Button>
-                        </Card.Body>
-                    </Card>
+    //                         <h3>You are not logged In !!</h3>
+    //                         <p>Please do login to view the page </p>
+    //                         <Button as={NavLink} to="/login" variant="success">Login Now</Button>
+    //                     </Card.Body>
+    //                 </Card>
                     
-                    </Col>
-                </Row>
-            </Container>
-        )
-    }
+    //                 </Col>
+    //             </Row>
+    //         </Container>
+    //     )
+    // }
 
     return (
         

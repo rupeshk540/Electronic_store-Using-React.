@@ -1,5 +1,5 @@
 
-import {useContext, useEffect,useState } from 'react';
+import {useContext,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CartContext from '../../context/CartContext';
 import UserContext from "../../context/UserContext";
@@ -7,8 +7,7 @@ import UserContext from "../../context/UserContext";
 
 const ShoppingCart = () => {
  
-  const { cart, setCart, addItemCart, removeItemCart, clearCart } = useContext(CartContext);
-  const { userData, isLogin } = useContext(UserContext);
+  const { cart, addItemCart, removeItemCart, clearCart } = useContext(CartContext);
   const navigate = useNavigate();
   const [showClearModal, setShowClearModal] = useState(false);
 

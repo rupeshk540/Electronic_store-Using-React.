@@ -1,10 +1,9 @@
 
-import { useContext, useEffect, useState } from 'react';
-import { Heart, ShoppingCart, MoreHorizontal, Share, Check } from 'lucide-react';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { Heart} from 'lucide-react';
 import WishlistContext from '../../context/WishlistContext';
-import CartContext from "../../context/CartContext";
 import { useNavigate } from 'react-router-dom';
-import { getAllLiveProducts, getProductsByCollection, searchProduct } from '../../services/ProductService';
+import { getAllLiveProducts, searchProduct } from '../../services/ProductService';
 
 const StorePage = () => {
  
@@ -16,77 +15,75 @@ const StorePage = () => {
   const [page, setPage] = useState(0);
   const [pageSize] = useState(12);  // adjust per your needs
   const [hasMore, setHasMore] = useState(true);
+  
+// Fetch products depending on category or search
+ const fetchProducts = useCallback((reset = false) => {
 
+  if (loading) return;
+
+  setLoading(true);
+
+  const currentPage = reset ? 0 : page;
+
+  let fetchPromise;
+
+  if (searchQuery && searchQuery.trim() !== "") {
+
+    fetchPromise = searchProduct(
+      searchQuery,
+      currentPage,
+      pageSize
+    );
+
+  } else {
+
+    fetchPromise = getAllLiveProducts(
+      currentPage,
+      pageSize
+    );
+  }
+
+
+  fetchPromise
+    .then(data => {
+
+      const newProducts = data.content || [];
+
+      if (reset) {
+
+        setProducts(newProducts);
+
+      } else {
+
+        setProducts(prev => [
+          ...prev,
+          ...newProducts
+        ]);
+
+      }
+
+      setPage(currentPage + 1);
+
+      setHasMore(newProducts.length >= pageSize);
+
+    })
+    .catch(err =>
+      console.error("Error fetching products:", err)
+    )
+    .finally(() => setLoading(false));
+
+
+}, [loading, page, searchQuery, pageSize]);
+  
+     
   // reset products when collection/search changes
-    useEffect(() => {
-    fetchProducts(true); 
-  }, [searchQuery]);
-  
-   // Fetch products depending on category or search
-  const fetchProducts = (reset = false) => {
+  useEffect(() => {
 
-      if (loading) return;
-        setLoading(true);
+  setPage(0);
+  setHasMore(true);
+  fetchProducts(true);
 
-      const currentPage = reset ? 0 : page;
-
-      let fetchPromise;
-
-      // SEARCH PRODUCTS
-      if (searchQuery && searchQuery.trim() !== "") {
-
-        fetchPromise = searchProduct(
-          searchQuery,
-          currentPage,
-          pageSize
-        );
-
-      }
-
-      // ALL PRODUCTS
-      else {
-
-        fetchPromise = getAllLiveProducts(
-          currentPage,
-          pageSize
-        );
-      }
-
-      fetchPromise
-        .then(data => {
-
-          const newProducts = data.content || [];
-
-          if (reset) {
-
-            setProducts(newProducts);
-
-          } else {
-
-            setProducts(prev => [
-              ...prev,
-              ...newProducts
-            ]);
-          }
-
-          setPage(currentPage + 1);
-
-          setHasMore(newProducts.length >= pageSize);
-
-        })
-        .catch(err =>
-          console.error("Error fetching products:", err)
-        )
-        .finally(() => setLoading(false));
-    };
-  
-      useEffect(() => {
-        setPage(0);
-        setHasMore(true);
-        fetchProducts(true);
-
-      }, [searchQuery]);
-
+}, [searchQuery, fetchProducts]);
 
 
   const goToProductPage = (productId) => {
