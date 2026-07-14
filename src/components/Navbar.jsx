@@ -125,10 +125,10 @@ const CustomNavbar = () => {
                     <span className="nav-icon">👥</span>
                     Users
                   </Nav.Link>  */}
-                   <Nav.Link as={NavLink} to="/admin/products" className="nav-link-custom admin-link">
+                   {/* <Nav.Link as={NavLink} to="/admin/products" className="nav-link-custom admin-link">
                     <span className="nav-icon">📦</span>
                     Products
-                  </Nav.Link> 
+                  </Nav.Link>  */}
                    {/* <Nav.Link as={NavLink} to="/admin/reports" className="nav-link-custom admin-link">
                     <span className="nav-icon">📊</span>
                     Reports

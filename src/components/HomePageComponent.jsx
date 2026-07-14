@@ -1,4 +1,4 @@
-import { Heart, Search } from "lucide-react";
+import { Heart, Search,LayoutGrid, Flame, TrendingUp, BadgePercent, Award, Sparkles, Star, ShoppingBag, PackageCheck, ThumbsUp, Gem, Crown } from "lucide-react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { getAllCollections } from "../services/CollectionService";
 import { getAllLiveProducts, getProductsByCollection, searchProduct } from "../services/ProductService";
@@ -17,10 +17,19 @@ const HomePageComponent = () => {
   const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
   const { wishlist, addItemWishlist, removeItemWishlist } = useContext(WishlistContext)
+  const [searchInput, setSearchInput] = useState('');
+
+// Debounce: update searchQuery only after user stops typing for 400ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInput);
+    }, 400);
+    return () => clearTimeout(timer); 
+  }, [searchInput]);
 
 
   // Fetch products depending on category or search
- const fetchProducts = useCallback((reset = false) => {
+  const fetchProducts = useCallback((reset = false) => {
     if (loading || (!hasMore && !reset)) return;
 
     setLoading(true);
@@ -52,33 +61,35 @@ const HomePageComponent = () => {
       .catch(err => console.error("Error fetching products:", err))
       .finally(() => setLoading(false));
 
-  }, [loading, hasMore, page, searchQuery, activeCollection]);
+  }, [searchQuery, activeCollection,pageSize,pageSize,loading,hasMore]);
 
-// Fetch all collections on mount
+  // Fetch all collections on mount
   useEffect(() => {
     getAllCollections().then(data => setCollections(data.content));
   }, []);
 
-// reset products when collection/search changes
+  // reset products when collection/search changes
   useEffect(() => {
+    setPage(0);
+    setHasMore(true);
     fetchProducts(true);
-  }, [fetchProducts]);
+  }, [searchQuery,activeCollection]);
 
-const renderStars = (rating) => {
-  const stars = [];
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
 
-  for (let i = 0; i < fullStars; i++) {
-    stars.push(<span key={i} className="text-warning">★</span>);
-  }
-  if (hasHalfStar) {
-    stars.push(<span key="half" className="text-warning">☆</span>);
-  }
-  return stars;
-};
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<span key={i} className="text-warning">★</span>);
+    }
+      if (hasHalfStar) {
+        stars.push(<span key="half" className="text-warning">☆</span>);
+      }
+      return stars;
+  };
  
-const toggleWishlist = (e, productId) => {
+  const toggleWishlist = (e, productId) => {
     e.stopPropagation(); // prevent parent click events
     const inWishlist = (wishlist || []).some((item) => item.productId === productId);
     if (inWishlist) {
@@ -88,6 +99,21 @@ const toggleWishlist = (e, productId) => {
     }
   };
 
+  const iconMap = {
+    "layout-grid": LayoutGrid,
+    flame: Flame,
+    "trending-up": TrendingUp,
+    "badge-percent": BadgePercent,
+    award: Award,
+    sparkles: Sparkles,
+    star: Star,
+    "shopping-bag": ShoppingBag,
+    "package-check": PackageCheck,
+    "thumbs-up": ThumbsUp,
+    gem: Gem,
+    crown: Crown
+  };
+  console.log(collections)
   return (
     <div className="hot-deals-page">
       <style jsx>{`
@@ -475,18 +501,22 @@ const toggleWishlist = (e, productId) => {
                 className={`category-btn ${activeCollection === 'all' ? 'active' : ''}`}
                 onClick={() => setActiveCollection('all')}
               >
-                🌟 All Deals
+                <LayoutGrid size={20} color="#371261"/> All Products
               </button>
-              {collections.map(collection => (
-                <button
-                  key={collection.collectionId}
-                  className={`category-btn ${activeCollection === collection.collectionId ? 'active' : ''}`}
-                  onClick={() => setActiveCollection(collection.collectionId)}
-                >
-                  <span className="me-2">{collection.icon}</span>
-                  {collection.title}
-                </button>
-              ))}
+              {collections.map(collection => {
+                const Icon = iconMap[collection.icon] || LayoutGrid;
+                const isActive = activeCollection === collection.collectionId;
+                return(
+                  <button
+                    key={collection.collectionId}
+                    className={`category-btn ${activeCollection === collection.collectionId ? 'active' : ''}`}
+                    onClick={() => setActiveCollection(collection.collectionId)}
+                  >
+                    <span className="me-2"><Icon size={22} strokeWidth={2} color={isActive? '#fff':'#371261'} /></span>
+                    {collection.title}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -500,8 +530,8 @@ const toggleWishlist = (e, productId) => {
                     type="text" 
                     className="search-input" 
                     placeholder="Search products, brands, or describe what you need..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                   />
                   <div className="search-actions">
                     <button className="search-btn" onClick={(e) => {
