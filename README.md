@@ -55,7 +55,7 @@ A running instance of the Zeptra backend (local or deployed)
 
 Installation
 
-bashgit clone https://github.com/rupeshk540/your-frontend-repo-name.git
+bash git clone https://github.com/rupeshk540/Electronic_store-Using-React..git
 cd your-frontend-repo-name
 npm install
 
