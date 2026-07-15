@@ -232,7 +232,6 @@ const goToPreviousPage = () => {
       addItemWishlist(productId);
     }
   };
- 
   if (loading && products.length === 0) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
@@ -588,12 +587,12 @@ const goToPreviousPage = () => {
 
                           {/* Rating */}
                           <div className="rating-container">
-                            {renderStars(product.rating || 0)}
+                            {renderStars(product.averageRating || 0)}
                             <span
                               className="text-muted"
                               style={{ fontSize: "0.75rem" }}
                             >
-                              ({product.rating || 0})
+                              ({product.totalReview || 0})
                             </span>
                           </div>
 

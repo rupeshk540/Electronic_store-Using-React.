@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ZeptaFeatures = () => {
   const [visibleCards, setVisibleCards] = useState(new Set());
-
+  const navigate = useNavigate();
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -17,7 +18,6 @@ const ZeptaFeatures = () => {
       });
     }, observerOptions);
 
-    // Observe all animated elements
     document.querySelectorAll('.animate-on-scroll').forEach(el => {
       observer.observe(el);
     });
@@ -27,17 +27,17 @@ const ZeptaFeatures = () => {
 
   const features = [
     {
-      id: 'buy',
-      icon: '🛒',
-      title: 'Buy',
-      description: 'Purchase items you love and keep them forever. Great prices, quality guaranteed.',
+      id: 'ai',
+      icon: '✨',
+      title: 'AI Assistant',
+      description: 'Ask our AI shopping assistant for recommendations, comparisons, and quick answers — anytime.',
       gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     },
     {
-      id: 'rent',
-      icon: '📅',
-      title: 'Rent',
-      description: 'Need something temporarily? Rent it for as long as you need, then return it.',
+      id: 'deals',
+      icon: '🔥',
+      title: 'Hot Deals',
+      description: 'Fresh discounts updated daily. Never miss a price drop on the products you care about.',
       gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
     },
     {
@@ -51,7 +51,7 @@ const ZeptaFeatures = () => {
       id: 'protected',
       icon: '🛡️',
       title: 'Protected',
-      description: 'Your purchases and rentals are protected by our comprehensive guarantee.',
+      description: 'Your purchases are protected by our comprehensive guarantee and secure checkout.',
       gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
     }
   ];
@@ -61,35 +61,35 @@ const ZeptaFeatures = () => {
       id: 'step1',
       number: '1',
       title: 'Browse & Discover',
-      description: 'Explore our vast catalog of items available for purchase or rental. Filter by category, price, or availability.'
+      description: 'Explore our catalog or ask the AI assistant to find exactly what you\'re looking for.'
     },
     {
       id: 'step2',
       number: '2',
-      title: 'Choose Your Option',
-      description: 'Decide whether to buy or rent based on your needs. Compare prices and rental terms to make the best choice.'
+      title: 'Compare & Decide',
+      description: 'Check ratings, prices, and AI-powered recommendations to make the best choice.'
     },
     {
       id: 'step3',
       number: '3',
       title: 'Secure Checkout',
-      description: 'Complete your purchase or rental with our secure payment system. Your information is always protected.'
+      description: 'Complete your purchase with our secure payment system. Your information is always protected.'
     },
     {
       id: 'step4',
       number: '4',
-      title: 'Enjoy & Return',
-      description: 'Receive your item quickly. Keep it if you bought it, or return it easily when your rental period ends.'
+      title: 'Fast Delivery',
+      description: 'Sit back and relax — your order is on its way, with real-time tracking every step.'
     }
   ];
 
   const categories = [
     { icon: '📱', title: 'Electronics', description: 'Latest gadgets and tech' },
-    { icon: '🏠', title: 'Home & Garden', description: 'Everything for your space' },
-    { icon: '👕', title: 'Fashion', description: 'Style for every occasion' },
-    { icon: '🚗', title: 'Automotive', description: 'Cars, parts, and accessories' },
+    { icon: '🎧', title: 'Audio', description: 'Headphones and speakers' },
+    { icon: '💻', title: 'Laptops', description: 'Work, gaming, and more' },
+    { icon: '⌚', title: 'Wearables', description: 'Smartwatches and fitness' },
     { icon: '🎮', title: 'Gaming', description: 'Games and gaming gear' },
-    { icon: '🏃', title: 'Sports', description: 'Fitness and outdoor gear' }
+    { icon: '📷', title: 'Cameras', description: 'Capture every moment' }
   ];
 
   return (
@@ -350,14 +350,14 @@ const ZeptaFeatures = () => {
           <div className="hero-content">
             <div className="row align-items-center">
               <div className="col-lg-6">
-                <h1 className="hero-title">Buy or Rent<br />Anything You Need</h1>
+                <h1 className="hero-title">Shop Smarter<br />with AI</h1>
                 <p className="hero-subtitle">
-                  Discover a smarter way to access the things you want. Buy for keeps or rent for flexibility. Your choice, your convenience.
+                  Discover the best deals, personalized recommendations, and everything you need — powered by Zeptra AI.
                 </p>
                 
                 <div className="cta-buttons mb-4">
-                  <button className="btn btn-primary btn-lg me-3 px-4 py-2">Start Shopping</button>
-                  <button className="btn btn-outline-primary btn-lg px-4 py-2">Browse Rentals</button>
+                  <button className="btn btn-primary btn-lg me-3 px-4 py-2" onClick={()=>navigate('/')}>Start Shopping</button>
+                  <button className="btn btn-outline-primary btn-lg px-4 py-2" onClick={()=>navigate('/')}>Ask AI Assistant</button>
                 </div>
 
                 <div className="trust-indicators d-flex gap-4">
@@ -378,7 +378,7 @@ const ZeptaFeatures = () => {
 
               <div className="col-lg-6">
                 <div className="row g-3">
-                  {features.map((feature, index) => (
+                  {features.map((feature) => (
                     <div key={feature.id} className="col-md-6">
                       <div 
                         className="feature-card p-4 h-100"
@@ -401,14 +401,14 @@ const ZeptaFeatures = () => {
       <section className="how-it-works">
         <div className="container">
           <div className="text-center mb-5">
-            <h2 className="section-title">How Zepta Works</h2>
+            <h2 className="section-title">How Zeptra Works</h2>
             <p className="section-subtitle">
-              Getting what you need has never been easier. Follow these simple steps to buy or rent anything.
+              Getting what you need has never been easier. Follow these simple steps to shop smarter.
             </p>
           </div>
 
           <div className="row g-4">
-            {steps.map((step, index) => (
+            {steps.map((step) => (
               <div key={step.id} className="col-lg-3 col-md-6">
                 <div 
                   id={step.id}
@@ -430,7 +430,7 @@ const ZeptaFeatures = () => {
           <div className="text-center mb-5">
             <h2 className="section-title">Popular Categories</h2>
             <p className="section-subtitle">
-              From electronics to home goods, find everything you need in one place.
+              From electronics to accessories, find everything you need in one place.
             </p>
           </div>
 

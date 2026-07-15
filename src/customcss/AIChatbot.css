@@ -119,9 +119,7 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* ===================================
-   HEADER
-   =================================== */
+/*HEADER*/
 
 .chatbot-header {
   background: var(--chat-header-bg);
@@ -201,9 +199,7 @@
   transform: rotate(90deg);
 }
 
-/* ===================================
-   MESSAGES AREA
-   =================================== */
+/*MESSAGES AREA*/
 
 .chatbot-messages {
   flex: 1;
@@ -234,9 +230,7 @@
   background: #9ca3af;
 }
 
-/* ===================================
-   MESSAGE BUBBLES
-   =================================== */
+/*MESSAGE BUBBLES*/
 
 .message {
   display: flex;
@@ -320,9 +314,7 @@
   font-weight: 500;
 }
 
-/* ===================================
-   INPUT AREA
-   =================================== */
+/* INPUT AREA */
 
 .chatbot-input-container {
   background: white;
@@ -405,18 +397,20 @@
 
 @media (max-width: 768px) {
   .chatbot-container {
-    width: 100%;
-    max-width: 100%;
+    width: 80%;
+    max-width: 80%;
     bottom: 0;
-    right: 0;
-    left: 0;
+    right: 1px;
+    left:o;
     border-radius: 0;
   }
 
   .chatbot-window {
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
+    height: 60vh;
+    height: 60dvh;
+    max-height: 60vh;
+    max-height: 60dvh;
+    border-radius: 10px;
   }
 
   .chatbot-header {
@@ -468,10 +462,7 @@
   }
 }
 
-/* ===================================
-   ACCESSIBILITY
-   =================================== */
-
+/* ACCESSIBILITY */
 .chat-toggle-btn:focus,
 .close-btn:focus,
 .send-btn:focus,

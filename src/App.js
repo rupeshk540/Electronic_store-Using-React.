@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Index from './pages/Index.js';
 import About from './pages/About.js';
-import Services from './pages/Service.js';
+import Feature from './pages/Features.jsx';
 import Cart from './pages/users/Cart.jsx';
 import Dashboard from './pages/users/Dashboard';
 import Profile from './pages/users/Profile';
@@ -63,7 +63,7 @@ function App() {
                   <Route path='/home' element={<Index/>}/>
                   <Route path='/' element={<HotDealsPage/>}/>
                   <Route path='/about' element={<About/>}/>
-                  <Route path='/services' element={<Services/>}/>
+                  <Route path='/services' element={<Feature/>}/>
                   <Route path='/contact' element={<Contact/>}/>
                   <Route path='/login' element={<Login/>}/>
                   <Route path='/signup' element={<Register/>}/>

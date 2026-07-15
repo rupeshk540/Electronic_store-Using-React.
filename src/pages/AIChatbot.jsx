@@ -50,7 +50,7 @@ const AIChatBot = () => {
     // 2. Call backend (THIS PART YOU ASKED)
     try {
         const response = await sendMessageToAI(currentMessage);
-
+        console.log(response)
         const aiMessage = {
         id: Date.now() + 1,
         text: response.reply,
@@ -59,7 +59,7 @@ const AIChatBot = () => {
         };
 
         setMessages(prev => [...prev, aiMessage]);
-
+        console.log(messages)
     } catch (error) {
         const errorMessage = {
         id: Date.now() + 1,

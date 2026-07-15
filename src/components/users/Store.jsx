@@ -1,6 +1,6 @@
 
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { Heart} from 'lucide-react';
+import { Heart, Search} from 'lucide-react';
 import WishlistContext from '../../context/WishlistContext';
 import { useNavigate } from 'react-router-dom';
 import { getAllLiveProducts, searchProduct } from '../../services/ProductService';
@@ -162,22 +162,25 @@ const StorePage = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   <button
-                    className="btn border-0"
-                    type="button"
-                    // onClick={() => {
-                    //   setProducts([]);
-                    //   setPage(0);
-                    //   setHasMore(true);
-                    // }}
-                    style={{
-                      backgroundColor: "#1f2937",
-                      color: "white",
-                      padding: "16px 24px",
-                      fontWeight: "500",
-                    }}
-                  >
-                   Search
-                  </button>
+  className="btn border-0 d-flex align-items-center gap-2"
+  type="button"
+  onClick={() => {
+    setProducts([]);
+    setPage(0);
+    setHasMore(true);
+    // trigger your actual fetch here, e.g. fetchProducts(true)
+  }}
+  style={{
+    background: "linear-gradient(135deg, #764ba2 0%,  #667eea 100%)",
+    color: "white",
+    padding: "16px 24px",
+    fontWeight: "500",
+    border:"#fff"
+  }}
+>
+  <Search size={18} />
+  Search
+</button>
                 </div>
               </div>
             </div>
