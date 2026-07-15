@@ -1,70 +1,100 @@
-# Getting Started with Create React App
+Zeptra — Frontend 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The React frontend for Zeptra, a full-stack e-commerce platform with an AI-powered shopping assistant.
 
-## Available Scripts
+Live Demo: https://zeptra-app.netlify.app/
+Backend Repo: https://github.com/rupeshk540/Electronic-Store-Backend-with-SpringBoot-
 
-In the project directory, you can run:
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Overview:-
+This repository contains the client-side application for Zeptra — a responsive React storefront where users can browse products, chat with an AI shopping assistant, manage their wishlist and cart, and check out securely. It communicates with the Zeptra backend, a Spring Boot REST API.
 
-### `npm test`
+Features :-
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Product Browsing — Search, filter by category/collection, infinite-scroll pagination
+AI Shopping Assistant — Conversational product recommendations via a floating chat widget, backed by Google's Gemini API
+Authentication — Email/password login, JWT-based sessions
+Wishlist & Cart — Persisted server-side, synced across devices
+Checkout — Razorpay payment integration
+Admin Dashboard — Manage products, categories, collections, orders, and users
+Responsive — Optimized layouts for desktop, tablet, and mobile
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Tech Stack:-
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+React, React Router
+Context API for global state (auth, cart, wishlist)
+Bootstrap + custom CSS
+Lucide Icons
+Deployed on Netlify with automatic deploys on every push to master
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Project Structure
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+src/
+├── components/       # Reusable UI components (Navbar, product cards, chatbot, etc.)
+├── context/           # Global state providers (User, Cart, Wishlist)
+├── hooks/              # Custom hooks
+├── pages/              # Route-level page components
+│   ├── admin/          # Admin dashboard pages
+│   └── users/           # User-facing pages (cart, checkout, orders, etc.)
+├── services/          # API call wrappers (Axios/fetch to backend endpoints)
+└── App.js               # Route definitions
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Getting Started:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Prerequisites
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Node.js 18+
+A running instance of the Zeptra backend (local or deployed)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+bashgit clone https://github.com/rupeshk540/your-frontend-repo-name.git
+cd your-frontend-repo-name
+npm install
 
-### Analyzing the Bundle Size
+Environment Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Create a .env file in the project root with your backend API URL:
 
-### Making a Progressive Web App
+REACT_APP_API_BASE_URL=http://localhost:9090
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+For production, point this at your deployed backend (e.g. your Render URL).
 
-### Advanced Configuration
+Run Locally
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+bash npm start
 
-### Deployment
+The app runs at http://localhost:3000 by default.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Build for Production
 
-### `npm run build` fails to minify
+bash npm run build
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Deployment
+
+This app is deployed on Netlify, connected directly to this repository — every push to master triggers an automatic build and deploy.
+
+Note: Since this is a single-page application using React Router, a public/_redirects file is included to ensure client-side routes resolve correctly on Netlify (redirects all paths to index.html, letting React Router handle routing).
+
+Key Implementation Notes
+
+
+Debounced search — search input waits 400ms after the user stops typing before firing an API request, reducing unnecessary backend calls
+Optimistic-safe wishlist/cart — actions are persisted to the backend first, then local state is refreshed from the server response, avoiding stale or out-of-sync UI state
+Isolated re-renders — components with frequently-updating local state (like the countdown timer) are isolated into their own components to avoid unnecessary re-renders of the rest of the page
+
+
+Contact
+
+Rupesh Kumar
+GitHub : https://github.com/rupeshk540/• 
+LinkedIn : https://www.linkedin.com/in/rupesh-kumarr/
+
+Open to Full-Stack / Backend Developer roles 
