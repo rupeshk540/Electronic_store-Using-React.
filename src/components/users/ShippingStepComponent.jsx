@@ -44,7 +44,7 @@ const ShippingStepComponent = ({ formData, handleInputChange }) => {
                 <strong>Express Shipping</strong>
                 <div className="text-muted small">2-3 business days</div>
               </div>
-              <div><strong>$15.99</strong></div>
+              <div><strong>₹15.99</strong></div>
             </div>
           </label>
         </div>
@@ -65,7 +65,7 @@ const ShippingStepComponent = ({ formData, handleInputChange }) => {
                 <strong>Overnight Shipping</strong>
                 <div className="text-muted small">Next business day</div>
               </div>
-              <div><strong>$25.99</strong></div>
+              <div><strong>₹25.99</strong></div>
             </div>
           </label>
         </div>

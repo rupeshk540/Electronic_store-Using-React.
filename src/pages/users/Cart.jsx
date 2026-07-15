@@ -32,7 +32,7 @@ const ShoppingCart = () => {
  const getSubtotal = () =>
   cart?.items?.reduce((total, item) => {
     if (item.totalPrice != null) return total + item.totalPrice;
-    return total + (item.product?.price ?? 0) * (item.quantity ?? 1);
+    return total + (item.product?.discountedPrice ?? 0) * (item.quantity ?? 1);
   }, 0) || 0;
 
 
@@ -104,7 +104,7 @@ const ShoppingCart = () => {
                           <small className="text-muted">{item.description}</small>
                         </div>
                         <div className="col-md-2 col-4 mt-3 mt-md-0">
-                          <span className="h6 text-success">${(item.product?.price ?? 0).toFixed(2)}</span>
+                          <span className="h6 text-success">₹{(item.product?.discountedPrice ?? 0).toFixed(2)}</span>
                         </div>
                         <div className="col-md-3 col-4 mt-3 mt-md-0">
                           <div className="input-group input-group-sm" style={{ maxWidth: '120px' }}>
@@ -163,7 +163,7 @@ const ShoppingCart = () => {
               <div className="card-body">
                 <div className="d-flex justify-content-between mb-2">
                   <span>Subtotal ({getTotalItems()} items)</span>
-                  <span>${getSubtotal().toFixed(2)}</span>
+                  <span>₹{getSubtotal().toFixed(2)}</span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Shipping</span>
@@ -171,12 +171,12 @@ const ShoppingCart = () => {
                 </div>
                 <div className="d-flex justify-content-between mb-3">
                   <span>Tax</span>
-                  <span>${getTax().toFixed(2)}</span>
+                  <span>₹{getTax().toFixed(2)}</span>
                 </div>
                 <hr />
                 <div className="d-flex justify-content-between mb-4">
                   <strong>Total</strong>
-                  <strong className="text-primary">${getTotal().toFixed(2)}</strong>
+                  <strong className="text-primary">₹{getTotal().toFixed(2)}</strong>
                 </div>
 
                 <button className="btn btn-primary btn-lg w-100 mb-3" onClick={gotoCheckoutPage}>

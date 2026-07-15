@@ -189,7 +189,7 @@ const PaymentStepComponent = ({
               • Available for orders up to ₹50,000
             </div>
             <div className="mt-3 p-2 bg-light rounded">
-              <strong className="text-success">Total Amount to Pay on Delivery: ${getTotal().toFixed(2)}</strong>
+              <strong className="text-success">Total Amount to Pay on Delivery: ₹{getTotal().toFixed(2)}</strong>
             </div>
           </div>
         )}

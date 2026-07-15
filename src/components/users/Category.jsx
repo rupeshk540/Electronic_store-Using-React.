@@ -406,7 +406,7 @@ const goToPreviousPage = () => {
                       <h6 className="fw-bold mb-3">Price Range</h6>
                       <div className="mb-3">
                         <label className="form-label">
-                          ${priceRange[0]} - ${priceRange[1]}
+                          ₹{priceRange[0]} - ₹{priceRange[1]}
                         </label>
                         <input
                           type="range"
