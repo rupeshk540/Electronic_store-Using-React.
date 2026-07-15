@@ -51,7 +51,7 @@ Prerequisites
 
 Node.js 18+
 A running instance of the Zeptra backend (local or deployed)
-
+git
 
 Installation
 
@@ -65,7 +65,7 @@ Create a .env file in the project root with your backend API URL:
 
 REACT_APP_API_BASE_URL=http://localhost:9090
 
-For production, point this at your deployed backend (e.g. your Render URL).
+For Backend URL go to backend repository.
 
 Run Locally
 
