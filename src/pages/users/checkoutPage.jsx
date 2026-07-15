@@ -499,7 +499,7 @@ const openRazorpay = async (gatewayOrderId, amount, gatewayKey, orderId) => {
                         <small className="text-muted">Qty: {item?.quantity}</small>
                       </div>
                       <div className="text-end">
-                        <strong>${(item?.product?.discountedPrice * item?.quantity).toFixed(2)}</strong>
+                        <strong>₹{(item?.product?.discountedPrice * item?.quantity).toFixed(2)}</strong>
                       </div>
                     </div>
                   ))}
